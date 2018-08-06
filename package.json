@@ -22,7 +22,7 @@
   "dependencies": {
     "imagelightbox": "^0.10.0",
     "imagesloaded": "^4.1.4",
-    "justified-layout": "github:skaut/justified-layout#configurable-edge-cases"
+    "justified-layout": "^2.1.1"
   },
   "devDependencies": {
     "eslint": "^5.3.0",
