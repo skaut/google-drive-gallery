@@ -163,15 +163,14 @@ function copyImagesloaded() {
 		.pipe( gulp.dest( 'plugin/bundled/' ) );
 }
 
-gulp.task( 'copyJustifiedLayout', gulp.series( shell.task([ 'npm install', 'npm run prepublish' ], {cwd: 'node_modules/justified-layout' }), copyJustifiedLayoutFile ) );
-function copyJustifiedLayoutFile() {
+function copyJustifiedLayout() {
 	return gulp.src( 'node_modules/justified-layout/dist/justified-layout.min.js' )
 		.pipe( gulp.dest( 'plugin/bundled/' ) );
 }
 
 gulp.task( 'composer-update', gulp.series( 'composer-do-update', 'composer-copy' ) );
 
-gulp.task( 'npm-update', gulp.series( shell.task([ 'npm install', 'npm update' ]), gulp.parallel( copyImagelightbox, copyImagesloaded, 'copyJustifiedLayout' ) ) );
+gulp.task( 'npm-update', gulp.series( shell.task([ 'npm install', 'npm update' ]), gulp.parallel( copyImagelightbox, copyImagesloaded, copyJustifiedLayout ) ) );
 
 gulp.task( 'phpcs', shell.task([ 'vendor/squizlabs/php_codesniffer/bin/phpcs' ]) );
 
