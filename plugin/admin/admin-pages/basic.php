@@ -1,9 +1,9 @@
 <?php
 namespace Sgdg\Admin\AdminPages\Basic;
 
-require_once 'basic/oauth-grant.php';
-require_once 'basic/oauth-revoke.php';
-require_once 'basic/root-selection.php';
+require_once __DIR__ . '/basic/oauth-grant.php';
+require_once __DIR__ . '/basic/oauth-revoke.php';
+require_once __DIR__ . '/basic/root-selection.php';
 
 if ( ! is_admin() ) {
 	return;

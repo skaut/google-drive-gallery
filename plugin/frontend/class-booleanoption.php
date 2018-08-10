@@ -1,7 +1,7 @@
 <?php
 namespace Sgdg\Frontend;
 
-require_once 'class-option.php';
+require_once __DIR__ . '/class-option.php';
 
 class BooleanOption extends Option {
 	public function __construct( $name, $default_value, $page, $section, $title ) {

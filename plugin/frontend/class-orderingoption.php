@@ -1,7 +1,7 @@
 <?php
 namespace Sgdg\Frontend;
 
-require_once 'class-option.php';
+require_once __DIR__ . '/class-option.php';
 
 class OrderingOption extends Option {
 	public function __construct( $name, $default_by, $default_order, $page, $section, $title ) {

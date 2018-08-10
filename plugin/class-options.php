@@ -1,14 +1,14 @@
 <?php
 namespace Sgdg;
 
-require_once 'frontend/class-integeroption.php';
-require_once 'frontend/class-booleanoption.php';
-require_once 'frontend/class-stringoption.php';
-require_once 'frontend/class-stringcodeoption.php';
-require_once 'frontend/class-arrayoption.php';
-require_once 'frontend/class-rootpathoption.php';
-require_once 'frontend/class-orderingoption.php';
-require_once 'admin/class-readonlystringoption.php';
+require_once __DIR__ . '/frontend/class-integeroption.php';
+require_once __DIR__ . '/frontend/class-booleanoption.php';
+require_once __DIR__ . '/frontend/class-stringoption.php';
+require_once __DIR__ . '/frontend/class-stringcodeoption.php';
+require_once __DIR__ . '/frontend/class-arrayoption.php';
+require_once __DIR__ . '/frontend/class-rootpathoption.php';
+require_once __DIR__ . '/frontend/class-orderingoption.php';
+require_once __DIR__ . '/admin/class-readonlystringoption.php';
 
 class Options {
 	public static $authorized_origin;

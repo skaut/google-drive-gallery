@@ -37,17 +37,18 @@ SOFTWARE.
 
 defined( 'ABSPATH' ) || die( 'Die, die, die!' );
 
-require_once 'bundled/vendor-includes.php';
+require_once __DIR__ . '/bundled/vendor-includes.php';
 
-require_once 'class-options.php';
+require_once __DIR__ . '/class-options.php';
 
-require_once 'frontend/google-api-lib.php';
-require_once 'frontend/shortcode.php';
-require_once 'frontend/block.php';
+require_once __DIR__ . '/frontend/google-api-lib.php';
+require_once __DIR__ . '/frontend/block.php';
+require_once __DIR__ . '/frontend/shortcode.php';
+require_once __DIR__ . '/frontend/ajax.php';
 
-require_once 'admin/google-api-lib.php';
-require_once 'admin/admin-pages.php';
-require_once 'admin/tinymce.php';
+require_once __DIR__ . '/admin/google-api-lib.php';
+require_once __DIR__ . '/admin/admin-pages.php';
+require_once __DIR__ . '/admin/tinymce.php';
 
 function init() {
 	register_activation_hook( __FILE__, '\\Sgdg\\activate' );
@@ -55,6 +56,7 @@ function init() {
 	add_action( 'admin_notices', '\\Sgdg\\activation_notice' );
 	\Sgdg\Frontend\Shortcode\register();
 	\Sgdg\Frontend\Block\register();
+	\Sgdg\Frontend\Ajax\register();
 	\Sgdg\Admin\AdminPages\register();
 	\Sgdg\Admin\TinyMCE\register();
 }

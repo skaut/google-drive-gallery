@@ -1,8 +1,8 @@
 <?php
 namespace Sgdg\Admin\AdminPages\Advanced;
 
-require_once 'advanced/grid.php';
-require_once 'advanced/lightbox.php';
+require_once __DIR__ . '/advanced/grid.php';
+require_once __DIR__ . '/advanced/lightbox.php';
 
 if ( ! is_admin() ) {
 	return;

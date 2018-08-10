@@ -1,8 +1,8 @@
 <?php
 namespace Sgdg\Admin\AdminPages;
 
-require_once 'admin-pages/basic.php';
-require_once 'admin-pages/advanced.php';
+require_once __DIR__ . '/admin-pages/basic.php';
+require_once __DIR__ . '/admin-pages/advanced.php';
 
 if ( ! is_admin() ) {
 	return;

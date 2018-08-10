@@ -1,7 +1,7 @@
 <?php
 namespace Sgdg\Frontend;
 
-require_once 'class-arrayoption.php';
+require_once __DIR__ . '/class-arrayoption.php';
 
 class RootPathOption extends ArrayOption {
 	public function sanitize( $value ) {

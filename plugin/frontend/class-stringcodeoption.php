@@ -1,7 +1,7 @@
 <?php
 namespace Sgdg\Frontend;
 
-require_once 'class-stringoption.php';
+require_once __DIR__ . '/class-stringoption.php';
 
 class StringCodeOption extends StringOption {
 	private $readonly;
