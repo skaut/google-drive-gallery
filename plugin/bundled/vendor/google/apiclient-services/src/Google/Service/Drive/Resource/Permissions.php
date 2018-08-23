@@ -44,10 +44,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    * @opt_param bool transferOwnership Whether to transfer ownership to the
    * specified user and downgrade the current owner to a writer. This parameter is
    * required as an acknowledgement of the side effect.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the item belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the item belongs.
    * @return Google_Service_Drive_Permission
    */
   public function create($fileId, Google_Service_Drive_Permission $postBody, $optParams = array())
@@ -65,10 +64,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    *
    * @opt_param bool supportsTeamDrives Whether the requesting application
    * supports Team Drives.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the item belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the item belongs.
    */
   public function delete($fileId, $permissionId, $optParams = array())
   {
@@ -85,10 +83,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    *
    * @opt_param bool supportsTeamDrives Whether the requesting application
    * supports Team Drives.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the item belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the item belongs.
    * @return Google_Service_Drive_Permission
    */
   public function get($fileId, $permissionId, $optParams = array())
@@ -112,10 +109,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    * previous response.
    * @opt_param bool supportsTeamDrives Whether the requesting application
    * supports Team Drives.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the item belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the item belongs.
    * @return Google_Service_Drive_PermissionList
    */
   public function listPermissions($fileId, $optParams = array())
@@ -138,10 +134,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    * @opt_param bool transferOwnership Whether to transfer ownership to the
    * specified user and downgrade the current owner to a writer. This parameter is
    * required as an acknowledgement of the side effect.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the item belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the item belongs.
    * @return Google_Service_Drive_Permission
    */
   public function update($fileId, $permissionId, Google_Service_Drive_Permission $postBody, $optParams = array())

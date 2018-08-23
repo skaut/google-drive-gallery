@@ -24,6 +24,7 @@ class Google_Service_Drive_DriveFile extends Google_Collection
   protected $capabilitiesDataType = '';
   protected $contentHintsType = 'Google_Service_Drive_DriveFileContentHints';
   protected $contentHintsDataType = '';
+  public $copyRequiresWriterPermission;
   public $createdTime;
   public $description;
   public $explicitlyTrashed;
@@ -116,6 +117,14 @@ class Google_Service_Drive_DriveFile extends Google_Collection
   public function getContentHints()
   {
     return $this->contentHints;
+  }
+  public function setCopyRequiresWriterPermission($copyRequiresWriterPermission)
+  {
+    $this->copyRequiresWriterPermission = $copyRequiresWriterPermission;
+  }
+  public function getCopyRequiresWriterPermission()
+  {
+    return $this->copyRequiresWriterPermission;
   }
   public function setCreatedTime($createdTime)
   {

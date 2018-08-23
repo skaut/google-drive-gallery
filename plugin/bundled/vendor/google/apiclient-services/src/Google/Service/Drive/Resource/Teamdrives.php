@@ -63,10 +63,9 @@ class Google_Service_Drive_Resource_Teamdrives extends Google_Service_Resource
    * @param string $teamDriveId The ID of the Team Drive
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then the
-   * requester will be granted access if they are an administrator of the domain
-   * to which the Team Drive belongs.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the Team Drive belongs.
    * @return Google_Service_Drive_TeamDrive
    */
   public function get($teamDriveId, $optParams = array())
@@ -83,9 +82,9 @@ class Google_Service_Drive_Resource_Teamdrives extends Google_Service_Resource
    * @opt_param int pageSize Maximum number of Team Drives to return.
    * @opt_param string pageToken Page token for Team Drives.
    * @opt_param string q Query string for searching Team Drives.
-   * @opt_param bool useDomainAdminAccess Whether the request should be treated as
-   * if it was issued by a domain administrator; if set to true, then all Team
-   * Drives of the domain in which the requester is an administrator are returned.
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then all Team Drives of the domain in which
+   * the requester is an administrator are returned.
    * @return Google_Service_Drive_TeamDriveList
    */
   public function listTeamdrives($optParams = array())
@@ -100,6 +99,10 @@ class Google_Service_Drive_Resource_Teamdrives extends Google_Service_Resource
    * @param string $teamDriveId The ID of the Team Drive
    * @param Google_Service_Drive_TeamDrive $postBody
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool useDomainAdminAccess Issue the request as a domain
+   * administrator; if set to true, then the requester will be granted access if
+   * they are an administrator of the domain to which the Team Drive belongs.
    * @return Google_Service_Drive_TeamDrive
    */
   public function update($teamDriveId, Google_Service_Drive_TeamDrive $postBody, $optParams = array())

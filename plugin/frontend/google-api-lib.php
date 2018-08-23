@@ -18,7 +18,7 @@ function get_drive_client() {
 	$client       = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
 	$access_token = get_option( 'sgdg_access_token' );
 	if ( ! $access_token ) {
-		throw new \Exception();
+		throw new \Exception( esc_html__( 'Not authorized.', 'skaut-google-drive-gallery' ) );
 	}
 	$client->setAccessToken( $access_token );
 
