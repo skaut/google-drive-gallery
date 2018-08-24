@@ -35,6 +35,14 @@
 	font-size: 0.8em;
 }
 
+.sgdg-count-icon {
+	vertical-align: sub;
+}
+
+.sgdg-count-icon-indent {
+	margin-left: 15px;
+}
+
 .sgdg-dir-icon {
 	background: #f0f0f0;
 	display: block;

@@ -21,20 +21,13 @@ function handle_ajax() {
 }
 
 function ajax_handler_body() {
-	$client    = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
-	$root_path = \Sgdg\Options::$root_path->get();
-	$dir       = end( $root_path );
+	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-	$config_path = get_transient( 'sgdg_nonce_' . $_GET['nonce'] );
+	$dir = get_transient( 'sgdg_nonce_' . $_GET['nonce'] );
 
-	if ( false === $config_path ) {
+	if ( false === $dir ) {
 		throw new \Exception( esc_html__( 'The gallery has expired.', 'skaut-google-drive-gallery' ) );
-	}
-
-	if ( '' !== $config_path ) {
-		$path = explode( '/', trim( $config_path, " /\t\n\r\0\x0B" ) );
-		$dir  = find_dir( $client, $dir, $path );
 	}
 
 	$ret = [];
@@ -49,32 +42,6 @@ function ajax_handler_body() {
 	$ret['directories'] = directories( $client, $dir );
 	$ret['images']      = images( $client, $dir );
 	wp_send_json( $ret );
-}
-
-function find_dir( $client, $root, array $path ) {
-	$page_token = null;
-	do {
-		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, name)',
-		];
-		$response = $client->files->listFiles( $params );
-		foreach ( $response->getFiles() as $file ) {
-			if ( $file->getName() === $path[0] ) {
-				if ( count( $path ) === 1 ) {
-					return $file->getId();
-				}
-				array_shift( $path );
-				return find_dir( $client, $file->getId(), $path );
-			}
-		}
-		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token );
-	throw new \Exception( esc_html__( 'The root directory of the gallery doesn\'t exist - it may have been deleted or renamed.', 'skaut-google-drive-gallery' ) );
 }
 
 function path_names( $client, array $path, array $used_path = [] ) {
@@ -95,7 +62,7 @@ function path_names( $client, array $path, array $used_path = [] ) {
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
-		$ret[]    = [
+		$ret[] = [
 			'id'   => $segment,
 			'name' => $response->getName(),
 		];
@@ -251,10 +218,10 @@ function dir_counts_responses( $responses, $dirs ) {
 
 		$val = [];
 		if ( $dircount > 0 ) {
-			$val['dircount'] = $dircount . ' ' . esc_html( _n( 'folder', 'folders', $dircount, 'skaut-google-drive-gallery' ) );
+			$val['dircount'] = $dircount;
 		}
 		if ( $imagecount > 0 ) {
-			$val['imagecount'] = $imagecount . ' ' . esc_html( _n( 'image', 'images', $imagecount, 'skaut-google-drive-gallery' ) );
+			$val['imagecount'] = $imagecount;
 		}
 		$ret[] = $val;
 	}

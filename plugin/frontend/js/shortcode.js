@@ -104,6 +104,7 @@ jQuery( document ).ready( function( $ ) {
 		var html = '';
 		$.each( directories, function( _, dir ) {
 			var newPath = getQueryPath( hash );
+			var iconClass = '';
 			newPath = ( newPath ? newPath + '/' : '' ) + dir.id;
 			html += '<a class="sgdg-grid-a sgdg-grid-square" data-sgdg-path="' + newPath + '" href="';
 			html += addQueryPath( hash, newPath );
@@ -115,13 +116,13 @@ jQuery( document ).ready( function( $ ) {
 			}
 			html += '<div class="sgdg-dir-overlay"><div class="sgdg-dir-name">' + dir.name + '</div>';
 			if ( dir.dircount ) {
-				html += dir.dircount;
+				html += '<span class="sgdg-count-icon dashicons dashicons-category"></span> ' + dir.dircount;
 			}
 			if ( dir.imagecount ) {
 				if ( dir.dircount ) {
-					html += ', ';
+					iconClass = ' sgdg-count-icon-indent';
 				}
-				html += dir.imagecount;
+				html += '<span class="sgdg-count-icon dashicons dashicons-format-image' + iconClass + '"></span> ' + dir.imagecount;
 			}
 			html += '</div></a>';
 		});
@@ -171,11 +172,15 @@ jQuery( document ).ready( function( $ ) {
 			if ( ( data.path && 0 < data.path.length ) || 0 < data.directories.length ) {
 				html += renderBreadcrumbs( hash, data.path );
 			}
-			html += '<div class="sgdg-spinner"></div>';
-			html += '<div class="sgdg-gallery">';
-			html += renderDirectories( hash, data.directories );
-			html += renderImages( hash, data.images );
-			html += '</div>';
+			if ( 0 < data.directories.length || 0 < data.images.length ) {
+				html += '<div class="sgdg-spinner"></div>';
+				html += '<div class="sgdg-gallery">';
+				html += renderDirectories( hash, data.directories );
+				html += renderImages( hash, data.images );
+				html += '</div>';
+			} else {
+				html += '<div class="sgdg-gallery">' + sgdgShortcodeLocalize.empty_gallery + '</div>';
+			}
 			container.html( html );
 			container.find( 'a[data-sgdg-path]' ).click( function() {
 				history.pushState({}, '', addQueryPath( hash, $( this ).data( 'sgdgPath' ) ) );
