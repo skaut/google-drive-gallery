@@ -232,24 +232,45 @@ function images( $client, $dir ) {
 	$ret        = [];
 	$page_token = null;
 	do {
-		$params   = [
+		$params = [
 			'q'                     => '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false',
 			'supportsTeamDrives'    => true,
 			'includeTeamDriveItems' => true,
-			'orderBy'               => \Sgdg\Options::$image_ordering->get(),
 			'pageToken'             => $page_token,
 			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, thumbnailLink)',
 		];
+		if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time))';
+		} else {
+			$params['orderBy'] = \Sgdg\Options::$image_ordering->get();
+			$params['fields']  = 'nextPageToken, files(id, thumbnailLink)';
+		}
 		$response = $client->files->listFiles( $params );
 		foreach ( $response->getFiles() as $file ) {
-			$ret[] = [
+			$val = [
 				'id'        => $file->getId(),
 				'image'     => substr( $file->getThumbnailLink(), 0, -3 ) . \Sgdg\Options::$preview_size->get(),
 				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * \Sgdg\Options::$grid_height->get() ),
 			];
+			if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+				if ( $file->getImageMediaMetadata() && $file->getImageMediaMetadata()->getTime() ) {
+					$val['timestamp'] = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() )->format( 'U' );
+				} else {
+					$val['timestamp'] = \DateTime::createFromFormat( 'Y-m-d\TH:i:s.uP', $file->getCreatedTime() )->format( 'U' );
+				}
+			}
+			$ret[] = $val;
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
+	if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+		usort( $ret, function( $a, $b ) {
+			$asc = $a['timestamp'] - $b['timestamp'];
+			return \Sgdg\Options::$image_ordering->getOrder() === 'ascending' ? $asc : -$asc;
+		});
+		array_walk( $ret, function( &$item ) {
+			unset( $item['timestamp'] );
+		});
+	}
 	return $ret;
 }
