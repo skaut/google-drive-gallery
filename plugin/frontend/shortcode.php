@@ -21,10 +21,10 @@ function register_scripts_styles() {
 }
 
 function render( $atts = [] ) {
-	if(isset($atts['path']) && '' !== $atts['path']) {
+	if ( isset( $atts['path'] ) && '' !== $atts['path'] ) {
 		$atts['path'] = explode( '/', trim( $atts['path'], " /\t\n\r\0\x0B" ) );
 	}
-	html($atts);
+	return html( $atts );
 }
 
 function html( $atts ) {
