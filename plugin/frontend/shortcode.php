@@ -21,6 +21,13 @@ function register_scripts_styles() {
 }
 
 function render( $atts = [] ) {
+	if(isset($atts['path']) && '' !== $atts['path']) {
+		$atts['path'] = explode( '/', trim( $atts['path'], " /\t\n\r\0\x0B" ) );
+	}
+	html($atts);
+}
+
+function html( $atts ) {
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 		define( 'DONOTCACHEPAGE', true );
 	}
@@ -49,9 +56,8 @@ function render( $atts = [] ) {
 	$value     = end( $root_path );
 	if ( isset( $atts['path'] ) && '' !== $atts['path'] ) {
 		$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
-		$path   = explode( '/', trim( $atts['path'], " /\t\n\r\0\x0B" ) );
 		try {
-			$value = find_dir( $client, $value, $path );
+			$value = find_dir( $client, $value, $atts['path'] );
 		} catch ( \Exception $e ) {
 			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
 		}

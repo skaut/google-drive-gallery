@@ -24,9 +24,5 @@ function add() {
 }
 
 function html( $attributes ) {
-	$atts = [ 'path' => '' ];
-	if ( isset( $attributes['path'] ) ) {
-		$atts['path'] = implode( '/', $attributes['path'] );
-	}
-	return \Sgdg\Frontend\Shortcode\render( $atts );
+	return \Sgdg\Frontend\Shortcode\html( $attributes );
 }
