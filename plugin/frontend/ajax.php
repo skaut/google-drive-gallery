@@ -48,10 +48,13 @@ function path_names( $client, array $path, array $used_path = [] ) {
 	$client->getClient()->setUseBatch( true );
 	$batch = $client->createBatch();
 	foreach ( $path as $segment ) {
-		$request = $client->files->get( $segment, [
-			'supportsTeamDrives' => true,
-			'fields'             => 'name',
-		]);
+		$request = $client->files->get(
+			$segment,
+			[
+				'supportsTeamDrives' => true,
+				'fields'             => 'name',
+			]
+		);
 		$batch->add( $request, $segment );
 	}
 	$responses = $batch->execute();
@@ -97,9 +100,8 @@ function apply_path( $client, $root, array $path ) {
 }
 
 function directories( $client, $dir ) {
-	$dir_counts_allowed = \Sgdg\Options::$dir_counts->get() === 'true';
-	$ids                = [];
-	$names              = [];
+	$ids   = [];
+	$names = [];
 
 	$page_token = null;
 	do {
@@ -123,9 +125,7 @@ function directories( $client, $dir ) {
 	$client->getClient()->setUseBatch( true );
 	$batch = $client->createBatch();
 	dir_images_requests( $client, $batch, $ids );
-	if ( $dir_counts_allowed ) {
-		dir_counts_requests( $client, $batch, $ids );
-	}
+	dir_counts_requests( $client, $batch, $ids );
 	$responses = $batch->execute();
 	$client->getClient()->setUseBatch( false );
 
@@ -140,7 +140,7 @@ function directories( $client, $dir ) {
 			'name'      => $names[ $i ],
 			'thumbnail' => $dir_images[ $i ],
 		];
-		if ( $dir_counts_allowed ) {
+		if ( \Sgdg\Options::$dir_counts->get() === 'true' ) {
 			$val = array_merge( $val, $dir_counts[ $i ] );
 		}
 		if ( 0 < $dir_counts[ $i ]['dircount'] + $dir_counts[ $i ]['imagecount'] ) {
@@ -213,17 +213,10 @@ function dir_counts_responses( $responses, $dirs ) {
 		if ( $img_response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $img_response;
 		}
-		$dircount   = count( $dir_response->getFiles() );
-		$imagecount = count( $img_response->getFiles() );
-
-		$val = [];
-		if ( $dircount > 0 ) {
-			$val['dircount'] = $dircount;
-		}
-		if ( $imagecount > 0 ) {
-			$val['imagecount'] = $imagecount;
-		}
-		$ret[] = $val;
+		$ret[] = [
+			'dircount'   => count( $dir_response->getFiles() ),
+			'imagecount' => count( $img_response->getFiles() ),
+		];
 	}
 	return $ret;
 }
@@ -264,13 +257,19 @@ function images( $client, $dir ) {
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
 	if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
-		usort( $ret, function( $a, $b ) {
-			$asc = $a['timestamp'] - $b['timestamp'];
-			return \Sgdg\Options::$image_ordering->getOrder() === 'ascending' ? $asc : -$asc;
-		});
-		array_walk( $ret, function( &$item ) {
-			unset( $item['timestamp'] );
-		});
+		usort(
+			$ret,
+			function( $a, $b ) {
+				$asc = $a['timestamp'] - $b['timestamp'];
+				return \Sgdg\Options::$image_ordering->getOrder() === 'ascending' ? $asc : -$asc;
+			}
+		);
+		array_walk(
+			$ret,
+			function( &$item ) {
+				unset( $item['timestamp'] );
+			}
+		);
 	}
 	return $ret;
 }

@@ -5,10 +5,14 @@ require_once __DIR__ . '/class-option.php';
 
 class IntegerOption extends Option {
 	public function register() {
-		register_setting( $this->page, $this->name, [
-			'type'              => 'integer',
-			'sanitize_callback' => [ $this, 'sanitize' ],
-		]);
+		register_setting(
+			$this->page,
+			$this->name,
+			[
+				'type'              => 'integer',
+				'sanitize_callback' => [ $this, 'sanitize' ],
+			]
+		);
 	}
 
 	public function sanitize( $value ) {

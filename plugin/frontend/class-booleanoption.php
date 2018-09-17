@@ -9,10 +9,14 @@ class BooleanOption extends Option {
 	}
 
 	public function register() {
-		register_setting( $this->page, $this->name, [
-			'type'              => 'boolean',
-			'sanitize_callback' => [ $this, 'sanitize' ],
-		]);
+		register_setting(
+			$this->page,
+			$this->name,
+			[
+				'type'              => 'boolean',
+				'sanitize_callback' => [ $this, 'sanitize' ],
+			]
+		);
 	}
 
 	public function sanitize( $value ) {

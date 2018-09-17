@@ -36,12 +36,16 @@ function html() {
 function enqueue_ajax( $hook ) {
 	if ( 'toplevel_page_sgdg_basic' === $hook ) {
 		\Sgdg\enqueue_script( 'sgdg_root_selection_ajax', '/admin/js/root_selection.js', [ 'jquery' ] );
-		wp_localize_script( 'sgdg_root_selection_ajax', 'sgdgRootpathLocalize', [
-			'ajax_url'        => admin_url( 'admin-ajax.php' ),
-			'nonce'           => wp_create_nonce( 'sgdg_root_selection' ),
-			'root_dir'        => \Sgdg\Options::$root_path->get( [] ),
-			'team_drive_list' => esc_html__( 'Team drive list', 'skaut-google-drive-gallery' ),
-		]);
+		wp_localize_script(
+			'sgdg_root_selection_ajax',
+			'sgdgRootpathLocalize',
+			[
+				'ajax_url'        => admin_url( 'admin-ajax.php' ),
+				'nonce'           => wp_create_nonce( 'sgdg_root_selection' ),
+				'root_dir'        => \Sgdg\Options::$root_path->get( [] ),
+				'team_drive_list' => esc_html__( 'Team drive list', 'skaut-google-drive-gallery' ),
+			]
+		);
 	}
 }
 
@@ -77,10 +81,13 @@ function path_ids_to_names( $client, $path ) {
 		}
 	}
 	foreach ( array_slice( $path, 1 ) as $path_element ) {
-		$response = $client->files->get( $path_element, [
-			'supportsTeamDrives' => true,
-			'fields'             => 'name',
-		]);
+		$response = $client->files->get(
+			$path_element,
+			[
+				'supportsTeamDrives' => true,
+				'fields'             => 'name',
+			]
+		);
 		$ret[]    = $response->getName();
 	}
 	return $ret;

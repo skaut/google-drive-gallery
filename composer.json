@@ -1,7 +1,7 @@
 {
     "name": "skaut/google-drive-gallery",
     "description": "A WordPress gallery using Google Drive as file storage",
-	"version": "2.3.0",
+	"version": "2.3.1",
 	"license": "MIT",
     "type": "wordpress-plugin",
     "require": {

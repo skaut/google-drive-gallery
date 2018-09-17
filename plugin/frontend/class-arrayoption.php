@@ -5,10 +5,14 @@ require_once __DIR__ . '/class-option.php';
 
 class ArrayOption extends Option {
 	public function register() {
-		register_setting( $this->page, $this->name, [
-			'type'              => 'string',
-			'sanitize_callback' => [ $this, 'sanitize' ],
-		]);
+		register_setting(
+			$this->page,
+			$this->name,
+			[
+				'type'              => 'string',
+				'sanitize_callback' => [ $this, 'sanitize' ],
+			]
+		);
 	}
 
 	public function sanitize( $value ) {

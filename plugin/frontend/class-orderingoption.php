@@ -5,21 +5,35 @@ require_once __DIR__ . '/class-option.php';
 
 class OrderingOption extends Option {
 	public function __construct( $name, $default_by, $default_order, $page, $section, $title ) {
-		parent::__construct( $name, [
-			'by'    => ( 'name' === $default_by ? 'name' : 'time' ),
-			'order' => ( 'ascending' === $default_order ? 'ascending' : 'descending' ),
-		], $page, $section, $title );
+		parent::__construct(
+			$name,
+			[
+				'by'    => ( 'name' === $default_by ? 'name' : 'time' ),
+				'order' => ( 'ascending' === $default_order ? 'ascending' : 'descending' ),
+			],
+			$page,
+			$section,
+			$title
+		);
 	}
 
 	public function register() {
-		register_setting( $this->page, $this->name . '_order', [
-			'type'              => 'string',
-			'sanitize_callback' => [ $this, 'sanitize_order' ],
-		]);
-		register_setting( $this->page, $this->name . '_by', [
-			'type'              => 'string',
-			'sanitize_callback' => [ $this, 'sanitize' ],
-		]);
+		register_setting(
+			$this->page,
+			$this->name . '_order',
+			[
+				'type'              => 'string',
+				'sanitize_callback' => [ $this, 'sanitize_order' ],
+			]
+		);
+		register_setting(
+			$this->page,
+			$this->name . '_by',
+			[
+				'type'              => 'string',
+				'sanitize_callback' => [ $this, 'sanitize' ],
+			]
+		);
 	}
 
 	public function sanitize_order( $value ) {

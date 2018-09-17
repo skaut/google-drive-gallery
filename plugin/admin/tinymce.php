@@ -25,13 +25,17 @@ function register_scripts_styles() {
 	}
 	\Sgdg\enqueue_style( 'sgdg_tinymce', '/admin/css/tinymce.css' );
 	\Sgdg\enqueue_script( 'sgdg_tinymce', '/admin/js/tinymce.js' );
-	wp_localize_script( 'sgdg_tinymce', 'sgdgTinymceLocalize', [
-		'dialog_title'  => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
-		'root_name'     => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
-		'insert_button' => esc_html__( 'Insert', 'skaut-google-drive-gallery' ),
-		'ajax_url'      => admin_url( 'admin-ajax.php' ),
-		'nonce'         => wp_create_nonce( 'sgdg_editor_plugin' ),
-	]);
+	wp_localize_script(
+		'sgdg_tinymce',
+		'sgdgTinymceLocalize',
+		[
+			'dialog_title'  => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
+			'root_name'     => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
+			'insert_button' => esc_html__( 'Insert', 'skaut-google-drive-gallery' ),
+			'ajax_url'      => admin_url( 'admin-ajax.php' ),
+			'nonce'         => wp_create_nonce( 'sgdg_editor_plugin' ),
+		]
+	);
 }
 
 function handle_ajax() {
