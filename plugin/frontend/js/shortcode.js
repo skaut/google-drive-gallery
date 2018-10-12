@@ -75,7 +75,7 @@ jQuery( document ).ready( function( $ ) {
 				newQuery = query + '&' + newField;
 			}
 		}
-		return newQuery;
+		return window.location.pathname + newQuery;
 	}
 
 	function removeQueryPath( hash ) {
@@ -86,7 +86,7 @@ jQuery( document ).ready( function( $ ) {
 			newQuery = newQuery.replace( keyRegex1, '?' );
 			newQuery = newQuery.replace( keyRegex2, '' );
 		}
-		return newQuery;
+		return window.location.pathname + newQuery;
 	}
 
 	function renderBreadcrumbs( hash, path ) {
@@ -116,13 +116,13 @@ jQuery( document ).ready( function( $ ) {
 			}
 			html += '<div class="sgdg-dir-overlay"><div class="sgdg-dir-name">' + dir.name + '</div>';
 			if ( dir.dircount ) {
-				html += '<span class="sgdg-count-icon dashicons dashicons-category"></span> ' + dir.dircount;
+				html += '<span class="sgdg-count-icon dashicons dashicons-category"></span> ' + dir.dircount + ( 1000 === dir.dircount ? '+' : '' );
 			}
 			if ( dir.imagecount ) {
 				if ( dir.dircount ) {
 					iconClass = ' sgdg-count-icon-indent';
 				}
-				html += '<span class="sgdg-count-icon dashicons dashicons-format-image' + iconClass + '"></span> ' + dir.imagecount;
+				html += '<span class="sgdg-count-icon dashicons dashicons-format-image' + iconClass + '"></span> ' + dir.imagecount + ( 1000 === dir.imagecount ? '+' : '' );
 			}
 			html += '</div></a>';
 		});

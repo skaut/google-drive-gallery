@@ -49,6 +49,80 @@ jQuery( document ).ready( function( $ ) {
 		])
 	]);
 
+	var SgdgEditorComponent = function( props ) {
+		this.props = props;
+		this.state = {error: undefined, list: undefined};
+	};
+	SgdgEditorComponent.prototype = Object.create( wp.element.Component.prototype );
+	SgdgEditorComponent.prototype.componentDidMount = function() {
+		this.ajax();
+	};
+	SgdgEditorComponent.prototype.ajax = function() {
+		var that = this;
+		$.get( sgdgBlockLocalize.ajax_url, {
+			_ajax_nonce: sgdgBlockLocalize.nonce, // eslint-disable-line camelcase
+			action: 'list_gallery_dir',
+			'path': this.props.attributes.path
+			}, function( data ) {
+				if ( data.response ) {
+					that.setState({list: data.response});
+				} else if ( data.error ) {
+					that.setState({error: data.error});
+				}
+			}
+		);
+	};
+	SgdgEditorComponent.prototype.render = function() {
+		var that = this;
+		var children = [];
+		var path = sgdgBlockLocalize.root_name;
+		var i, lineClass;
+		if ( this.state.error ) {
+			return el( 'div', {class: 'notice notice-error'}, el( 'p', {}, message ) );
+		}
+		if ( this.state.list ) {
+			if ( 0 < this.props.attributes.path.length ) {
+				children.push( el( 'tr', {}, el( 'td', {class: 'row-title'}, el( 'label', {onClick: function( e ) {
+					that.labelClick( that, e );
+				}}, '..' ) ) ) );
+			}
+			for ( i = 0; i < this.state.list.length; i++ ) {
+			lineClass = ( 0 === this.props.attributes.path.length && 1 === i % 2 ) || ( 0 < this.props.attributes.path.length && 0 === i % 2 ) ? 'alternate' : '';
+				children.push( el( 'tr', {class: lineClass}, el( 'td', {class: 'row-title'}, el( 'label', {onClick: function( e ) {
+					that.labelClick( that, e );
+				}}, this.state.list[i]) ) ) );
+			}
+			for ( i = 0; i < this.props.attributes.path.length; i++ ) {
+				path += ' > ';
+				path += this.props.attributes.path[i];
+			}
+		}
+		return el( 'table', { class: 'widefat' }, [
+			el( 'thead', {},
+				el( 'tr', {},
+					el( 'th', {class: 'sgdg-block-editor-path'}, path )
+				)
+			),
+			el( 'tbody', {}, children ),
+			el( 'tfoot', {},
+				el( 'tr', {},
+					el( 'th', {class: 'sgdg-block-editor-path'}, path )
+				)
+			)
+		]);
+	};
+	SgdgEditorComponent.prototype.labelClick = function( that, e ) {
+		var newDir = $( e.currentTarget ).html();
+		var path;
+		if ( '..' === newDir ) {
+			path = that.props.attributes.path.slice( 0, that.props.attributes.path.length - 1 );
+		} else {
+			path = that.props.attributes.path.concat( newDir );
+		}
+		that.props.setAttributes({'path': path});
+		that.setState({error: undefined, list: undefined}, that.ajax );
+	};
+
 	wp.blocks.registerBlockType( 'skaut-google-drive-gallery/gallery', {
 		title: sgdgBlockLocalize.block_name,
 		description: sgdgBlockLocalize.block_description,
@@ -60,7 +134,7 @@ jQuery( document ).ready( function( $ ) {
 				default: []
 			}
 		},
-		edit: renderEditor,
+		edit: SgdgEditorComponent,
 		save: renderFrontend,
 		transforms: {
 			from: [
@@ -79,82 +153,8 @@ jQuery( document ).ready( function( $ ) {
 		}
 	});
 
-	function renderEditor( props ) {
-		if ( 0 === $( '#sgdg-block-editor-list' ).children().length ) {
-			ajaxQuery( props, props.attributes.path );
-		}
-		return el( 'table', { class: 'widefat' }, [
-			el( 'thead', {},
-				el( 'tr', {},
-					el( 'th', {class: 'sgdg-block-editor-path'}, sgdgBlockLocalize.root_name )
-				)
-			),
-			el( 'tbody', {id: 'sgdg-block-editor-list'}),
-			el( 'tfoot', {},
-				el( 'tr', {},
-					el( 'th', {class: 'sgdg-block-editor-path'}, sgdgBlockLocalize.root_name )
-				)
-			)
-		]);
-	}
-
 	function renderFrontend( props ) {
 		return null;
-	}
-
-	function ajaxQuery( props, path ) {
-		$( '#sgdg-block-editor-list' ).html( '' );
-		$.get( sgdgBlockLocalize.ajax_url, {
-			_ajax_nonce: sgdgBlockLocalize.nonce, // eslint-disable-line camelcase
-			action: 'list_gallery_dir',
-			'path': path
-			}, function( data ) {
-				if ( data.response ) {
-					success( data.response, props, path );
-				} else if ( data.error ) {
-					error( data.error );
-				}
-			}
-		);
-	}
-
-	function success( data, props, path ) {
-		var i;
-		var len = data.length;
-		var html = '';
-		if ( 0 < path.length ) {
-			html += '<tr><td class="row-title"><label>..</label></td></tr>';
-		}
-		for ( i = 0; i < len; i++ ) {
-			html += '<tr class=\"';
-			if ( ( 0 === path.length && 1 === i % 2 ) || ( 0 < path.length && 0 === i % 2 ) ) {
-				html += 'alternate';
-			}
-			html += '"><td class="row-title"><label>' + data[i] + '</label></td></tr>';
-		}
-		$( '#sgdg-block-editor-list' ).html( html );
-		html = sgdgBlockLocalize.root_name;
-		len = path.length;
-		for ( i = 0; i < len; i++ ) {
-			html += ' > ';
-			html += path[i];
-		}
-		$( '.sgdg-block-editor-path' ).html( html );
-		$( '#sgdg-block-editor-list label' ).click( function() {
-			var newDir = $( this ).html();
-			if ( '..' === newDir ) {
-				path = path.slice( 0, path.length - 1 );
-			} else {
-				path = path.concat( newDir );
-			}
-			props.setAttributes({'path': path});
-			ajaxQuery( props, path );
-		});
-	}
-
-	function error( message ) {
-		var html = '<div class="notice notice-error"><p>' + message + '</p></div>';
-		$( '#sgdg-block-editor-list' ).parent().replaceWith( html );
 	}
 
 	function extractFromShortcode( named ) {

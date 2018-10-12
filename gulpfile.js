@@ -1,5 +1,4 @@
 var gulp = require( 'gulp' );
-var npmcheck = require( 'gulp-npm-check' );
 var composer = require( 'gulp-composer' );
 var shell = require( 'gulp-shell' );
 var es = require( 'event-stream' );
@@ -12,9 +11,7 @@ gulp.task( 'composer-check-updates', function( done ) {
 		done();
 	});
 
-gulp.task( 'npm-check-updates', function( done ) {
-		npmcheck({'skipUnused': true}, done );
-	});
+gulp.task( 'npm-check-updates', shell.task([ 'npm outdated' ], {ignoreErrors: true}) );
 
 gulp.task( 'composer-do-update', function( done ) {
 		composer( 'update ', {'self-install': false, 'async': false});

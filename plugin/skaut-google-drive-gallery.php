@@ -5,7 +5,7 @@ namespace Sgdg;
 Plugin Name:	Google Drive gallery
 Plugin URI:     https://github.com/skaut/skaut-google-drive-gallery/
 Description:	A WordPress gallery using Google Drive as file storage
-Version:		2.3.1
+Version:		2.3.4
 Author:			Marek Dědič
 Author URI:		https://github.com/genabitu
 License:		MIT
@@ -85,11 +85,11 @@ function activation_notice() {
 }
 
 function register_script( $handle, $src, $deps = [] ) {
-	wp_register_script( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src, true );
+	wp_register_script( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, filemtime( WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src ), true );
 }
 
 function register_style( $handle, $src, $deps = [] ) {
-	wp_register_style( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src );
+	wp_register_style( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, filemtime( WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src ) );
 }
 
 function enqueue_script( $handle, $src, $deps = [] ) {

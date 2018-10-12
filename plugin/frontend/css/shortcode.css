@@ -7,7 +7,7 @@
 }
 
 .sgdg-grid-a {
-	box-shadow: none !important;
+	box-shadow: none !important; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .sgdg-grid-square {
@@ -16,13 +16,14 @@
 }
 
 .sgdg-grid-img {
-	box-shadow: none !important;
+	box-shadow: none !important; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	display: block;
-	height: 100%;
+	height: 100% !important;
 }
 
 .sgdg-dir-overlay {
-	background: rgba(0, 0, 0, 0.5);
+	background-color: #7f7f7f;
+	background-color: rgba(0, 0, 0, 0.5); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	bottom: 0;
 	color: #fff;
 	left: 0;
@@ -57,42 +58,49 @@
 }
 
 .imagelightbox-overlay {
-	background-color: rgba(30, 30, 30, 0.9);
+	background-color: #343434;
+	background-color: rgba(30, 30, 30, 0.9); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .imagelightbox-loading {
-	background-color: rgba(130, 130, 130, 0.8);
-	box-shadow: 0 0 2.5em rgba(130, 130, 130, 0.6);
+	background-color: #9b9b9b;
+	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	box-shadow: 0 0 2.5em rgba(130, 130, 130, 0.6); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .imagelightbox-close {
-	background-color: rgba(130, 130, 130, 0.8);
+	background-color: #9b9b9b;
+	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .imagelightbox-arrow {
-	background-color: rgba(130, 130, 130, 0.8);
-	border-radius: 50%;
+	background-color: #9b9b9b;
+	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	border: none;
+	border-radius: 50%; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	height: 4em;
 	padding: 0;
 	width: 4em;
 }
 
 .imagelightbox-arrow:focus {
-	background-color: rgba(130, 130, 130, 0.8);
+	background-color: #9b9b9b;
+	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .imagelightbox-arrow:focus:hover {
-	background-color: rgba(0, 0, 0, 0.75);
+	background-color: #404040;
+	background-color: rgba(0, 0, 0, 0.75); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
-.imagelightbox-arrow::before {
+.imagelightbox-arrow::before { /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	margin-bottom: -7%;
 }
 
-.imagelightbox-arrow-left::before {
+.imagelightbox-arrow-left::before { /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	margin-left: -0.35em;
 }
 
-.imagelightbox-arrow-right::before {
+.imagelightbox-arrow-right::before { /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	margin-left: 0.2em;
 }
