@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/skaut/skaut-google-drive-gallery#readme",
   "dependencies": {
-    "imagelightbox": "^0.11.0",
+    "imagelightbox": "^0.12.0",
     "imagesloaded": "^4.1.4",
     "justified-layout": "^2.1.1"
   },
