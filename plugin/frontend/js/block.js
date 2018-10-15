@@ -64,8 +64,8 @@ jQuery( document ).ready( function( $ ) {
 			action: 'list_gallery_dir',
 			'path': this.props.attributes.path
 			}, function( data ) {
-				if ( data.response ) {
-					that.setState({list: data.response});
+				if ( data.directories ) {
+					that.setState({list: data.directories});
 				} else if ( data.error ) {
 					that.setState({error: data.error});
 				}
@@ -75,10 +75,12 @@ jQuery( document ).ready( function( $ ) {
 	SgdgEditorComponent.prototype.render = function() {
 		var that = this;
 		var children = [];
-		var path = sgdgBlockLocalize.root_name;
+		var path = [ el( 'a', {onClick: function( e ) {
+			that.pathClick( that, e );
+		}}, sgdgBlockLocalize.root_name ) ];
 		var i, lineClass;
 		if ( this.state.error ) {
-			return el( 'div', {class: 'notice notice-error'}, el( 'p', {}, message ) );
+			return el( 'div', {class: 'notice notice-error'}, el( 'p', {}, this.state.error ) );
 		}
 		if ( this.state.list ) {
 			if ( 0 < this.props.attributes.path.length ) {
@@ -93,8 +95,10 @@ jQuery( document ).ready( function( $ ) {
 				}}, this.state.list[i]) ) ) );
 			}
 			for ( i = 0; i < this.props.attributes.path.length; i++ ) {
-				path += ' > ';
-				path += this.props.attributes.path[i];
+				path.push( ' > ' );
+				path.push( el( 'a', { 'data-id': this.props.attributes.path[i], onClick: function( e ) {
+					that.pathClick( that, e );
+				}}, this.props.attributes.path[i]) );
 			}
 		}
 		return el( 'table', { class: 'widefat' }, [
@@ -110,6 +114,12 @@ jQuery( document ).ready( function( $ ) {
 				)
 			)
 		]);
+	};
+	SgdgEditorComponent.prototype.pathClick = function( that, e ) {
+		var path = that.props.attributes.path;
+		path = path.slice( 0, path.indexOf( $( e.currentTarget ).data( 'id' ) ) + 1 );
+		that.props.setAttributes({'path': path});
+		that.setState({error: undefined, list: undefined}, that.ajax );
 	};
 	SgdgEditorComponent.prototype.labelClick = function( that, e ) {
 		var newDir = $( e.currentTarget ).html();

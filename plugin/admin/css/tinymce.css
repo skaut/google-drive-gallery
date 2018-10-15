@@ -15,8 +15,16 @@
 	right: 15px;
 }
 
+#TB_ajaxContent {/* stylelint-disable-line selector-id-pattern */
+	height: 100% !important;
+}
+
 #sgdg-tinymce-table {
 	margin-top: 15px;
+}
+
+.sgdg-tinymce-path a {
+	cursor: pointer;
 }
 
 .sgdg-tinymce-footer {

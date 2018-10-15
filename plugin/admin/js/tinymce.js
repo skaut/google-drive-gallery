@@ -51,8 +51,8 @@ jQuery( document ).ready( function( $ ) {
 			action: 'list_gallery_dir',
 			path: path
 			}, function( data ) {
-				if ( data.response ) {
-					success( data.response );
+				if ( data.directories ) {
+					success( data.directories );
 				} else if ( data.error ) {
 					error( data.error );
 				}
@@ -76,22 +76,30 @@ jQuery( document ).ready( function( $ ) {
 			html += '"><td class="row-title"><label>' + data[i] + '</label></td></tr>';
 		}
 		$( '#sgdg-tinymce-list' ).html( html );
-		html = sgdgTinymceLocalize.root_name;
+		html = '<a>' + sgdgTinymceLocalize.root_name + '</a>';
 		len = path.length;
 		for ( i = 0; i < len; i++ ) {
 			html += ' > ';
-			html += path[i];
+			html += '<a data-name="' + path[i] + '">' + path[i] + '</a>';
 		}
 		$( '.sgdg-tinymce-path' ).html( html );
-		$( '#sgdg-tinymce-list label' ).click( function() {
-			var newDir = $( this ).html();
-			if ( '..' === newDir ) {
-				path.pop();
-			} else {
-				path.push( newDir );
-			}
-			ajaxQuery();
-		});
+		$( '.sgdg-tinymce-path a' ).click( pathClick );
+		$( '#sgdg-tinymce-list label' ).click( click );
+	}
+
+	function pathClick() {
+		path = path.slice( 0, path.indexOf( $( this ).data( 'name' ) ) + 1 );
+		ajaxQuery();
+	}
+
+	function click() {
+		var newDir = $( this ).html();
+		if ( '..' === newDir ) {
+			path.pop();
+		} else {
+			path.push( newDir );
+		}
+		ajaxQuery();
 	}
 
 	function error( message ) {

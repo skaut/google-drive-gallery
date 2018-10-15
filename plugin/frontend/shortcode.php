@@ -74,7 +74,7 @@ function html( $atts ) {
 	}
 	set_transient( 'sgdg_nonce_' . $nonce, $value, 2 * HOUR_IN_SECONDS );
 
-	return '<div class="sgdg-gallery-container" data-sgdg-hash="' . substr( hash( 'sha256', $value ), 0, 8 ) . '" data-sgdg-nonce="' . $nonce . '"><div class="sgdg-spinner"></div></div>';
+	return '<div class="sgdg-gallery-container" data-sgdg-hash="' . substr( hash( 'sha256', $value ), 0, 8 ) . '" data-sgdg-nonce="' . $nonce . '"><div class="sgdg-loading"><div></div></div></div>';
 }
 
 function find_dir( $client, $root, array $path ) {

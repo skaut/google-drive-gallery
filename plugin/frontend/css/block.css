@@ -2,3 +2,7 @@
 	height: 20px;
 	width: 20px;
 }
+
+.sgdg-block-editor-path a {
+	cursor: pointer;
+}

@@ -39,13 +39,27 @@ function register_scripts_styles() {
 }
 
 function handle_ajax() {
+	try {
+		ajax_handler_body();
+	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
+		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
+			wp_send_json( [ 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ] );
+		} else {
+			wp_send_json( [ 'error' => $e->getErrors()[0]['message'] ] );
+		}
+	} catch ( \Exception $e ) {
+		wp_send_json( [ 'error' => $e->getMessage() ] );
+	}
+}
+
+function ajax_handler_body() {
 	check_ajax_referer( 'sgdg_editor_plugin' );
 	if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
-		return;
+		throw new \Exception( esc_html__( 'Insufficient role for this action.', 'skaut-google-drive-gallery' ) );
 	}
 	if ( ! get_option( 'sgdg_access_token' ) ) {
 		// translators: 1: Start of link to the settings 2: End of link to the settings
-		wp_send_json( [ 'error' => sprintf( esc_html__( 'Google Drive gallery hasn\'t been granted permissions yet. Please %1$sconfigure%2$s the plugin and try again.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( admin_url( 'admin.php?page=sgdg_basic' ) ) . '">', '</a>' ) ] );
+		throw new \Exception( sprintf( esc_html__( 'Google Drive gallery hasn\'t been granted permissions yet. Please %1$sconfigure%2$s the plugin and try again.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( admin_url( 'admin.php?page=sgdg_basic' ) ) . '">', '</a>' ) );
 	}
 
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
@@ -53,7 +67,7 @@ function handle_ajax() {
 	$path = isset( $_GET['path'] ) ? $_GET['path'] : [];
 	$ret  = walk_path( $client, $path );
 
-	wp_send_json( [ 'response' => $ret ] );
+	wp_send_json( [ 'directories' => $ret ] );
 }
 
 function walk_path( $client, array $path, $root = null ) {
@@ -75,6 +89,9 @@ function walk_path( $client, array $path, $root = null ) {
 			'fields'                => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
+		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
+			throw $response;
+		}
 		foreach ( $response->getFiles() as $file ) {
 			if ( $file->getName() === $path[0] ) {
 				array_shift( $path );
@@ -82,6 +99,7 @@ function walk_path( $client, array $path, $root = null ) {
 			}
 		}
 	} while ( null !== $page_token );
+	throw new \Exception( esc_html__( 'No such directory found - it may have been deleted or renamed. ', 'skaut-google-drive-gallery' ) );
 }
 
 function list_files( $client, $root ) {
@@ -97,6 +115,9 @@ function list_files( $client, $root ) {
 			'fields'                => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
+		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
+			throw $response;
+		}
 		foreach ( $response->getFiles() as $file ) {
 			$ret[] = $file->getName();
 		}

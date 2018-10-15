@@ -85,6 +85,9 @@ function apply_path( $client, $root, array $path ) {
 			'fields'                => 'nextPageToken, files(id)',
 		];
 		$response = $client->files->listFiles( $params );
+		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
+			throw $response;
+		}
 		foreach ( $response->getFiles() as $file ) {
 			if ( $file->getId() === $path[0] ) {
 				if ( count( $path ) === 1 ) {
@@ -115,6 +118,9 @@ function directories( $client, $dir ) {
 			'fields'                => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
+		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
+			throw $response;
+		}
 		foreach ( $response->getFiles() as $file ) {
 			$ids[]   = $file->getId();
 			$names[] = $file->getName();
@@ -239,6 +245,9 @@ function images( $client, $dir ) {
 			$params['fields']  = 'nextPageToken, files(id, thumbnailLink)';
 		}
 		$response = $client->files->listFiles( $params );
+		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
+			throw $response;
+		}
 		foreach ( $response->getFiles() as $file ) {
 			$val = [
 				'id'        => $file->getId(),
