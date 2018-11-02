@@ -1,11 +1,7 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "A WordPress gallery using Google Drive as file storage",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/skaut/skaut-google-drive-gallery.git"
-  },
   "keywords": [
     "wordpress",
     "skaut",
@@ -13,21 +9,25 @@
     "drive",
     "gallery"
   ],
-  "author": "GenaBitu",
-  "license": "MIT",
+  "homepage": "https://github.com/skaut/skaut-google-drive-gallery#readme",
   "bugs": {
     "url": "https://github.com/skaut/skaut-google-drive-gallery/issues"
   },
-  "homepage": "https://github.com/skaut/skaut-google-drive-gallery#readme",
+  "license": "MIT",
+  "author": "GenaBitu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skaut/skaut-google-drive-gallery.git"
+  },
   "dependencies": {
     "imagelightbox": "^0.12.0",
     "imagesloaded": "^4.1.4",
     "justified-layout": "^2.1.1"
   },
   "devDependencies": {
-    "eslint": "^5.6.1",
+    "eslint": "^5.8.0",
     "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-compat": "^2.6.2",
+    "eslint-plugin-compat": "^2.6.3",
     "event-stream": "^4.0.1",
     "gulp": "^4.0.0",
     "gulp-composer": "^0.4.5",
@@ -35,7 +35,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.6.5",
     "gulp-stylelint": "^7.0.0",
-    "stylelint": "^9.6.0",
+    "stylelint": "^9.7.1",
     "stylelint-config-wordpress": "^13.1.0",
     "stylelint-no-unsupported-browser-features": "^3.0.2"
   },

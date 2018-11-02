@@ -3,7 +3,7 @@ Contributors: skaut, genabitu, kalich5
 Tags: skaut, google drive, google drive gallery, team drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.0
-Stable tag: 2.3.4
+Stable tag: 2.3.5
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/license.txt
@@ -69,9 +69,14 @@ If no path is provided, then the root directory itself is used.
 
 == Changelog ==
 
-= 2.X.Y =
+= 2.4.0 =
+* video support
+
+= 2.3.5 =
 * Fixed lightbox arrow styling on some templates
-* Better error reporting for TinyMCE and Gutenberg plugins
+* Better error reporting for Root selection, TinyMCE and Gutenberg plugins
+* Better loading animation
+* Clickable breadcrumbs in Root selection, TinyMCE and Gutenberg plugins
 
 = 2.3.4 =
 * Updated basic settings to reflect changes to the Google developer console

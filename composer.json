@@ -1,21 +1,38 @@
 {
     "name": "skaut/google-drive-gallery",
     "description": "A WordPress gallery using Google Drive as file storage",
-	"version": "2.3.4",
-	"license": "MIT",
+    "version": "2.3.5",
     "type": "wordpress-plugin",
-    "require": {
-        "google/apiclient": "^2.0"
-    },
-	"require-dev": {
-		"squizlabs/php_codesniffer": "^3.0",
-		"wp-coding-standards/wpcs": "^1.0",
-		"wimg/php-compatibility": "^9.0"
-	},
+    "keywords": [
+        "WordPress",
+        "WordPress plugin",
+        "Google Drive",
+        "Google Drive gallery",
+        "gallery",
+        "gallery plugin"
+    ],
+    "homepage": "https://wordpress.org/plugins/skaut-google-drive-gallery",
+    "readme": "README.md",
+    "license": "MIT",
     "authors": [
-        {
-            "name": "GenaBitu",
-            "email": "genabitu@gmail.com"
-        }
-    ]
+    {
+        "name": "GenaBitu",
+        "email": "genabitu@gmail.com"
+    }
+    ],
+    "support": {
+        "issues": "https://github.com/skaut/skaut-google-drive-gallery/issues",
+        "wiki": "https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive-gallery",
+        "source": "https://github.com/skaut/skaut-google-drive-gallery",
+        "docs": "https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive-gallery"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+    "google/apiclient": "^2.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.0",
+        "wp-coding-standards/wpcs": "^1.0",
+        "wimg/php-compatibility": "^9.0"
+    }
 }
