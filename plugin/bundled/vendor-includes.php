@@ -43,12 +43,13 @@ require_once __DIR__ . '/vendor/guzzlehttp/promises/src/TaskQueueInterface.php';
 require_once __DIR__ . '/vendor/guzzlehttp/promises/src/TaskQueue.php';
 require_once __DIR__ . '/vendor/guzzlehttp/promises/src/FulfilledPromise.php';
 
+require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/ResettableInterface.php';
+require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Logger.php';
+
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Handler/HandlerInterface.php';
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Handler/AbstractHandler.php';
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Handler/AbstractProcessingHandler.php';
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Handler/StreamHandler.php';
-
-require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Logger.php';
 
 require_once __DIR__ . '/vendor/google/auth/src/Cache/MemoryCacheItemPool.php';
 require_once __DIR__ . '/vendor/google/auth/src/Cache/Item.php';

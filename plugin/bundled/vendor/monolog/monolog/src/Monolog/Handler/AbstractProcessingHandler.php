@@ -11,6 +11,8 @@
 
 namespace Sgdg\Vendor\Monolog\Handler;
 
+use Sgdg\Vendor\Monolog\ResettableInterface;
+
 /**
  * Base Handler class providing the Handler structure
  *

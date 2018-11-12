@@ -5,7 +5,8 @@
 	],
 	"rules": {
 		"plugin/no-unsupported-browser-features": [true, {
-			"severity": "warning"
+			"severity": "warning",
+			"ignore": "css-sel2"
 		}]
 	}
 }

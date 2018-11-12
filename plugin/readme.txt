@@ -69,9 +69,6 @@ If no path is provided, then the root directory itself is used.
 
 == Changelog ==
 
-= 2.4.0 =
-* video support
-
 = 2.3.5 =
 * Fixed lightbox arrow styling on some templates
 * Better error reporting for Root selection, TinyMCE and Gutenberg plugins

@@ -12,7 +12,7 @@
 
 .sgdg-grid-square {
 	background-position: center;
-	background-size: cover;
+	background-size: cover; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .sgdg-grid-img {
@@ -51,13 +51,13 @@
 
 .sgdg-loading,
 .sgdg-loading div {
-	border-radius: 50%;
+	border-radius: 50%; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 .sgdg-loading {
 	background-color: #9b9b9b;
 	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
-	box-shadow: 0 0 2.5em #b3b3b3; /* 40 */
+	box-shadow: 0 0 2.5em #b3b3b3; /* 40 */ /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	box-shadow: 0 0 2.5em rgba(130, 130, 130, 0.6); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	margin: 10px auto;
 	padding: 0.65em;
@@ -67,24 +67,24 @@
 .sgdg-loading div {
 	height: 1.3em;
 	background-color: #fff;
-	animation: sgdg-loading 0.5s ease infinite;
+	animation: sgdg-loading 0.5s ease infinite; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 }
 
 @keyframes sgdg-loading {
 
 	from {
-		opacity: 0.5;
-		transform: scale(0.75);
+		opacity: 0.5; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+		transform: scale(0.75); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	}
 
 	50% {
-		opacity: 1;
-		transform: scale(1);
+		opacity: 1; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+		transform: scale(1); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	}
 
 	to {
-		opacity: 0.5;
-		transform: scale(0.75);
+		opacity: 0.5; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+		transform: scale(0.75); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	}
 }
 
