@@ -3,7 +3,7 @@ Contributors: skaut, genabitu, kalich5
 Tags: skaut, google drive, google drive gallery, team drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.0
-Stable tag: 2.3.5
+Stable tag: 2.4.0
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/license.txt
@@ -68,6 +68,10 @@ If no path is provided, then the root directory itself is used.
 6. Advanced options
 
 == Changelog ==
+
+= 2.4.0 =
+* Added the option to override some settings for individual galleries using shortcode attributes or the Gutenberg block
+* Fixed loading indicator styling inconsistency
 
 = 2.3.5 =
 * Fixed lightbox arrow styling on some templates

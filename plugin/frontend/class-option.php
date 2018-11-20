@@ -31,4 +31,8 @@ abstract class Option {
 	public function get( $default_value = null ) {
 		return get_option( $this->name, ( isset( $default_value ) ? $default_value : $this->default_value ) );
 	}
+
+	public function get_title() {
+		return $this->title;
+	}
 }

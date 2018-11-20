@@ -35,8 +35,4 @@ class BooleanOption extends Option {
 	public function get( $default_value = null ) {
 		return ( parent::get( $default_value ) === '1' ? 'true' : 'false' );
 	}
-
-	public function get_inverted( $default_value = null ) {
-		return ( parent::get( $default_value ) === '1' ? 'false' : 'true' );
-	}
 }

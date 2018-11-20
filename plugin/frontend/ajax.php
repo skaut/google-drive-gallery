@@ -24,11 +24,14 @@ function ajax_handler_body() {
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-	$dir = get_transient( 'sgdg_nonce_' . $_GET['nonce'] );
+	$transient = get_transient( 'sgdg_nonce_' . $_GET['nonce'] );
+	$dir       = $transient['root'];
 
 	if ( false === $dir ) {
 		throw new \Exception( esc_html__( 'The gallery has expired.', 'skaut-google-drive-gallery' ) );
 	}
+
+	$options = new \Sgdg\Frontend\Options_Proxy( $transient['overriden'] );
 
 	$ret = [];
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
@@ -39,8 +42,8 @@ function ajax_handler_body() {
 		$ret['path'] = path_names( $client, $path );
 		$dir         = apply_path( $client, $dir, $path );
 	}
-	$ret['directories'] = directories( $client, $dir );
-	$ret['images']      = images( $client, $dir );
+	$ret['directories'] = directories( $client, $dir, $options );
+	$ret['images']      = images( $client, $dir, $options );
 	wp_send_json( $ret );
 }
 
@@ -102,7 +105,7 @@ function apply_path( $client, $root, array $path ) {
 	throw new \Exception( esc_html__( 'No such subdirectory found in this gallery.', 'skaut-google-drive-gallery' ) );
 }
 
-function directories( $client, $dir ) {
+function directories( $client, $dir, $options ) {
 	$ids   = [];
 	$names = [];
 
@@ -112,7 +115,7 @@ function directories( $client, $dir ) {
 			'q'                     => '"' . $dir . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsTeamDrives'    => true,
 			'includeTeamDriveItems' => true,
-			'orderBy'               => \Sgdg\Options::$dir_ordering->get(),
+			'orderBy'               => $options->get( 'dir_ordering' ),
 			'pageToken'             => $page_token,
 			'pageSize'              => 1000,
 			'fields'                => 'nextPageToken, files(id, name)',
@@ -130,12 +133,12 @@ function directories( $client, $dir ) {
 
 	$client->getClient()->setUseBatch( true );
 	$batch = $client->createBatch();
-	dir_images_requests( $client, $batch, $ids );
+	dir_images_requests( $client, $batch, $ids, $options );
 	dir_counts_requests( $client, $batch, $ids );
 	$responses = $batch->execute();
 	$client->getClient()->setUseBatch( false );
 
-	$dir_images = dir_images_responses( $responses, $ids );
+	$dir_images = dir_images_responses( $responses, $ids, $options );
 	$dir_counts = dir_counts_responses( $responses, $ids );
 
 	$ret   = [];
@@ -146,7 +149,7 @@ function directories( $client, $dir ) {
 			'name'      => $names[ $i ],
 			'thumbnail' => $dir_images[ $i ],
 		];
-		if ( \Sgdg\Options::$dir_counts->get() === 'true' ) {
+		if ( 'true' === $options->get( 'dir_counts' ) ) {
 			$val = array_merge( $val, $dir_counts[ $i ] );
 		}
 		if ( 0 < $dir_counts[ $i ]['dircount'] + $dir_counts[ $i ]['imagecount'] ) {
@@ -156,11 +159,11 @@ function directories( $client, $dir ) {
 	return $ret;
 }
 
-function dir_images_requests( $client, $batch, $dirs ) {
+function dir_images_requests( $client, $batch, $dirs, $options ) {
 	$params = [
 		'supportsTeamDrives'    => true,
 		'includeTeamDriveItems' => true,
-		'orderBy'               => \Sgdg\Options::$image_ordering->get(),
+		'orderBy'               => $options->get( 'image_ordering' ),
 		'pageSize'              => 1,
 		'fields'                => 'files(imageMediaMetadata(width, height), thumbnailLink)',
 	];
@@ -190,7 +193,7 @@ function dir_counts_requests( $client, $batch, $dirs ) {
 	}
 }
 
-function dir_images_responses( $responses, $dirs ) {
+function dir_images_responses( $responses, $dirs, $options ) {
 	$ret = [];
 	foreach ( $dirs as $dir ) {
 		$response = $responses[ 'response-img-' . $dir ];
@@ -201,7 +204,7 @@ function dir_images_responses( $responses, $dirs ) {
 		if ( count( $images ) === 0 ) {
 			$ret[] = false;
 		} else {
-			$ret[] = substr( $images[0]->getThumbnailLink(), 0, -4 ) . ( $images[0]->getImageMediaMetadata()->getWidth() > $images[0]->getImageMediaMetadata()->getHeight() ? 'h' : 'w' ) . floor( 1.25 * \Sgdg\Options::$grid_height->get() );
+			$ret[] = substr( $images[0]->getThumbnailLink(), 0, -4 ) . ( $images[0]->getImageMediaMetadata()->getWidth() > $images[0]->getImageMediaMetadata()->getHeight() ? 'h' : 'w' ) . floor( 1.25 * $options->get( 'grid_height' ) );
 
 		}
 	}
@@ -227,7 +230,7 @@ function dir_counts_responses( $responses, $dirs ) {
 	return $ret;
 }
 
-function images( $client, $dir ) {
+function images( $client, $dir, $options ) {
 	$ret        = [];
 	$page_token = null;
 	do {
@@ -238,10 +241,10 @@ function images( $client, $dir ) {
 			'pageToken'             => $page_token,
 			'pageSize'              => 1000,
 		];
-		if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+		if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time))';
 		} else {
-			$params['orderBy'] = \Sgdg\Options::$image_ordering->get();
+			$params['orderBy'] = $options->get( 'image_ordering' );
 			$params['fields']  = 'nextPageToken, files(id, thumbnailLink)';
 		}
 		$response = $client->files->listFiles( $params );
@@ -251,10 +254,10 @@ function images( $client, $dir ) {
 		foreach ( $response->getFiles() as $file ) {
 			$val = [
 				'id'        => $file->getId(),
-				'image'     => substr( $file->getThumbnailLink(), 0, -3 ) . \Sgdg\Options::$preview_size->get(),
-				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * \Sgdg\Options::$grid_height->get() ),
+				'image'     => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
+				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
 			];
-			if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+			if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 				if ( $file->getImageMediaMetadata() && $file->getImageMediaMetadata()->getTime() ) {
 					$val['timestamp'] = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() )->format( 'U' );
 				} else {
@@ -265,12 +268,12 @@ function images( $client, $dir ) {
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
-	if ( \Sgdg\Options::$image_ordering->getBy() === 'time' ) {
+	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 		usort(
 			$ret,
-			function( $a, $b ) {
+			function( $a, $b ) use ( $options ) {
 				$asc = $a['timestamp'] - $b['timestamp'];
-				return \Sgdg\Options::$image_ordering->getOrder() === 'ascending' ? $asc : -$asc;
+				return $options->get_order( 'image_ordering' ) === 'ascending' ? $asc : -$asc;
 			}
 		);
 		array_walk(

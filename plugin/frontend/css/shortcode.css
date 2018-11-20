@@ -59,15 +59,16 @@
 	background-color: rgba(130, 130, 130, 0.8); /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	box-shadow: 0 0 2.5em #b3b3b3; /* 40 */ /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	box-shadow: 0 0 2.5em rgba(130, 130, 130, 0.6); /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	box-sizing: content-box; /* stylelint-disable-line plugin/no-unsupported-browser-features */
 	margin: 10px auto;
 	padding: 0.65em;
-	width: 2.6em;
+	width: 1.3em;
 }
 
 .sgdg-loading div {
-	height: 1.3em;
-	background-color: #fff;
 	animation: sgdg-loading 0.5s ease infinite; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	background-color: #fff;
+	height: 1.3em;
 }
 
 @keyframes sgdg-loading {
