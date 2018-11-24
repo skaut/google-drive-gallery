@@ -34,21 +34,17 @@ SgdgOrderingSettingsComponent.prototype.render = function() {
 			el( 'option', {selected: 'ascending' === this.state.valueOrder, value: 'ascending'}, sgdgBlockLocalize['ordering_option_ascending']),
 			el( 'option', {selected: 'descending' === this.state.valueOrder, value: 'descending'}, sgdgBlockLocalize['ordering_option_descending'])
 		]),
-		el( 'div', {className: 'sgdg-block-settings-radio'}, [
-			el( 'label', {for: this.name + '_by_time'}, [
-				el( 'input', {checked: 'time' === this.state.valueBy, disabled: undefined === valueBy, id: this.name + '_by_time', name: this.name + '_by', onChange: function( e ) {
-				that.changeBy( e );
-			}, type: 'radio', value: 'time'}),
-				sgdgBlockLocalize['ordering_option_by_time']
-			])
+		el( 'label', {className: 'sgdg-block-settings-radio', for: this.name + '_by_time'}, [
+			el( 'input', {checked: 'time' === this.state.valueBy, disabled: undefined === valueBy, id: this.name + '_by_time', name: this.name + '_by', onChange: function( e ) {
+			that.changeBy( e );
+		}, type: 'radio', value: 'time'}),
+			sgdgBlockLocalize['ordering_option_by_time']
 		]),
-		el( 'div', {className: 'sgdg-block-settings-radio'}, [
-			el( 'label', {for: this.name + '_by_name'}, [
-				el( 'input', {checked: 'name' === this.state.valueBy, disabled: undefined === valueBy, id: this.name + '_by_name', name: this.name + '_by', onChange: function( e ) {
-				that.changeBy( e );
-			}, type: 'radio', value: 'name'}),
-				sgdgBlockLocalize['ordering_option_by_name']
-			])
+		el( 'label', {className: 'sgdg-block-settings-radio', for: this.name + '_by_name'}, [
+			el( 'input', {checked: 'name' === this.state.valueBy, disabled: undefined === valueBy, id: this.name + '_by_name', name: this.name + '_by', onChange: function( e ) {
+			that.changeBy( e );
+		}, type: 'radio', value: 'name'}),
+			sgdgBlockLocalize['ordering_option_by_name']
 		])
 	]);
 };

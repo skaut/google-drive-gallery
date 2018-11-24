@@ -33,5 +33,6 @@
 }
 
 .sgdg-block-settings-radio {
+	display: block;
 	margin-top: 8px;
 }

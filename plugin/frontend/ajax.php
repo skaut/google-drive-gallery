@@ -24,7 +24,7 @@ function ajax_handler_body() {
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-	$transient = get_transient( 'sgdg_nonce_' . $_GET['nonce'] );
+	$transient = get_transient( 'sgdg_hash_' . $_GET['hash'] );
 	$dir       = $transient['root'];
 
 	if ( false === $dir ) {
