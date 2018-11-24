@@ -132,7 +132,7 @@ jQuery( document ).ready( function( $ ) {
 	function renderImages( hash, images ) {
 		var html = '';
 		$.each( images, function( _, image ) {
-			html += '<a class="sgdg-grid-a" data-imagelightbox="' + hash.substr( 0, 8 ) + '"';
+			html += '<a class="sgdg-grid-a" data-imagelightbox="' + hash + '"';
 			html += 'data-ilb2-id="' + image.id + '"';
 			html += ' href="' + image.image + '"><img class="sgdg-grid-img" src="' + image.thumbnail + '"></a>';
 		});
@@ -152,8 +152,9 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function get( hash ) {
+		var shortHash = hash.substr( 0, 8 );
 		var container = $( '[data-sgdg-hash=' + hash + ']' );
-		var path = getQueryPath( hash );
+		var path = getQueryPath( shortHash );
 		container.data( 'sgdgPath', path );
 		container.find( '.sgdg-gallery' ).replaceWith( '<div class="sgdg-loading"><div></div></div>' );
 		$( '.sgdg-gallery-container[data-sgdg-hash!=' + hash + ']' ).each( function() {
@@ -170,20 +171,20 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 			if ( ( data.path && 0 < data.path.length ) || 0 < data.directories.length ) {
-				html += renderBreadcrumbs( hash, data.path );
+				html += renderBreadcrumbs( shortHash, data.path );
 			}
 			if ( 0 < data.directories.length || 0 < data.images.length ) {
 				html += '<div class="sgdg-loading"><div></div></div>';
 				html += '<div class="sgdg-gallery">';
-				html += renderDirectories( hash, data.directories );
-				html += renderImages( hash, data.images );
+				html += renderDirectories( shortHash, data.directories );
+				html += renderImages( shortHash, data.images );
 				html += '</div>';
 			} else {
 				html += '<div class="sgdg-gallery">' + sgdgShortcodeLocalize.empty_gallery + '</div>';
 			}
 			container.html( html );
 			container.find( 'a[data-sgdg-path]' ).click( function() {
-				history.pushState({}, '', addQueryPath( hash, $( this ).data( 'sgdgPath' ) ) );
+				history.pushState({}, '', addQueryPath( shortHash, $( this ).data( 'sgdgPath' ) ) );
 				get( hash );
 				return false;
 			});
