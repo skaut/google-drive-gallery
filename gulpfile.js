@@ -1,7 +1,7 @@
 var gulp = require( 'gulp' );
 var composer = require( 'gulp-composer' );
 var shell = require( 'gulp-shell' );
-var es = require( 'event-stream' );
+var merge = require( 'merge-stream' );
 var replace = require( 'gulp-replace' );
 var eslint = require( 'gulp-eslint' );
 var stylelint = require( 'gulp-stylelint' );
@@ -34,7 +34,7 @@ gulp.task( 'composer-copy-apiclient-services', function() {
 	});
 
 gulp.task( 'composer-copy-apiclient', function() {
-		return es.merge(
+		return merge(
 			gulp.src([
 					'vendor/google/apiclient/src/Google/AccessToken/Revoke.php',
 					'vendor/google/apiclient/src/Google/AuthHandler/AuthHandlerFactory.php',
