@@ -18,6 +18,7 @@ function add() {
 	\Sgdg\Options::$dir_counts->add_field();
 	\Sgdg\Options::$image_ordering->add_field();
 	\Sgdg\Options::$dir_ordering->add_field();
+	\Sgdg\Options::$dir_prefix->add_field();
 }
 
 function register_scripts_styles() {
