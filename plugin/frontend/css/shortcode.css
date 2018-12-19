@@ -89,6 +89,21 @@
 	}
 }
 
+.sgdg-more-button {
+	margin-top: 27px;
+	text-align: center;
+}
+
+.sgdg-more-button div {
+	background-color: #7f7f7f;
+	background-color: rgba(0, 0, 0, 0.5); /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	border-radius: 2px; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+	color: #fff;
+	cursor: pointer;
+	display: inline;
+	padding: 10px 15px;
+}
+
 .imagelightbox-close {
 	padding: 0; /* TODO: Upstream */
 }

@@ -16,6 +16,8 @@ function add() {
 	\Sgdg\Options::$grid_spacing->add_field();
 	\Sgdg\Options::$dir_title_size->add_field();
 	\Sgdg\Options::$dir_counts->add_field();
+	\Sgdg\Options::$page_size->add_field();
+	\Sgdg\Options::$page_autoload->add_field();
 	\Sgdg\Options::$image_ordering->add_field();
 	\Sgdg\Options::$dir_ordering->add_field();
 	\Sgdg\Options::$dir_prefix->add_field();

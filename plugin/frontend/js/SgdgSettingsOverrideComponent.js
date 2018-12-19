@@ -11,6 +11,8 @@ SgdgSettingsOverrideComponent.prototype.render = function() {
 		el( SgdgIntegerSettingsComponent, {block: this.block, name: 'grid_height'}),
 		el( SgdgIntegerSettingsComponent, {block: this.block, name: 'grid_spacing'}),
 		el( SgdgBooleanSettingsComponent, {block: this.block, name: 'dir_counts'}),
+		el( SgdgIntegerSettingsComponent, {block: this.block, name: 'page_size'}),
+		el( SgdgBooleanSettingsComponent, {block: this.block, name: 'page_autoload'}),
 		el( SgdgOrderingSettingsComponent, {block: this.block, name: 'image_ordering'}),
 		el( SgdgOrderingSettingsComponent, {block: this.block, name: 'dir_ordering'}),
 		el( 'h3', {}, sgdgBlockLocalize['lightbox_section_name']),

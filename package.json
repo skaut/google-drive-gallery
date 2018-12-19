@@ -20,12 +20,12 @@
     "url": "git+https://github.com/skaut/skaut-google-drive-gallery.git"
   },
   "dependencies": {
-    "imagelightbox": "^0.13.0",
+    "imagelightbox": "^0.14.0",
     "imagesloaded": "^4.1.4",
     "justified-layout": "^2.1.1"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.10.0",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-compat": "^2.6.3",
     "gulp": "^4.0.0",
@@ -35,7 +35,7 @@
     "gulp-shell": "^0.6.5",
     "gulp-stylelint": "^8.0.0",
     "merge-stream": "^1.0.1",
-    "stylelint": "^9.8.0",
+    "stylelint": "^9.9.0",
     "stylelint-config-wordpress": "^13.1.0",
     "stylelint-no-unsupported-browser-features": "^3.0.2"
   },

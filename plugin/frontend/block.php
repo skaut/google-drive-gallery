@@ -51,6 +51,8 @@ function add() {
 			'grid_height'                => $get_option( 'grid_height' ),
 			'grid_spacing'               => $get_option( 'grid_spacing' ),
 			'dir_counts'                 => $get_option( 'dir_counts' ),
+			'page_size'                  => $get_option( 'page_size' ),
+			'page_autoload'              => $get_option( 'page_autoload' ),
 			'image_ordering'             => $get_ordering_option( 'image_ordering' ),
 			'dir_ordering'               => $get_ordering_option( 'dir_ordering' ),
 			'preview_size'               => $get_option( 'preview_size' ),

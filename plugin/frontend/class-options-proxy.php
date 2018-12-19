@@ -12,6 +12,8 @@ class Options_Proxy {
 			'grid_spacing'               => \Sgdg\Options::$grid_spacing,
 			'dir_title_size'             => \Sgdg\Options::$dir_title_size,
 			'dir_counts'                 => \Sgdg\Options::$dir_counts,
+			'page_size'                  => \Sgdg\Options::$page_size,
+			'page_autoload'              => \Sgdg\Options::$page_autoload,
 			'dir_prefix'                 => \Sgdg\Options::$dir_prefix,
 
 			'preview_size'               => \Sgdg\Options::$preview_size,

@@ -1,6 +1,7 @@
 'use strict';
 jQuery( document ).ready( function( $ ) {
 	var loading = [];
+	var lightboxes = [];
 
 	function reflow( element ) {
 		var val, bbox, positions, sizes, containerPosition;
@@ -51,21 +52,21 @@ jQuery( document ).ready( function( $ ) {
 		element.find( '.sgdg-gallery' ).height( positions.containerHeight );
 	}
 
-	function getQueryPath( hash ) {
-		var keyValuePair = new RegExp( '[?&]sgdg-path-' + hash + '=(([^&#]*)|&|#|$)' ).exec( document.location.search );
+	function getQueryParameter( hash, name ) {
+		var keyValuePair = new RegExp( '[?&]sgdg-' + name + '-' + hash + '=(([^&#]*)|&|#|$)' ).exec( document.location.search );
 		if ( ! keyValuePair || ! keyValuePair[2]) {
 			return '';
 		}
 		return decodeURIComponent( keyValuePair[2].replace( /\+/g, ' ' ) );
 	}
 
-	function addQueryPath( hash, value ) {
+	function addQueryParameter( hash, name, value ) {
 		var query = window.location.search;
-		var newField = 'sgdg-path-' + hash + '=' + value;
+		var newField = 'sgdg-' + name + '-' + hash + '=' + value;
 		var newQuery = '?' + newField;
-		var keyRegex = new RegExp( '([?&])sgdg-path-' + hash + '=[^&]*' );
+		var keyRegex = new RegExp( '([?&])sgdg-' + name + '-' + hash + '=[^&]*' );
 		if ( ! value ) {
-			return removeQueryPath( hash );
+			return removeQueryParameter( hash, name );
 		}
 
 		if ( query ) {
@@ -78,10 +79,10 @@ jQuery( document ).ready( function( $ ) {
 		return window.location.pathname + newQuery;
 	}
 
-	function removeQueryPath( hash ) {
+	function removeQueryParameter( hash, name ) {
 		var newQuery = window.location.search;
-		var keyRegex1 = new RegExp( '[?]sgdg-path-' + hash + '=[^&]*' );
-		var keyRegex2 = new RegExp( '&sgdg-path-' + hash + '=[^&]*' );
+		var keyRegex1 = new RegExp( '\\?sgdg-' + name + '-' + hash + '=[^&]*' );
+		var keyRegex2 = new RegExp( '&sgdg-' + name + '-' + hash + '=[^&]*' );
 		if ( newQuery ) {
 			newQuery = newQuery.replace( keyRegex1, '?' );
 			newQuery = newQuery.replace( keyRegex2, '' );
@@ -90,11 +91,11 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function renderBreadcrumbs( hash, path ) {
-		var html = '<div><a data-sgdg-path="" href="' + removeQueryPath( hash ) + '">' + sgdgShortcodeLocalize.breadcrumbs_top + '</a>';
+		var html = '<div><a data-sgdg-path="" href="' + removeQueryParameter( hash, 'path' ) + '">' + sgdgShortcodeLocalize.breadcrumbs_top + '</a>';
 		var field = '';
 		$.each( path, function( _, crumb ) {
 			field += crumb.id + '/';
-			html += ' > <a data-sgdg-path="' + field.slice( 0, -1 ) + '" href="' + addQueryPath( hash, field.slice( 0, -1 ) ) + '">' + crumb.name + '</a>';
+			html += ' > <a data-sgdg-path="' + field.slice( 0, -1 ) + '" href="' + addQueryParameter( hash, 'path', field.slice( 0, -1 ) ) + '">' + crumb.name + '</a>';
 		});
 		html += '</div>';
 		return html;
@@ -103,11 +104,11 @@ jQuery( document ).ready( function( $ ) {
 	function renderDirectories( hash, directories ) {
 		var html = '';
 		$.each( directories, function( _, dir ) {
-			var newPath = getQueryPath( hash );
+			var newPath = getQueryParameter( hash, 'path' );
 			var iconClass = '';
 			newPath = ( newPath ? newPath + '/' : '' ) + dir.id;
 			html += '<a class="sgdg-grid-a sgdg-grid-square" data-sgdg-path="' + newPath + '" href="';
-			html += addQueryPath( hash, newPath );
+			html += addQueryParameter( hash, 'path', newPath );
 			html += '"';
 			if ( false !== dir.thumbnail ) {
 				html += ' style="background-image: url(\'' + dir.thumbnail + '\');">';
@@ -129,14 +130,19 @@ jQuery( document ).ready( function( $ ) {
 		return html;
 	}
 
-	function renderImages( hash, images ) {
+	function renderImages( hash, page, images ) {
 		var html = '';
 		$.each( images, function( _, image ) {
 			html += '<a class="sgdg-grid-a" data-imagelightbox="' + hash + '"';
 			html += 'data-ilb2-id="' + image.id + '"';
+			html += 'data-sgdg-page="' + page + '"';
 			html += ' href="' + image.image + '"><img class="sgdg-grid-img" src="' + image.thumbnail + '"></a>';
 		});
 		return html;
+	}
+
+	function renderMoreButton() {
+		return '<div class="sgdg-more-button"><div>' + sgdgShortcodeLocalize['load_more'] + '</div></div>';
 	}
 
 	function reflowTimer( hash ) {
@@ -151,20 +157,75 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
+	function postLoad( hash, page ) {
+		var container = $( '[data-sgdg-hash=' + hash + ']' );
+		container.find( 'a[data-sgdg-path]' ).off( 'click' ).click( function() {
+			history.pushState({}, '', addQueryParameter( hash.substr( 0, 8 ), 'path', $( this ).data( 'sgdgPath' ) ) );
+			get( hash );
+			return false;
+		});
+		container.find( '.sgdg-more-button' ).click( function() {
+			add( hash, page + 1 );
+			return false;
+		});
+
+		loading.push( hash );
+		container.find( '.sgdg-gallery' ).imagesLoaded({background: true}, function() {
+			loading.splice( loading.indexOf( hash ), 1 );
+			reflow( container );
+			$( '.sgdg-gallery-container[data-sgdg-hash!=' + hash + ']' ).each( function() {
+				reflow( $( this ) );
+			});
+		});
+		reflowTimer( hash );
+
+		lightboxes[hash].addToImageLightbox( container.find( 'a[data-imagelightbox]' ) );
+		if ( 'true' === sgdgShortcodeLocalize.page_autoload ) {
+			$( window ).off( 'scroll' ).scroll( function() {
+				var el = $( '.sgdg-more-button' );
+				var inView;
+				if ( undefined === el.offset() ) {
+					return;
+				}
+				inView = $( this ).scrollTop() + $( window ).height() > el.offset().top + el.outerHeight();
+				if ( inView && -1 === loading.indexOf( hash ) ) {
+					add( hash, page + 1 );
+				}
+			});
+		}
+	}
+
 	function get( hash ) {
 		var shortHash = hash.substr( 0, 8 );
 		var container = $( '[data-sgdg-hash=' + hash + ']' );
-		var path = getQueryPath( shortHash );
+		var path = getQueryParameter( shortHash, 'path' );
+		var page = parseInt( getQueryParameter( shortHash, 'page' ) ) || 1;
+		lightboxes[hash] = $().imageLightbox({
+			allowedTypes: '',
+			animationSpeed: parseInt( sgdgShortcodeLocalize.preview_speed, 10 ),
+			activity: ( 'true' === sgdgShortcodeLocalize.preview_activity ),
+			arrows: ( 'true' === sgdgShortcodeLocalize.preview_arrows ),
+			button: ( 'true' === sgdgShortcodeLocalize.preview_closebutton ),
+			fullscreen: true,
+			history: true,
+			overlay: true,
+			quitOnEnd: ( 'true' === sgdgShortcodeLocalize.preview_quitOnEnd )
+		});
 		container.data( 'sgdgPath', path );
+		container.data( 'sgdgLastPage', '1' );
 		container.find( '.sgdg-gallery' ).replaceWith( '<div class="sgdg-loading"><div></div></div>' );
+		container.find( '.sgdg-more-button' ).remove();
 		$( '.sgdg-gallery-container[data-sgdg-hash!=' + hash + ']' ).each( function() {
 			reflow( $( this ) );
 		});
 		$.get( sgdgShortcodeLocalize.ajax_url, {
-			action: 'list_dir',
+			action: 'gallery',
 			hash: hash,
-			path: path
+			path: path,
+			page: page
 		}, function( data ) {
+			var i;
+			var pageLength = data.images ? data.images.length / page : 0;
 			var html = '';
 			if ( data.error ) {
 				container.html( data.error );
@@ -177,56 +238,83 @@ jQuery( document ).ready( function( $ ) {
 				html += '<div class="sgdg-loading"><div></div></div>';
 				html += '<div class="sgdg-gallery">';
 				html += renderDirectories( shortHash, data.directories );
-				html += renderImages( shortHash, data.images );
+				if ( data.images ) {
+					for ( i = 0; i < page; i++ ) {
+						html += renderImages( shortHash, i + 1, data.images.slice( i * pageLength, ( i + 1 ) * pageLength ) );
+					}
+				}
 				html += '</div>';
+				if ( data.more ) {
+					html += renderMoreButton();
+				}
 			} else {
 				html += '<div class="sgdg-gallery">' + sgdgShortcodeLocalize.empty_gallery + '</div>';
 			}
 			container.html( html );
-			container.find( 'a[data-sgdg-path]' ).click( function() {
-				history.pushState({}, '', addQueryPath( shortHash, $( this ).data( 'sgdgPath' ) ) );
-				get( hash );
-				return false;
-			});
+			postLoad( hash, page );
+			lightboxes[hash].openHistory();
+		});
+	}
 
-			loading.push( hash );
-			container.find( '.sgdg-gallery' ).imagesLoaded({background: true}, function() {
-				loading.splice( loading.indexOf( hash ), 1 );
-				reflow( container );
-				$( '.sgdg-gallery-container[data-sgdg-hash!=' + hash + ']' ).each( function() {
-					reflow( $( this ) );
-				});
-			});
-			reflowTimer( hash );
-
-			container.find( 'a[data-imagelightbox]' ).imageLightbox({
-				allowedTypes: '',
-				animationSpeed: parseInt( sgdgShortcodeLocalize.preview_speed, 10 ),
-				activity: ( 'true' === sgdgShortcodeLocalize.preview_activity ),
-				arrows: ( 'true' === sgdgShortcodeLocalize.preview_arrows ),
-				button: ( 'true' === sgdgShortcodeLocalize.preview_closebutton ),
-				fullscreen: true,
-				history: true,
-				overlay: true,
-				quitOnEnd: ( 'true' === sgdgShortcodeLocalize.preview_quitOnEnd )
-			});
+	function add( hash, page ) {
+		var shortHash = hash.substr( 0, 8 );
+		var container = $( '[data-sgdg-hash=' + hash + ']' );
+		if ( page <= container.data( 'sgdgLastPage' ) ) {
+			return;
+		}
+		container.data( 'sgdgLastPage', page );
+		container.find( '.sgdg-gallery' ).after( '<div class="sgdg-loading"><div></div></div>' );
+		container.find( '.sgdg-more-button' ).remove();
+		$.get( sgdgShortcodeLocalize.ajax_url, {
+			action: 'page',
+			hash: hash,
+			path: getQueryParameter( shortHash, 'path' ),
+			page: page
+		}, function( data ) {
+			var html = '';
+			if ( data.error ) {
+				container.find( '.sgdg-loading' ).replaceWith( data.error );
+				container.find( '.sgdg-more-button' ).remove();
+				return;
+			}
+			html += renderDirectories( shortHash, data.directories );
+			html += renderImages( shortHash, page, data.images );
+			container.find( '.sgdg-gallery' ).append( html );
+			if ( data.more ) {
+				container.append( renderMoreButton() );
+			}
+			container.find( '.sgdg-loading' ).remove();
+			postLoad( hash, page );
 		});
 	}
 
 	function reinit() {
 		$( '.sgdg-gallery-container' ).each( function() {
 			var hash = $( this ).data( 'sgdgHash' );
-			if ( $( this ).data( 'sgdgPath' ) !== getQueryPath( hash ) ) {
+			if ( $( this ).data( 'sgdgPath' ) !== getQueryParameter( hash.substr( 0, 8 ), 'path' ) ) {
 				get( hash );
 			}
 		});
 	}
 	$( window ).on( 'popstate', reinit );
-	reinit();
 
 	$( window ).resize( function() {
 		$( '.sgdg-gallery-container' ).each( function() {
 			reflow( $( this ) );
 		});
 	});
+
+	$( document ).on( 'start.ilb2 next.ilb2 previous.ilb2', function( _, e ) {
+		var hash = $( e ).data( 'imagelightbox' );
+		var page = $( e ).data( 'sgdg-page' );
+		history.replaceState( history.state, '', addQueryParameter( hash, 'page', page ) );
+		if ( 'true' === sgdgShortcodeLocalize.page_autoload && $( e ).index() >= $( e ).parent().children().length - 2 ) {
+			add( $( e ).parent().parent().data( 'sgdgHash' ), page + 1, lightboxes[hash]);
+		}
+	});
+	$( document ).on( 'quit.ilb2', function() {
+		history.replaceState( history.state, '', removeQueryParameter( '[^-]+', 'page' ) );
+	});
+
+	reinit();
 });

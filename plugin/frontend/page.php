@@ -1,9 +1,9 @@
 <?php
-namespace Sgdg\Frontend\Ajax;
+namespace Sgdg\Frontend\Page;
 
 function register() {
-	add_action( 'wp_ajax_list_dir', '\\Sgdg\\Frontend\\Ajax\\handle_ajax' );
-	add_action( 'wp_ajax_nopriv_list_dir', '\\Sgdg\\Frontend\\Ajax\\handle_ajax' );
+	add_action( 'wp_ajax_page', '\\Sgdg\\Frontend\\Page\\handle_ajax' );
+	add_action( 'wp_ajax_nopriv_page', '\\Sgdg\\Frontend\\Page\\handle_ajax' );
 }
 
 function handle_ajax() {
@@ -21,61 +21,35 @@ function handle_ajax() {
 }
 
 function ajax_handler_body() {
+	list( $client, $dir, $options ) = get_context();
+
+	$remaining = $options->get( 'page_size' );
+	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
+	$skip = $remaining * ( max( 1, (int) $_GET['page'] ) - 1 );
+
+	wp_send_json( get_page( $client, $dir, $skip, $remaining, $options ) );
+}
+
+function get_context() {
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 	$transient = get_transient( 'sgdg_hash_' . $_GET['hash'] );
-	$dir       = $transient['root'];
 
-	if ( false === $dir ) {
+	if ( false === $transient ) {
 		throw new \Exception( esc_html__( 'The gallery has expired.', 'skaut-google-drive-gallery' ) );
 	}
 
+	$dir     = $transient['root'];
 	$options = new \Sgdg\Frontend\Options_Proxy( $transient['overriden'] );
 
-	$ret = [];
 	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 	if ( isset( $_GET['path'] ) && '' !== $_GET['path'] ) {
-
 		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-		$path        = explode( '/', $_GET['path'] );
-		$ret['path'] = path_names( $client, $path, $options );
-		$dir         = apply_path( $client, $dir, $path );
+		$dir = apply_path( $client, $dir, explode( '/', $_GET['path'] ) );
 	}
-	$ret['directories'] = directories( $client, $dir, $options );
-	$ret['images']      = images( $client, $dir, $options );
-	wp_send_json( $ret );
-}
 
-function path_names( $client, array $path, $options ) {
-	$client->getClient()->setUseBatch( true );
-	$batch = $client->createBatch();
-	foreach ( $path as $segment ) {
-		$request = $client->files->get(
-			$segment,
-			[
-				'supportsTeamDrives' => true,
-				'fields'             => 'name',
-			]
-		);
-		$batch->add( $request, $segment );
-	}
-	$responses = $batch->execute();
-	$client->getClient()->setUseBatch( false );
-	$ret = [];
-	foreach ( $path as $segment ) {
-		$response = $responses[ 'response-' . $segment ];
-		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
-			throw $response;
-		}
-		$name  = $response->getName();
-		$pos   = mb_strpos( $name, $options->get( 'dir_prefix' ) );
-		$ret[] = [
-			'id'   => $segment,
-			'name' => mb_substr( $name, false !== $pos ? $pos + 1 : 0 ),
-		];
-	}
-	return $ret;
+	return [ $client, $dir, $options ];
 }
 
 function apply_path( $client, $root, array $path ) {
@@ -107,7 +81,18 @@ function apply_path( $client, $root, array $path ) {
 	throw new \Exception( esc_html__( 'No such subdirectory found in this gallery.', 'skaut-google-drive-gallery' ) );
 }
 
-function directories( $client, $dir, $options ) {
+function get_page( $client, $dir, $skip, $remaining, $options ) {
+	$ret = [ 'more' => false ];
+	if ( 0 < $remaining ) {
+		list( $ret['directories'], $skip, $remaining, $ret['more'] ) = directories( $client, $dir, $options, $skip, $remaining );
+	}
+	if ( 0 < $remaining ) {
+		list( $ret['images'], $ret['more'] ) = images( $client, $dir, $options, $skip, $remaining );
+	}
+	return $ret;
+}
+
+function directories( $client, $dir, $options, $skip, $remaining ) {
 	$ids   = [];
 	$names = [];
 
@@ -119,21 +104,31 @@ function directories( $client, $dir, $options ) {
 			'includeTeamDriveItems' => true,
 			'orderBy'               => $options->get( 'dir_ordering' ),
 			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
+			'pageSize'              => min( 1000, $skip + $remaining + 1 ),
 			'fields'                => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
+		$more = false;
 		foreach ( $response->getFiles() as $file ) {
+			if ( 0 < $skip ) {
+				$skip--;
+				continue;
+			}
+			if ( 0 >= $remaining ) {
+				$more = true;
+				break;
+			}
 			$ids[]   = $file->getId();
 			$name    = $file->getName();
 			$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
 			$names[] = mb_substr( $name, false !== $pos ? $pos + 1 : 0 );
+			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token );
+	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 
 	$client->getClient()->setUseBatch( true );
 	$batch = $client->createBatch();
@@ -160,7 +155,7 @@ function directories( $client, $dir, $options ) {
 			$ret[] = $val;
 		}
 	}
-	return $ret;
+	return [ $ret, $skip, $remaining, $more ];
 }
 
 function dir_images_requests( $client, $batch, $dirs, $options ) {
@@ -234,7 +229,7 @@ function dir_counts_responses( $responses, $dirs ) {
 	return $ret;
 }
 
-function images( $client, $dir, $options ) {
+function images( $client, $dir, $options, $skip, $remaining ) {
 	$ret        = [];
 	$page_token = null;
 	do {
@@ -287,5 +282,6 @@ function images( $client, $dir, $options ) {
 			}
 		);
 	}
-	return $ret;
+	$more = count( $ret ) > $skip + $remaining;
+	return [ array_slice( $ret, $skip, $remaining ), $more ];
 }

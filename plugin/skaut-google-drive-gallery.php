@@ -45,7 +45,8 @@ require_once __DIR__ . '/frontend/class-options-proxy.php';
 require_once __DIR__ . '/frontend/google-api-lib.php';
 require_once __DIR__ . '/frontend/block.php';
 require_once __DIR__ . '/frontend/shortcode.php';
-require_once __DIR__ . '/frontend/ajax.php';
+require_once __DIR__ . '/frontend/page.php';
+require_once __DIR__ . '/frontend/gallery.php';
 
 require_once __DIR__ . '/admin/google-api-lib.php';
 require_once __DIR__ . '/admin/admin-pages.php';
@@ -57,7 +58,8 @@ function init() {
 	add_action( 'admin_notices', '\\Sgdg\\activation_notice' );
 	\Sgdg\Frontend\Shortcode\register();
 	\Sgdg\Frontend\Block\register();
-	\Sgdg\Frontend\Ajax\register();
+	\Sgdg\Frontend\Page\register();
+	\Sgdg\Frontend\Gallery\register();
 	\Sgdg\Admin\AdminPages\register();
 	\Sgdg\Admin\TinyMCE\register();
 }

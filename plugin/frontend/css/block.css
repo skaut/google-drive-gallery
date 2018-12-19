@@ -23,6 +23,10 @@
 	*zoom: 1;
 }
 
+.sgdg-block-settings-boolean {
+	margin-top: -1px !important;
+}
+
 .sgdg-block-settings-integer {
 	margin: 0 !important;
 	width: 100px !important;

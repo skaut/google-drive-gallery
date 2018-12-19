@@ -43,12 +43,14 @@ function html( $atts ) {
 			'ajax_url'            => admin_url( 'admin-ajax.php' ),
 			'grid_height'         => $options->get( 'grid_height' ),
 			'grid_spacing'        => $options->get( 'grid_spacing' ),
+			'page_autoload'       => $options->get( 'page_autoload' ),
 			'preview_speed'       => $options->get( 'preview_speed' ),
 			'preview_arrows'      => $options->get( 'preview_arrows' ),
 			'preview_closebutton' => $options->get( 'preview_close_button' ),
 			'preview_quitOnEnd'   => $options->get( 'preview_loop' ) === 'true' ? 'false' : 'true',
 			'preview_activity'    => $options->get( 'preview_activity_indicator' ),
 			'breadcrumbs_top'     => esc_html__( 'Gallery', 'skaut-google-drive-gallery' ),
+			'load_more'           => esc_html__( 'Load more', 'skaut-google-drive-gallery' ),
 			'empty_gallery'       => esc_html__( 'The gallery is empty.', 'skaut-google-drive-gallery' ),
 		]
 	);
