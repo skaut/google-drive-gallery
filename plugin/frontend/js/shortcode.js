@@ -307,8 +307,9 @@ jQuery( document ).ready( function( $ ) {
 	$( document ).on( 'start.ilb2 next.ilb2 previous.ilb2', function( _, e ) {
 		var hash = $( e ).data( 'imagelightbox' );
 		var page = $( e ).data( 'sgdg-page' );
+		var children = $( e ).parent().children().length;
 		history.replaceState( history.state, '', addQueryParameter( hash, 'page', page ) );
-		if ( 'true' === sgdgShortcodeLocalize.page_autoload && $( e ).index() >= $( e ).parent().children().length - 2 ) {
+		if ( 'true' === sgdgShortcodeLocalize.page_autoload && $( e ).index() >= Math.min( children - 2, Math.floor( 0.9 * children ) ) ) {
 			add( $( e ).parent().parent().data( 'sgdgHash' ), page + 1, lightboxes[hash]);
 		}
 	});
