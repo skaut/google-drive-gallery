@@ -56,8 +56,11 @@ function path_names( $client, array $path, $options ) {
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
-		$name  = $response->getName();
-		$pos   = mb_strpos( $name, $options->get( 'dir_prefix' ) );
+		$name = $response->getName();
+		$pos  = false;
+		if ( $options->get( 'dir_prefix' ) ) {
+			$pos = mb_strpos( $name, $options->get( 'dir_prefix' ) );
+		}
 		$ret[] = [
 			'id'   => $segment,
 			'name' => mb_substr( $name, false !== $pos ? $pos + 1 : 0 ),

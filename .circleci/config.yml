@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: circleci/php:7.3-node-browsers
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+      - run: composer install -n --prefer-dist
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+
+      - restore_cache:
+          keys:
+            - node-v1-{{ checksum "package.json" }}
+            - node-v1-
+      - run: sudo npm install --global gulp-cli
+      - run: npm install
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      - run: gulp lint
+workflows:
+  version: 2
+  lint:
+    jobs:
+      - lint

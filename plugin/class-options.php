@@ -36,6 +36,7 @@ class Options {
 	public static $preview_close_button;
 	public static $preview_loop;
 	public static $preview_activity_indicator;
+	public static $preview_captions;
 
 	public static function init() {
 		$url                     = wp_parse_url( get_site_url() );
@@ -63,5 +64,6 @@ class Options {
 		self::$preview_close_button       = new \Sgdg\Frontend\BooleanOption( 'preview_closebutton', true, 'advanced', 'lightbox', esc_html__( 'Close button', 'skaut-google-drive-gallery' ) );
 		self::$preview_loop               = new \Sgdg\Frontend\BooleanOption( 'preview_loop', false, 'advanced', 'lightbox', esc_html__( 'Loop images', 'skaut-google-drive-gallery' ) );
 		self::$preview_activity_indicator = new \Sgdg\Frontend\BooleanOption( 'preview_activity', true, 'advanced', 'lightbox', esc_html__( 'Activity indicator', 'skaut-google-drive-gallery' ) );
+		self::$preview_captions           = new \Sgdg\Frontend\BooleanOption( 'preview_captions', true, 'advanced', 'lightbox', esc_html__( 'Show captions', 'skaut-google-drive-gallery' ) );
 	}
 }

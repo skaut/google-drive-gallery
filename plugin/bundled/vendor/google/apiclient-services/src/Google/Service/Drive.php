@@ -77,6 +77,7 @@ class Google_Service_Drive extends Google_Service
     parent::__construct($client);
     $this->rootUrl = 'https://www.googleapis.com/';
     $this->servicePath = 'drive/v3/';
+    $this->batchPath = 'batch/drive/v3';
     $this->version = 'v3';
     $this->serviceName = 'drive';
 

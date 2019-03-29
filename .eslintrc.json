@@ -5,6 +5,6 @@
 	"plugins": ["compat"],
 	"extends": "wordpress",
 	"rules": {
-		"compat/compat": "error"
+		"compat/compat": "warn"
 	}
 }

@@ -22,6 +22,7 @@ class Options_Proxy {
 			'preview_close_button'       => \Sgdg\Options::$preview_close_button,
 			'preview_loop'               => \Sgdg\Options::$preview_loop,
 			'preview_activity_indicator' => \Sgdg\Options::$preview_activity_indicator,
+			'preview_captions'           => \Sgdg\Options::$preview_captions,
 		];
 		$this->ordering_option_list = [
 			'image_ordering' => \Sgdg\Options::$image_ordering,

@@ -23,6 +23,7 @@ delete_option( 'sgdg_preview_arrows' );
 delete_option( 'sgdg_preview_closebutton' );
 delete_option( 'sgdg_preview_loop' );
 delete_option( 'sgdg_preview_activity' );
+delete_option( 'sgdg_preview_captions' );
 
 // Deprecated
 delete_option( 'sgdg_image_ordering' );

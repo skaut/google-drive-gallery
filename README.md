@@ -1,6 +1,6 @@
-# Google Drive gallery
+# Google Drive Gallery
 
-A WordPress gallery using Google Drive as file storage
+A WordPress gallery using Google Drive as file storage.
 
 Download the plugin from the WordPress.org [plugin directory](https://wordpress.org/plugins/skaut-google-drive-gallery/) or directly from [Github](https://github.com/skaut/skaut-google-drive-gallery/releases).
 

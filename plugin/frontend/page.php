@@ -121,10 +121,14 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 				$more = true;
 				break;
 			}
-			$ids[]   = $file->getId();
-			$name    = $file->getName();
-			$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
-			$names[] = mb_substr( $name, false !== $pos ? $pos + 1 : 0 );
+			$ids[] = $file->getId();
+			$name  = $file->getName();
+			if ( $options->get( 'dir_prefix' ) ) {
+				$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
+				$names[] = mb_substr( $name, false !== $pos ? $pos + 1 : 0 );
+			} else {
+				$names[] = $name;
+			}
 			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
@@ -241,20 +245,22 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 			'pageSize'              => 1000,
 		];
 		if ( $options->get_by( 'image_ordering' ) === 'time' ) {
-			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time))';
+			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time), description)';
 		} else {
 			$params['orderBy'] = $options->get( 'image_ordering' );
-			$params['fields']  = 'nextPageToken, files(id, thumbnailLink)';
+			$params['fields']  = 'nextPageToken, files(id, thumbnailLink, description)';
 		}
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
 		foreach ( $response->getFiles() as $file ) {
-			$val = [
-				'id'        => $file->getId(),
-				'image'     => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
-				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
+			$description = $file->getDescription();
+			$val         = [
+				'id'          => $file->getId(),
+				'description' => ( isset( $description ) ? esc_attr( $description ) : '' ),
+				'image'       => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
+				'thumbnail'   => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
 			];
 			if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 				if ( $file->getImageMediaMetadata() && $file->getImageMediaMetadata()->getTime() ) {
