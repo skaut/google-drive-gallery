@@ -170,7 +170,7 @@ gulp.task( 'composer-update', gulp.series( 'composer-do-update', 'composer-copy'
 
 gulp.task( 'npm-update', gulp.series( shell.task([ 'npm install', 'npm update' ]), gulp.parallel( copyImagelightbox, copyImagesloaded, copyJustifiedLayout ) ) );
 
-gulp.task( 'phpcs', shell.task([ 'vendor/squizlabs/php_codesniffer/bin/phpcs' ]) );
+gulp.task( 'phpcs', shell.task([ 'vendor/bin/phpcs' ]) );
 
 gulp.task( 'eslint', function() {
 		return gulp.src([ '**/*.js', '!node_modules/**', '!vendor/**', '!plugin/bundled/**' ])
@@ -189,8 +189,12 @@ gulp.task( 'stylelint', function() {
 			}) );
 	});
 
+gulp.task( 'phpunit', shell.task([ 'vendor/bin/phpunit' ]) )	;
+
 gulp.task( 'lint', gulp.series( 'phpcs', 'eslint' ) );
 
 //gulp.task( 'lint', gulp.series( 'phpcs', 'eslint', 'stylelint' ) );
+
+gulp.task( 'unit', gulp.series( 'phpunit' ) );
 
 gulp.task( 'default', gulp.series( 'lint', 'composer-check-updates', 'npm-check-updates' ) );

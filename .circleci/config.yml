@@ -1,35 +1,114 @@
 version: 2
-jobs:
-  lint:
-    docker:
-      - image: circleci/php:7.3-node-browsers
+workflows:
+  version: 2
+  main:
+    jobs:
+      - unit-php71
+      - unit-php72
+      - unit-php73
+      - lint:
+          requires:
+            - unit-php71
+            - unit-php72
+            - unit-php73
+
+job-references:
+  mysql_image: &mysql_image
+    circleci/mysql:5
+
+  restore_composer: &restore_composer
+    keys:
+      - v1-dependencies-{{ checksum "composer.json" }}
+      - v1-dependencies-
+
+  install_composer: &install_composer
+    name: "Install Composer dependencies"
+    command: composer install -n --prefer-dist
+
+  save_composer: &save_composer
+    key: v1-dependencies-{{ checksum "composer.json" }}
+    paths:
+      - vendor
+
+  restore_npm: &restore_npm
+    keys:
+      - node-v1-{{ checksum "package.json" }}
+      - node-v1-
+
+  install_npm: &install_npm
+    name: "Install NPM dependencies"
+    command: |
+      sudo npm install --global gulp-cli
+      npm install
+
+  save_npm: &save_npm
+    key: node-v1-{{ checksum "package.json" }}
+    paths:
+      - node_modules
+
+  unit_test: &unit_test
+    environment:
+      - COVERAGE: "false"
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "composer.json" }}
-            - v1-dependencies-
-      - run: composer install -n --prefer-dist
-      - save_cache:
-          key: v1-dependencies-{{ checksum "composer.json" }}
-          paths:
-            - vendor
+      - restore_cache: *restore_composer
+      - run: *install_composer
+      - save_cache: *save_composer
 
-      - restore_cache:
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            - node-v1-
-      - run: sudo npm install --global gulp-cli
-      - run: npm install
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+      - restore_cache: *restore_npm
+      - run: *install_npm
+      - save_cache: *save_npm
 
-      - run: gulp lint
-workflows:
-  version: 2
+      - run:
+          name: "Prepare WordPress"
+          command: |
+            rm -rf /tmp/wordpress-tests-lib /tmp/wordpress
+            sudo apt-get update && sudo apt-get install subversion mysql-client
+            sudo -E docker-php-ext-install mysqli
+            ./bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 latest
+      - run:
+          name: "Run Tests"
+          command: gulp unit
+      - run:
+          name: Upload Coverage Results
+          command: $COVERAGE && bash <(curl -s https://codecov.io/bash) -f clover.xml -t ${CODECOV_TOKEN} || true
+
+jobs:
+  unit-php71:
+    <<: *unit_test
+    docker:
+      - image: circleci/php:7.1-node
+      - image: *mysql_image
+
+  unit-php72:
+    <<: *unit_test
+    docker:
+      - image: circleci/php:7.2-node
+      - image: *mysql_image
+
+  unit-php73:
+    <<: *unit_test
+    environment:
+      - COVERAGE: "true"
+    docker:
+      - image: circleci/php:7.3-node
+      - image: *mysql_image
+
   lint:
-    jobs:
-      - lint
+    docker:
+      - image: circleci/php:7.3-node
+    steps:
+      - checkout
+
+      - restore_cache: *restore_composer
+      - run: *install_composer
+      - save_cache: *save_composer
+
+      - restore_cache: *restore_npm
+      - run: *install_npm
+      - save_cache: *save_npm
+
+      - run:
+          name: "Lint"
+          command: gulp lint

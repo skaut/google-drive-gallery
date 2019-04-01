@@ -22,7 +22,8 @@
   "dependencies": {
     "imagelightbox": "^0.14.0",
     "imagesloaded": "^4.1.4",
-    "justified-layout": "^2.1.1"
+    "justified-layout": "^2.1.1",
+    "snyk": "^1.143.5"
   },
   "devDependencies": {
     "eslint": "^5.15.3",
@@ -44,5 +45,10 @@
     "cover 99.9% in CZ",
     "last 4 versions",
     "Firefox ESR"
-  ]
+  ],
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
