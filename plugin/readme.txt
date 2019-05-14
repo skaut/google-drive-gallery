@@ -1,8 +1,8 @@
 === Google Drive gallery ===
 Contributors: skaut, genabitu, kalich5
-Tags: skaut, google drive, google drive gallery, team drive, gallery, multisite, shortcode
+Tags: skaut, google drive, google drive gallery, team drive, shared drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: 2.5.0
 Requires PHP: 5.6
 License: MIT
@@ -22,7 +22,7 @@ To see the plugin in action, head on to our [demo page](https://demo-skaut-googl
 * You can restrict the plugin to a certain folder (we call it the "root" folder), making sure that no data outside this root folder will ever be displayed on your site
 * Insert a gallery with a shortcode or with a click of a button
 * Provides a Gutenberg block, making sure that your galleries will work even in WordPress 5
-* Also works with Team Drives
+* Also works with Shared drives (formerly known as Team drives)
 
 === Minimal requirements ===
 * WordPress 4.9.6 or higher

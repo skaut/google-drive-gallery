@@ -42,8 +42,8 @@ function path_names( $client, array $path, $options ) {
 		$request = $client->files->get(
 			$segment,
 			[
-				'supportsTeamDrives' => true,
-				'fields'             => 'name',
+				'supportsAllDrives' => true,
+				'fields'            => 'name',
 			]
 		);
 		$batch->add( $request, $segment );

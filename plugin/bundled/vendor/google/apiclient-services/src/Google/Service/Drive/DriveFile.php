@@ -27,6 +27,7 @@ class Google_Service_Drive_DriveFile extends Google_Collection
   public $copyRequiresWriterPermission;
   public $createdTime;
   public $description;
+  public $driveId;
   public $explicitlyTrashed;
   public $exportLinks;
   public $fileExtension;
@@ -142,6 +143,14 @@ class Google_Service_Drive_DriveFile extends Google_Collection
   public function getDescription()
   {
     return $this->description;
+  }
+  public function setDriveId($driveId)
+  {
+    $this->driveId = $driveId;
+  }
+  public function getDriveId()
+  {
+    return $this->driveId;
   }
   public function setExplicitlyTrashed($explicitlyTrashed)
   {

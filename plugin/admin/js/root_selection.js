@@ -33,7 +33,7 @@ jQuery( document ).ready( function( $ ) {
 		$( '#sgdg_root_selection_body' ).html( html );
 		html = '';
 		if ( 0 === path.length ) {
-			html = sgdgRootpathLocalize.team_drive_list;
+			html = sgdgRootpathLocalize.drive_list;
 		} else {
 			$( '#submit' ).removeAttr( 'disabled' );
 		}

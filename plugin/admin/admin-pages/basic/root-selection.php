@@ -41,10 +41,10 @@ function register_scripts_styles( $hook ) {
 			'sgdg_root_selection_ajax',
 			'sgdgRootpathLocalize',
 			[
-				'ajax_url'        => admin_url( 'admin-ajax.php' ),
-				'nonce'           => wp_create_nonce( 'sgdg_root_selection' ),
-				'root_dir'        => \Sgdg\Options::$root_path->get( [] ),
-				'team_drive_list' => esc_html__( 'Team drive list', 'skaut-google-drive-gallery' ),
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'nonce'      => wp_create_nonce( 'sgdg_root_selection' ),
+				'root_dir'   => \Sgdg\Options::$root_path->get( [] ),
+				'drive_list' => esc_html__( 'Shared drive list', 'skaut-google-drive-gallery' ),
 			]
 		);
 	}
@@ -79,7 +79,7 @@ function ajax_handler_body() {
 	];
 
 	if ( count( $path ) === 0 ) {
-		$ret['directories'] = list_teamdrives( $client );
+		$ret['directories'] = list_drives( $client );
 	} else {
 		$ret['directories'] = list_files( $client, end( $path ) );
 	}
@@ -92,7 +92,7 @@ function path_ids_to_names( $client, $path ) {
 		if ( 'root' === $path[0] ) {
 			$ret[] = esc_html__( 'My Drive', 'skaut-google-drive-gallery' );
 		} else {
-			$response = $client->teamdrives->get( $path[0], [ 'fields' => 'name' ] );
+			$response = $client->drives->get( $path[0], [ 'fields' => 'name' ] );
 			$ret[]    = $response->getName();
 		}
 	}
@@ -100,8 +100,8 @@ function path_ids_to_names( $client, $path ) {
 		$response = $client->files->get(
 			$path_element,
 			[
-				'supportsTeamDrives' => true,
-				'fields'             => 'name',
+				'supportsAllDrives' => true,
+				'fields'            => 'name',
 			]
 		);
 		$ret[]    = $response->getName();
@@ -109,7 +109,7 @@ function path_ids_to_names( $client, $path ) {
 	return $ret;
 }
 
-function list_teamdrives( $client ) {
+function list_drives( $client ) {
 	$ret        = [
 		[
 			'name' => esc_html__( 'My Drive', 'skaut-google-drive-gallery' ),
@@ -121,16 +121,16 @@ function list_teamdrives( $client ) {
 		$params   = [
 			'pageToken' => $page_token,
 			'pageSize'  => 100,
-			'fields'    => 'nextPageToken, teamDrives(id, name)',
+			'fields'    => 'nextPageToken, drives(id, name)',
 		];
-		$response = $client->teamdrives->listTeamdrives( $params );
+		$response = $client->drives->listDrives( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
-		foreach ( $response->getTeamdrives() as $teamdrive ) {
+		foreach ( $response->getDrives() as $drive ) {
 			$ret[] = [
-				'name' => $teamdrive->getName(),
-				'id'   => $teamdrive->getId(),
+				'name' => $drive->getName(),
+				'id'   => $drive->getId(),
 			];
 		}
 		$page_token = $response->getNextPageToken();
@@ -143,12 +143,12 @@ function list_files( $client, $root ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, name)',
+			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
+			'fields'                    => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {

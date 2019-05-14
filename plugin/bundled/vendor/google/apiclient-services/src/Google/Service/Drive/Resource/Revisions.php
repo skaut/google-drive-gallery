@@ -28,9 +28,9 @@ class Google_Service_Drive_Resource_Revisions extends Google_Service_Resource
 {
   /**
    * Permanently deletes a file version. You can only delete revisions for files
-   * with binary content, like images or videos. Revisions for other files, like
-   * Google Docs or Sheets, and the last remaining file version can't be deleted.
-   * (revisions.delete)
+   * with binary content in Google Drive, like images or videos. Revisions for
+   * other files, like Google Docs or Sheets, and the last remaining file version
+   * can't be deleted. (revisions.delete)
    *
    * @param string $fileId The ID of the file.
    * @param string $revisionId The ID of the revision.

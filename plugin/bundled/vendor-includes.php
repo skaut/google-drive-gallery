@@ -84,16 +84,17 @@ require_once __DIR__ . '/vendor/google/apiclient/src/Google/Model.php';
 require_once __DIR__ . '/vendor/google/apiclient/src/Google/Collection.php';
 require_once __DIR__ . '/vendor/google/apiclient/src/Google/Service.php';
 
+require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Drive.php';
+require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveList.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileImageMediaMetadata.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFile.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/FileList.php';
-require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/TeamDrive.php';
-require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/TeamDriveList.php';
 
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/About.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Changes.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Channels.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Comments.php';
+require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Drives.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Files.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Permissions.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Resource/Replies.php';

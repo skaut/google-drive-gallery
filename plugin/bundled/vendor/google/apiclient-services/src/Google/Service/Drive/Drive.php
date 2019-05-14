@@ -16,31 +16,32 @@ namespace Sgdg\Vendor;
  * the License.
  */
 
-class Google_Service_Drive_TeamDrive extends Google_Model
+class Google_Service_Drive_Drive extends Google_Model
 {
-  protected $backgroundImageFileType = 'Google_Service_Drive_TeamDriveBackgroundImageFile';
+  protected $backgroundImageFileType = 'Google_Service_Drive_DriveBackgroundImageFile';
   protected $backgroundImageFileDataType = '';
   public $backgroundImageLink;
-  protected $capabilitiesType = 'Google_Service_Drive_TeamDriveCapabilities';
+  protected $capabilitiesType = 'Google_Service_Drive_DriveCapabilities';
   protected $capabilitiesDataType = '';
   public $colorRgb;
   public $createdTime;
+  public $hidden;
   public $id;
   public $kind;
   public $name;
-  protected $restrictionsType = 'Google_Service_Drive_TeamDriveRestrictions';
+  protected $restrictionsType = 'Google_Service_Drive_DriveRestrictions';
   protected $restrictionsDataType = '';
   public $themeId;
 
   /**
-   * @param Google_Service_Drive_TeamDriveBackgroundImageFile
+   * @param Google_Service_Drive_DriveBackgroundImageFile
    */
-  public function setBackgroundImageFile(Google_Service_Drive_TeamDriveBackgroundImageFile $backgroundImageFile)
+  public function setBackgroundImageFile(Google_Service_Drive_DriveBackgroundImageFile $backgroundImageFile)
   {
     $this->backgroundImageFile = $backgroundImageFile;
   }
   /**
-   * @return Google_Service_Drive_TeamDriveBackgroundImageFile
+   * @return Google_Service_Drive_DriveBackgroundImageFile
    */
   public function getBackgroundImageFile()
   {
@@ -55,14 +56,14 @@ class Google_Service_Drive_TeamDrive extends Google_Model
     return $this->backgroundImageLink;
   }
   /**
-   * @param Google_Service_Drive_TeamDriveCapabilities
+   * @param Google_Service_Drive_DriveCapabilities
    */
-  public function setCapabilities(Google_Service_Drive_TeamDriveCapabilities $capabilities)
+  public function setCapabilities(Google_Service_Drive_DriveCapabilities $capabilities)
   {
     $this->capabilities = $capabilities;
   }
   /**
-   * @return Google_Service_Drive_TeamDriveCapabilities
+   * @return Google_Service_Drive_DriveCapabilities
    */
   public function getCapabilities()
   {
@@ -83,6 +84,14 @@ class Google_Service_Drive_TeamDrive extends Google_Model
   public function getCreatedTime()
   {
     return $this->createdTime;
+  }
+  public function setHidden($hidden)
+  {
+    $this->hidden = $hidden;
+  }
+  public function getHidden()
+  {
+    return $this->hidden;
   }
   public function setId($id)
   {
@@ -109,14 +118,14 @@ class Google_Service_Drive_TeamDrive extends Google_Model
     return $this->name;
   }
   /**
-   * @param Google_Service_Drive_TeamDriveRestrictions
+   * @param Google_Service_Drive_DriveRestrictions
    */
-  public function setRestrictions(Google_Service_Drive_TeamDriveRestrictions $restrictions)
+  public function setRestrictions(Google_Service_Drive_DriveRestrictions $restrictions)
   {
     $this->restrictions = $restrictions;
   }
   /**
-   * @return Google_Service_Drive_TeamDriveRestrictions
+   * @return Google_Service_Drive_DriveRestrictions
    */
   public function getRestrictions()
   {

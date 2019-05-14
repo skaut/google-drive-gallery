@@ -56,12 +56,12 @@ function apply_path( $client, $root, array $path ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id)',
+			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
+			'fields'                    => 'nextPageToken, files(id)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -99,13 +99,13 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $dir . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'orderBy'               => $options->get( 'dir_ordering' ),
-			'pageToken'             => $page_token,
-			'pageSize'              => min( 1000, $skip + $remaining + 1 ),
-			'fields'                => 'nextPageToken, files(id, name)',
+			'q'                         => '"' . $dir . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'orderBy'                   => $options->get( 'dir_ordering' ),
+			'pageToken'                 => $page_token,
+			'pageSize'                  => min( 1000, $skip + $remaining + 1 ),
+			'fields'                    => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -164,11 +164,11 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 
 function dir_images_requests( $client, $batch, $dirs, $options ) {
 	$params = [
-		'supportsTeamDrives'    => true,
-		'includeTeamDriveItems' => true,
-		'orderBy'               => $options->get( 'image_ordering' ),
-		'pageSize'              => 1,
-		'fields'                => 'files(imageMediaMetadata(width, height), thumbnailLink)',
+		'supportsAllDrives'         => true,
+		'includeItemsFromAllDrives' => true,
+		'orderBy'                   => $options->get( 'image_ordering' ),
+		'pageSize'                  => 1,
+		'fields'                    => 'files(imageMediaMetadata(width, height), thumbnailLink)',
 	];
 
 	foreach ( $dirs as $dir ) {
@@ -180,10 +180,10 @@ function dir_images_requests( $client, $batch, $dirs, $options ) {
 
 function dir_counts_requests( $client, $batch, $dirs ) {
 	$params = [
-		'supportsTeamDrives'    => true,
-		'includeTeamDriveItems' => true,
-		'pageSize'              => 1000,
-		'fields'                => 'files(id)',
+		'supportsAllDrives'         => true,
+		'includeItemsFromAllDrives' => true,
+		'pageSize'                  => 1000,
+		'fields'                    => 'files(id)',
 	];
 
 	foreach ( $dirs as $dir ) {
@@ -238,11 +238,11 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 	$page_token = null;
 	do {
 		$params = [
-			'q'                     => '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
+			'q'                         => '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
 		];
 		if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time), description)';

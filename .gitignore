@@ -84,3 +84,4 @@ tags
 # End of https://www.gitignore.io/api/vim,node,composer
 
 clover.xml
+junit.xml

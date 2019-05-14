@@ -16,14 +16,28 @@ namespace Sgdg\Vendor;
  * the License.
  */
 
-class Google_Service_Drive_TeamDriveList extends Google_Collection
+class Google_Service_Drive_DriveList extends Google_Collection
 {
-  protected $collection_key = 'teamDrives';
+  protected $collection_key = 'drives';
+  protected $drivesType = 'Google_Service_Drive_Drive';
+  protected $drivesDataType = 'array';
   public $kind;
   public $nextPageToken;
-  protected $teamDrivesType = 'Google_Service_Drive_TeamDrive';
-  protected $teamDrivesDataType = 'array';
 
+  /**
+   * @param Google_Service_Drive_Drive
+   */
+  public function setDrives($drives)
+  {
+    $this->drives = $drives;
+  }
+  /**
+   * @return Google_Service_Drive_Drive
+   */
+  public function getDrives()
+  {
+    return $this->drives;
+  }
   public function setKind($kind)
   {
     $this->kind = $kind;
@@ -39,19 +53,5 @@ class Google_Service_Drive_TeamDriveList extends Google_Collection
   public function getNextPageToken()
   {
     return $this->nextPageToken;
-  }
-  /**
-   * @param Google_Service_Drive_TeamDrive
-   */
-  public function setTeamDrives($teamDrives)
-  {
-    $this->teamDrives = $teamDrives;
-  }
-  /**
-   * @return Google_Service_Drive_TeamDrive
-   */
-  public function getTeamDrives()
-  {
-    return $this->teamDrives;
   }
 }

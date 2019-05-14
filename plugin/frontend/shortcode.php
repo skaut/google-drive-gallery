@@ -85,12 +85,12 @@ function find_dir( $client, $root, array $path ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, name)',
+			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
+			'fields'                    => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		foreach ( $response->getFiles() as $file ) {

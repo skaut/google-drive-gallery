@@ -24,7 +24,7 @@ function oauth_redirect() {
 
 		$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
 		try {
-			\Sgdg\Admin\AdminPages\Basic\RootSelection\list_teamdrives( $drive_client );
+			\Sgdg\Admin\AdminPages\Basic\RootSelection\list_drives( $drive_client );
 			update_option( 'sgdg_access_token', $access_token );
 		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 			if ( 'accessNotConfigured' === $e->getErrors()[0]['reason'] ) {

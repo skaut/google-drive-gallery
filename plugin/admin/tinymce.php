@@ -81,12 +81,12 @@ function walk_path( $client, array $path, $root = null ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, name)',
+			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
+			'fields'                    => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -107,12 +107,12 @@ function list_files( $client, $root ) {
 	$page_token = null;
 	do {
 		$params   = [
-			'q'                     => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
-			'supportsTeamDrives'    => true,
-			'includeTeamDriveItems' => true,
-			'pageToken'             => $page_token,
-			'pageSize'              => 1000,
-			'fields'                => 'nextPageToken, files(id, name)',
+			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'supportsAllDrives'         => true,
+			'includeItemsFromAllDrives' => true,
+			'pageToken'                 => $page_token,
+			'pageSize'                  => 1000,
+			'fields'                    => 'nextPageToken, files(id, name)',
 		];
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
