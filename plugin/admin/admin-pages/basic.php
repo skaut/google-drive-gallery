@@ -11,7 +11,7 @@ if ( ! is_admin() ) {
 
 function register() {
 	add_action( 'admin_menu', '\\Sgdg\\Admin\\AdminPages\\Basic\\add' );
-	if ( ! get_option( 'sgdg_access_token' ) ) {
+	if ( false === get_option( 'sgdg_access_token', false ) ) {
 		OAuthGrant\register();
 	} else {
 		OAuthRevoke\register();

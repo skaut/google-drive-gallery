@@ -19,5 +19,5 @@ function add() {
 }
 
 function html() {
-	echo( '<a class="button button-primary" href="' . esc_url_raw( wp_nonce_url( admin_url( 'admin.php?page=sgdg_basic&action=oauth_revoke' ) ), 'oauth_revoke' ) . '">' . esc_html__( 'Revoke Permission', 'skaut-google-drive-gallery' ) . '</a>' );
+	echo( '<a class="button button-primary" href="' . esc_url_raw( wp_nonce_url( admin_url( 'admin.php?page=sgdg_basic&action=oauth_revoke' ), 'oauth_revoke' ) ) . '">' . esc_html__( 'Revoke Permission', 'skaut-google-drive-gallery' ) . '</a>' );
 }

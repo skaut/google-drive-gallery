@@ -16,7 +16,7 @@ function oauth_redirect() {
 	if ( ! isset( $_GET['code'] ) ) {
 		add_settings_error( 'general', 'oauth_failed', esc_html__( 'Google API hasn\'t returned an authentication code. Please try again.', 'skaut-google-drive-gallery' ), 'error' );
 	}
-	if ( count( get_settings_errors() ) === 0 && ! get_option( 'sgdg_access_token' ) ) {
+	if ( count( get_settings_errors() ) === 0 && false === get_option( 'sgdg_access_token', false ) ) {
 		$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
 		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
 		$client->authenticate( $_GET['code'] );

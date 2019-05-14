@@ -11,6 +11,10 @@ require_once __DIR__ . '/frontend/class-rootpathoption.php';
 require_once __DIR__ . '/frontend/class-orderingoption.php';
 require_once __DIR__ . '/admin/class-readonlystringoption.php';
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 class Options {
 	public static $authorized_domain;
 	public static $authorized_origin;

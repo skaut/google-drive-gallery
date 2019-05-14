@@ -172,6 +172,10 @@ gulp.task( 'npm-update', gulp.series( shell.task([ 'npm install', 'npm update' ]
 
 gulp.task( 'phpcs', shell.task([ 'vendor/bin/phpcs' ]) );
 
+gulp.task( 'phpmd', shell.task([ 'vendor/bin/phpmd --exclude plugin/bundled/vendor plugin text phpmd.xml' ]) );
+
+gulp.task( 'phan', shell.task([ 'export PHAN_DISABLE_XDEBUG_WARN=1;vendor/bin/phan || true' ]) );
+
 gulp.task( 'eslint', function() {
 		return gulp.src([ '**/*.js', '!node_modules/**', '!vendor/**', '!plugin/bundled/**' ])
 			.pipe( eslint() )
@@ -191,9 +195,10 @@ gulp.task( 'stylelint', function() {
 
 gulp.task( 'phpunit', shell.task([ 'vendor/bin/phpunit' ]) )	;
 
-gulp.task( 'lint', gulp.series( 'phpcs', 'eslint' ) );
+// TODO: phpstan?
+gulp.task( 'lint', gulp.series( 'phpcs', 'phpmd', 'phan', 'eslint' ) );
 
-//gulp.task( 'lint', gulp.series( 'phpcs', 'eslint', 'stylelint' ) );
+//gulp.task( 'lint', gulp.series( 'phpcs', 'phpmd', 'phan', 'eslint', 'stylelint' ) );
 
 gulp.task( 'unit', gulp.series( 'phpunit' ) );
 

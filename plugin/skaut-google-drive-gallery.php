@@ -35,7 +35,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-defined( 'ABSPATH' ) || die( 'Die, die, die!' );
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Die, die, die!' );
+}
 
 require_once __DIR__ . '/bundled/vendor-includes.php';
 
@@ -77,7 +79,7 @@ function activate() {
 }
 
 function activation_notice() {
-	if ( get_transient( 'sgdg_activation_notice' ) ) {
+	if ( false !== get_transient( 'sgdg_activation_notice' ) ) {
 		echo( '<div class="notice notice-info is-dismissible"><p>' );
 		$help_link = 'https://napoveda.skaut.cz/dobryweb/' . substr( get_locale(), 0, 2 ) . '-skaut-google-drive-gallery';
 		// translators: 1: Start of a link to the settings 2: End of the link to the settings 3: Start of a help link 4: End of the help link

@@ -4,11 +4,13 @@ namespace Sgdg\Frontend;
 abstract class Option {
 	protected $name;
 	protected $default_value;
+	protected $page;
 	protected $section;
 	protected $title;
 
 	public function __construct( $name, $default_value, $page, $section, $title ) {
-		$this->name          = 'sgdg_' . $name;
+		$this->name = 'sgdg_' . $name;
+		// @phan-suppress-next-line PhanTypeMismatchProperty
 		$this->default_value = $default_value;
 		$this->page          = 'sgdg_' . $page;
 		$this->section       = 'sgdg_' . $section;

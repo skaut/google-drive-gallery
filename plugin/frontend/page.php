@@ -93,9 +93,6 @@ function get_page( $client, $dir, $skip, $remaining, $options ) {
 }
 
 function directories( $client, $dir, $options, $skip, $remaining ) {
-	$ids   = [];
-	$names = [];
-
 	$page_token = null;
 	do {
 		$params   = [
@@ -112,26 +109,8 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 			throw $response;
 		}
 		$more = false;
-		foreach ( $response->getFiles() as $file ) {
-			if ( 0 < $skip ) {
-				$skip--;
-				continue;
-			}
-			if ( 0 >= $remaining ) {
-				$more = true;
-				break;
-			}
-			$ids[] = $file->getId();
-			$name  = $file->getName();
-			if ( $options->get( 'dir_prefix' ) ) {
-				$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
-				$names[] = mb_substr( $name, false !== $pos ? $pos + 1 : 0 );
-			} else {
-				$names[] = $name;
-			}
-			$remaining--;
-		}
-		$page_token = $response->getNextPageToken();
+		list( $ids, $names, $skip, $remaining, $more ) = dir_ids_names( $response->getFiles(), $options, $skip, $remaining, $more );
+		$page_token                                    = $response->getNextPageToken();
 	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 
 	$client->getClient()->setUseBatch( true );
@@ -160,6 +139,31 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 		}
 	}
 	return [ $ret, $skip, $remaining, $more ];
+}
+
+function dir_ids_names( $files, $options, $skip, $remaining, $more ) {
+	$ids   = [];
+	$names = [];
+	foreach ( $files as $file ) {
+		if ( 0 < $skip ) {
+			$skip--;
+			continue;
+		}
+		if ( 0 >= $remaining ) {
+			$more = true;
+			break;
+		}
+		$ids[] = $file->getId();
+		$name  = $file->getName();
+		if ( $options->get( 'dir_prefix' ) ) {
+			$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
+			$names[] = mb_substr( $name, false !== $pos ? $pos + 1 : 0 );
+		} else {
+			$names[] = $name;
+		}
+		$remaining--;
+	}
+	return [ $ids, $names, $skip, $remaining, $more ];
 }
 
 function dir_images_requests( $client, $batch, $dirs, $options ) {
@@ -255,29 +259,15 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 			throw $response;
 		}
 		foreach ( $response->getFiles() as $file ) {
-			$description = $file->getDescription();
-			$val         = [
-				'id'          => $file->getId(),
-				'description' => ( isset( $description ) ? esc_attr( $description ) : '' ),
-				'image'       => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
-				'thumbnail'   => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
-			];
-			if ( $options->get_by( 'image_ordering' ) === 'time' ) {
-				if ( $file->getImageMediaMetadata() && $file->getImageMediaMetadata()->getTime() ) {
-					$val['timestamp'] = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() )->format( 'U' );
-				} else {
-					$val['timestamp'] = \DateTime::createFromFormat( 'Y-m-d\TH:i:s.uP', $file->getCreatedTime() )->format( 'U' );
-				}
-			}
-			$ret[] = $val;
+			$ret[] = image_preprocess( $file, $options );
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
 	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 		usort(
 			$ret,
-			function( $a, $b ) use ( $options ) {
-				$asc = $a['timestamp'] - $b['timestamp'];
+			function( $first, $second ) use ( $options ) {
+				$asc = $first['timestamp'] - $second['timestamp'];
 				return $options->get_order( 'image_ordering' ) === 'ascending' ? $asc : -$asc;
 			}
 		);
@@ -290,4 +280,22 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 	}
 	$more = count( $ret ) > $skip + $remaining;
 	return [ array_slice( $ret, $skip, $remaining ), $more ];
+}
+
+function image_preprocess( $file, $options ) {
+	$description = $file->getDescription();
+	$ret         = [
+		'id'          => $file->getId(),
+		'description' => ( isset( $description ) ? esc_attr( $description ) : '' ),
+		'image'       => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
+		'thumbnail'   => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
+	];
+	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
+		if ( null !== $file->getImageMediaMetadata() && null !== $file->getImageMediaMetadata()->getTime() ) {
+			$ret['timestamp'] = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() )->format( 'U' );
+		} else {
+			$ret['timestamp'] = \DateTime::createFromFormat( 'Y-m-d\TH:i:s.uP', $file->getCreatedTime() )->format( 'U' );
+		}
+	}
+	return $ret;
 }

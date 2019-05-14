@@ -1,6 +1,8 @@
 <?php
 
-defined( 'WP_UNINSTALL_PLUGIN' ) || die( 'Die, die, die!' );
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	die( 'Die, die, die!' );
+}
 
 delete_option( 'sgdg_client_id' );
 delete_option( 'sgdg_client_secret' );

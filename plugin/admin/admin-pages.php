@@ -29,7 +29,7 @@ function action_handler() {
 				\Sgdg\Admin\GoogleAPILib\oauth_grant();
 			} elseif ( 'oauth_redirect' === $_GET['action'] ) {
 				\Sgdg\Admin\GoogleAPILib\oauth_redirect();
-			} elseif ( 'oauth_revoke' === $_GET['action'] && get_option( 'sgdg_access_token' ) ) {
+			} elseif ( 'oauth_revoke' === $_GET['action'] && false !== get_option( 'sgdg_access_token', false ) ) {
 				wp_verify_nonce( $_GET['_wpnonce'], 'oauth_revoke' );
 				\Sgdg\Admin\GoogleAPILib\oauth_revoke();
 			}
