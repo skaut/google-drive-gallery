@@ -1,21 +1,36 @@
 <?php
+/**
+ * Contains all the functions for the root directory section of the basic settings page
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Admin\AdminPages\Basic\RootSelection;
 
 if ( ! is_admin() ) {
 	return;
 }
 
+/**
+ * Register all the hooks for this section.
+ */
 function register() {
 	add_action( 'admin_init', '\\Sgdg\\Admin\\AdminPages\\Basic\\RootSelection\\add' );
 	add_action( 'admin_enqueue_scripts', '\\Sgdg\\Admin\\AdminPages\\Basic\\RootSelection\\register_scripts_styles' );
 	add_action( 'wp_ajax_list_gdrive_dir', '\\Sgdg\\Admin\\AdminPages\\Basic\\RootSelection\\handle_ajax' );
 }
 
+/**
+ * Adds the settings section and all the fields in it.
+ */
 function add() {
 	add_settings_section( 'sgdg_root_selection', esc_html__( 'Step 2: Root directory selection', 'skaut-google-drive-gallery' ), '\\Sgdg\\Admin\\AdminPages\\Basic\\RootSelection\\html', 'sgdg_basic' );
 	\Sgdg\Options::$root_path->register();
 }
 
+/**
+ * Renders the header for the section.
+ */
 function html() {
 	\Sgdg\Options::$root_path->html();
 	echo( '<table class="widefat sgdg_root_selection">' );
@@ -33,6 +48,11 @@ function html() {
 	echo( '</table>' );
 }
 
+/**
+ * Enqueues scripts and styles for the section.
+ *
+ * @param string $hook The current admin page.
+ */
 function register_scripts_styles( $hook ) {
 	\Sgdg\enqueue_style( 'sgdg_options_root', '/admin/css/options-root.css' );
 	if ( 'toplevel_page_sgdg_basic' === $hook ) {
@@ -50,6 +70,13 @@ function register_scripts_styles( $hook ) {
 	}
 }
 
+/**
+ * Ajax call handler wrapper.
+ *
+ * This funtion is a wrapper for `ajax_handler_body)`. This function handles exceptions and returns them in a meaningful form.
+ *
+ * @see ajax_handler_body()
+ */
 function handle_ajax() {
 	try {
 		ajax_handler_body();
@@ -65,6 +92,13 @@ function handle_ajax() {
 }
 
 
+/**
+ * Handles ajax requests for the root selector.
+ *
+ * Returns a list of all subdirectories of a directory, or a list of all drives if a directory is not provided. Additionaly, returns all the directory names for the current path.
+ *
+ * @throws \Exception Insufficient role.
+ */
 function ajax_handler_body() {
 	check_ajax_referer( 'sgdg_root_selection' );
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -72,7 +106,7 @@ function ajax_handler_body() {
 	}
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
-	$path = isset( $_GET['path'] ) ? $_GET['path'] : [];
+	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : [];
 	$ret  = [
 		'path'        => path_ids_to_names( $client, $path ),
 		'directories' => [],
@@ -81,11 +115,19 @@ function ajax_handler_body() {
 	if ( count( $path ) === 0 ) {
 		$ret['directories'] = list_drives( $client );
 	} else {
-		$ret['directories'] = list_files( $client, end( $path ) );
+		$ret['directories'] = list_directories( $client, end( $path ) );
 	}
 	wp_send_json( $ret );
 }
 
+/**
+ * Converts an array of directory IDs to directory names.
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
+ * @param array                             $path An array of Gooogle Drive directory IDs.
+ *
+ * @return array An array of directory names.
+ */
 function path_ids_to_names( $client, $path ) {
 	$ret = [];
 	if ( count( $path ) > 0 ) {
@@ -109,6 +151,17 @@ function path_ids_to_names( $client, $path ) {
 	return $ret;
 }
 
+/**
+ * Lists all the drives for a user.
+ *
+ * Returns a list of all Shared drives plus "My Drive".
+ *
+ * @throws \Sgdg\Vendor\Google_Service_Exception An issue with the Drive API.
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
+ *
+ * @return array An array of drive records in the format `['name' => '', 'id' => '']`
+ */
 function list_drives( $client ) {
 	$ret        = [
 		[
@@ -138,7 +191,17 @@ function list_drives( $client ) {
 	return $ret;
 }
 
-function list_files( $client, $root ) {
+/**
+ * Lists all the subdirectories in a directory.
+ *
+ * @throws \Sgdg\Vendor\Google_Service_Exception An issue with the Drive API.
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
+ * @param string                            $root A directory to list the subdirectories of.
+ *
+ * @return array An array of directory records in the format `['name' => '', 'id' => '']`
+ */
+function list_directories( $client, $root ) {
 	$ret        = [];
 	$page_token = null;
 	do {

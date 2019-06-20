@@ -6,12 +6,12 @@ var replace = require( 'gulp-replace' );
 var eslint = require( 'gulp-eslint' );
 var stylelint = require( 'gulp-stylelint' );
 
+// Composer
+
 gulp.task( 'composer-check-updates', function( done ) {
 		composer( 'show -l', {'self-install': false, 'async': false});
 		done();
 	});
-
-gulp.task( 'npm-check-updates', shell.task([ 'npm outdated' ], {ignoreErrors: true}) );
 
 gulp.task( 'composer-do-update', function( done ) {
 		composer( 'update ', {'self-install': false, 'async': false});
@@ -151,30 +151,46 @@ gulp.task( 'composer-copy-licenses', function() {
 
 gulp.task( 'composer-copy', gulp.parallel( 'composer-copy-apiclient-services', 'composer-copy-apiclient', 'composer-copy-other', 'composer-copy-licenses' ) );
 
-function copyImagelightbox() {
+gulp.task( 'composer-update', gulp.series( 'composer-do-update', 'composer-copy' ) );
+
+// NPM
+
+gulp.task( 'npm-check-updates', shell.task([ 'npm outdated' ], {ignoreErrors: true}) );
+
+gulp.task( 'npm-do-update', shell.task([ 'npm install', 'npm update' ]) );
+
+function npmCopyImagelightbox() {
 	return gulp.src( 'node_modules/imagelightbox/dist/imagelightbox.min.*' )
 		.pipe( gulp.dest( 'plugin/bundled/' ) );
 }
 
-function copyImagesloaded() {
+function npmCopyImagesloaded() {
 	return gulp.src( 'node_modules/imagesloaded/imagesloaded.pkgd.min.js' )
 		.pipe( gulp.dest( 'plugin/bundled/' ) );
 }
 
-function copyJustifiedLayout() {
+function npmCopyJustifiedLayout() {
 	return gulp.src( 'node_modules/justified-layout/dist/justified-layout.min.js' )
 		.pipe( gulp.dest( 'plugin/bundled/' ) );
 }
 
-gulp.task( 'composer-update', gulp.series( 'composer-do-update', 'composer-copy' ) );
+gulp.task( 'npm-copy', gulp.parallel( npmCopyImagelightbox, npmCopyImagesloaded, npmCopyJustifiedLayout ) );
 
-gulp.task( 'npm-update', gulp.series( shell.task([ 'npm install', 'npm update' ]), gulp.parallel( copyImagelightbox, copyImagesloaded, copyJustifiedLayout ) ) );
+gulp.task( 'npm-update', gulp.series( 'npm-do-update', 'npm-copy' ) );
+
+// Unit tests
+
+gulp.task( 'phpunit', shell.task([ 'vendor/bin/phpunit' ]) )	;
+
+gulp.task( 'unit', gulp.series( 'phpunit' ) );
+
+// Lints
 
 gulp.task( 'phpcs', shell.task([ 'vendor/bin/phpcs' ]) );
 
 gulp.task( 'phpmd', shell.task([ 'vendor/bin/phpmd --exclude plugin/bundled/vendor plugin text phpmd.xml' ]) );
 
-gulp.task( 'phan', shell.task([ 'export PHAN_DISABLE_XDEBUG_WARN=1;vendor/bin/phan || true' ]) );
+gulp.task( 'phan', shell.task([ 'export PHAN_DISABLE_XDEBUG_WARN=1;vendor/bin/phan' ]) );
 
 gulp.task( 'eslint', function() {
 		return gulp.src([ '**/*.js', '!node_modules/**', '!vendor/**', '!plugin/bundled/**' ])
@@ -193,13 +209,9 @@ gulp.task( 'stylelint', function() {
 			}) );
 	});
 
-gulp.task( 'phpunit', shell.task([ 'vendor/bin/phpunit' ]) )	;
-
-// TODO: phpstan?
+//gulp.task( 'lint', gulp.series( 'phpcs', 'phpmd', 'phan', 'eslint', 'stylelint' ) );
 gulp.task( 'lint', gulp.series( 'phpcs', 'phpmd', 'phan', 'eslint' ) );
 
-//gulp.task( 'lint', gulp.series( 'phpcs', 'phpmd', 'phan', 'eslint', 'stylelint' ) );
+// Default command
 
-gulp.task( 'unit', gulp.series( 'phpunit' ) );
-
-gulp.task( 'default', gulp.series( 'lint', 'composer-check-updates', 'npm-check-updates' ) );
+gulp.task( 'default', gulp.series( 'unit', 'lint', 'composer-check-updates', 'npm-check-updates' ) );

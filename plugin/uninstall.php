@@ -1,4 +1,11 @@
 <?php
+/**
+ * Plugin uninstallation file.
+ *
+ * Deletes all the plugin options so that the database is clean after uninstall.
+ *
+ * @package skaut-google-drive-gallery
+ */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die( 'Die, die, die!' );
@@ -27,7 +34,7 @@ delete_option( 'sgdg_preview_loop' );
 delete_option( 'sgdg_preview_activity' );
 delete_option( 'sgdg_preview_captions' );
 
-// Deprecated
+// Deprecated.
 delete_option( 'sgdg_image_ordering' );
 delete_option( 'sgdg_thumbnail_size' );
 delete_option( 'sgdg_thumbnail_size_value' );

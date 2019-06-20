@@ -1,12 +1,26 @@
 <?php
+/**
+ * Contains all the functions for the Gutenberg block the plugin provides
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Frontend\Block;
 
+/**
+ * Registers all the hooks for the block if the system supports blocks (WP >= 5)
+ */
 function register() {
 	if ( function_exists( 'register_block_type' ) ) {
 		add_action( 'init', '\\Sgdg\\Frontend\\Block\\add' );
 	}
 }
 
+/**
+ * Adds the block
+ *
+ * This function registers the Gutenberg block and enqueues all the scripts and style it uses.
+ */
 function add() {
 	\Sgdg\register_script( 'sgdg_block_icon', '/frontend/js/iconSvg.js', [ 'wp-element' ] );
 	\Sgdg\register_script( 'sgdg_block_settings_component', '/frontend/js/SgdgSettingsComponent.js', [ 'wp-element' ] );
@@ -69,6 +83,15 @@ function add() {
 	);
 }
 
+/**
+ * Renders the block (in frontend)
+ *
+ * @see \Sgdg\Frontend\Options_Proxy
+ *
+ * @param array $attributes A list of option overrides, as documented in the Options_Proxy class plus the `path` attribute, which is an array of directory names.
+ *
+ * @return string The HTML code for the block.
+ */
 function html( $attributes ) {
 	return \Sgdg\Frontend\Shortcode\html( $attributes );
 }

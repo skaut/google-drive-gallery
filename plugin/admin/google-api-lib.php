@@ -1,25 +1,39 @@
 <?php
+/**
+ * Contains all the OAuth redirect handling functions, called by \Sgdg\Admin\AdminPages\action_handler()
+ *
+ * @see \Sgdg\Admin\AdminPages\action_handler()
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Admin\GoogleAPILib;
 
 if ( ! is_admin() ) {
 	return;
 }
 
+/**
+ * Redirects to the OAuth granting URL
+ */
 function oauth_grant() {
 	$client   = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
 	$auth_url = $client->createAuthUrl();
 	header( 'Location: ' . esc_url_raw( $auth_url ) );
 }
 
+/**
+ * Handles the redirect back from Google app permission granting and redirects back to basic settings
+ */
 function oauth_redirect() {
-	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( ! isset( $_GET['code'] ) ) {
 		add_settings_error( 'general', 'oauth_failed', esc_html__( 'Google API hasn\'t returned an authentication code. Please try again.', 'skaut-google-drive-gallery' ), 'error' );
 	}
 	if ( count( get_settings_errors() ) === 0 && false === get_option( 'sgdg_access_token', false ) ) {
 		$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-		$client->authenticate( $_GET['code'] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$client->fetchAccessTokenWithAuthCode( sanitize_text_field( wp_unslash( $_GET['code'] ) ) );
 		$access_token = $client->getAccessToken();
 
 		$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
@@ -28,6 +42,7 @@ function oauth_redirect() {
 			update_option( 'sgdg_access_token', $access_token );
 		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 			if ( 'accessNotConfigured' === $e->getErrors()[0]['reason'] ) {
+				// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
 				// translators: %s: Link to the Google developers console
 				add_settings_error( 'general', 'oauth_failed', sprintf( esc_html__( 'Google Drive API is not enabled. Please enable it at %s and try again after a while.', 'skaut-google-drive-gallery' ), '<a href="https://console.developers.google.com/apis/library/drive.googleapis.com" target="_blank">https://console.developers.google.com/apis/library/drive.googleapis.com</a>' ), 'error' );
 			} else {
@@ -42,6 +57,9 @@ function oauth_redirect() {
 	header( 'Location: ' . esc_url_raw( admin_url( 'admin.php?page=sgdg_basic&settings-updated=true' ) ) );
 }
 
+/**
+ * Revokes and deletes the OAuth token and redirects back to basic settings
+ */
 function oauth_revoke() {
 	$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
 	$client->revokeToken();

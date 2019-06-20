@@ -1,6 +1,17 @@
 <?php
+/**
+ * Contains wrappers around the Google API.
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Frontend\GoogleAPILib;
 
+/**
+ * Returns a fully set-up Google client.
+ *
+ * @return \Sgdg\Vendor\Google_Client
+ */
 function get_raw_client() {
 	$client = new \Sgdg\Vendor\Google_Client();
 	$client->setAuthConfig(
@@ -16,6 +27,13 @@ function get_raw_client() {
 	return $client;
 }
 
+/**
+ * Returns a fully set-up Google Drive API client.
+ *
+ * @throws \Exception Not authorized.
+ *
+ * @return \Sgdg\Vendor\Google_Service_Drive
+ */
 function get_drive_client() {
 	$client       = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
 	$access_token = get_option( 'sgdg_access_token', false );

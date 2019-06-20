@@ -1,15 +1,30 @@
 <?php
+/**
+ * Contains all the functions for the shortcode the plugin provides
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Frontend\Shortcode;
 
+/**
+ * Registers all the hooks for the shortcode.
+ */
 function register() {
 	add_action( 'init', '\\Sgdg\\Frontend\\Shortcode\\add' );
 	add_action( 'wp_enqueue_scripts', '\\Sgdg\\Frontend\\Shortcode\\register_scripts_styles' );
 }
 
+/**
+ * Adds the shortcode to WordPress.
+ */
 function add() {
 	add_shortcode( 'sgdg', '\\Sgdg\\Frontend\\Shortcode\\render' );
 }
 
+/**
+ * Registers all the scripts and styles used by the shortcode.
+ */
 function register_scripts_styles() {
 	\Sgdg\register_script( 'sgdg_gallery_init', '/frontend/js/shortcode.js', [ 'jquery' ] );
 	\Sgdg\register_style( 'sgdg_gallery_css', '/frontend/css/shortcode.css' );
@@ -20,6 +35,18 @@ function register_scripts_styles() {
 	\Sgdg\register_script( 'sgdg_justified-layout', '/bundled/justified-layout.min.js' );
 }
 
+/**
+ * Renders the shortcode.
+ *
+ * This function is a wrapper around the `html()` function which converts a slash-delimited path into an array
+ *
+ * @see html()
+ * @see \Sgdg\Frontend\Options_Proxy
+ *
+ * @param array $atts A list of option overrides, as documented in the Options_Proxy class plus the `path` attribute, which is a slash-delimited string.
+ *
+ * @return string The HTML code for the shortcode.
+ */
 function render( $atts ) {
 	if ( isset( $atts['path'] ) && '' !== $atts['path'] ) {
 		$atts['path'] = explode( '/', trim( $atts['path'], " /\t\n\r\0\x0B" ) );
@@ -27,6 +54,15 @@ function render( $atts ) {
 	return html( $atts );
 }
 
+/**
+ * Turns the shorcode into HTML.
+ *
+ * @see \Sgdg\Frontend\Options_Proxy
+ *
+ * @param array $atts A list of option overrides, as documented in the Options_Proxy class plus the `path` attribute, which is an array of directory names.
+ *
+ * @return string The HTML code for the block.
+ */
 function html( $atts ) {
 	wp_enqueue_script( 'sgdg_imagelightbox_script' );
 	wp_enqueue_style( 'sgdg_imagelightbox_style' );
@@ -81,6 +117,17 @@ function html( $atts ) {
 	return '<div class="sgdg-gallery-container" data-sgdg-hash="' . $hash . '"><div class="sgdg-loading"><div></div></div></div>';
 }
 
+/**
+ * Finds the ID of a directory
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
+ * @param string                            $root The ID of the root directory of the path.
+ * @param array                             $path An array of directory names forming a path starting from $root and ending with the directory whose ID is to be returned.
+ *
+ * @throws \Exception The path was invalid.
+ *
+ * @return string The ID of the directory.
+ */
 function find_dir( $client, $root, array $path ) {
 	$page_token = null;
 	do {

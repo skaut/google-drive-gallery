@@ -1,5 +1,13 @@
 <?php
+/**
+ * Includes all the PHP dependencies from the "fake vendor" directory
+ *
+ * As the plugin contains a "fake" vendor directory where dependecies are selectively copied to, the vendor autoloading doesn't work. This file manually includes all the dependencies.
+ *
+ * @package skaut-google-drive-gallery
+ */
 
+// Do not change the order of these, they might break.
 require_once __DIR__ . '/vendor/psr/http-message/src/UriInterface.php';
 require_once __DIR__ . '/vendor/psr/http-message/src/MessageInterface.php';
 require_once __DIR__ . '/vendor/psr/http-message/src/RequestInterface.php';

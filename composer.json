@@ -1,7 +1,7 @@
 {
     "name": "skaut/google-drive-gallery",
     "description": "A WordPress gallery using Google Drive as file storage",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "type": "wordpress-plugin",
     "keywords": [
         "WordPress",
@@ -32,10 +32,10 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0",
-        "wp-coding-standards/wpcs": "^1.0",
-        "phpcompatibility/php-compatibility": "^9.1",
+        "wp-coding-standards/wpcs": "^2.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.0",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": "^1.2",
+        "phan/phan": "^2.2",
         "phpunit/phpunit": "^7.5"
     }
 }

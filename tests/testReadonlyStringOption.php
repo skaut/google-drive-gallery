@@ -1,12 +1,12 @@
 <?php
 
-class ReadonlyStringOptionTest extends WP_UnitTestCase {
+class Readonly_String_Option_Test extends WP_UnitTestCase {
 
 	/**
-	 * @covers Sgdg\Admin\ReadonlyStringOption::__construct()
+	 * @covers Sgdg\Admin\Readonly_String_Option::__construct()
 	 */
 	public function test_ctor() {
-		$o = new \Sgdg\Admin\ReadonlyStringOption('name', 'value', 'page', 'section', 'title');
-		$this->assertInstanceOf( '\Sgdg\Admin\ReadonlyStringOption', $o );
+		$o = new \Sgdg\Admin\Readonly_String_Option('name', 'value', 'page', 'section', 'title');
+		$this->assertInstanceOf( '\Sgdg\Admin\Readonly_String_Option', $o );
 	}
 }

@@ -1,11 +1,27 @@
 <?php
+/**
+ * Contains all the functions used to handle the "gallery" AJAX endpoint.
+ *
+ * The "gallery" AJAX endpoint gets called when the gallery is initialized and the each time the user navigates the directories of the gallery. The endpoint returns the info about the currently viewed directory and the first page of the content.
+ *
+ * @package skaut-google-drive-gallery
+ */
+
 namespace Sgdg\Frontend\Gallery;
 
+/**
+ * Registers the "gallery" AJAX endpoint
+ */
 function register() {
 	add_action( 'wp_ajax_gallery', '\\Sgdg\\Frontend\\Gallery\\handle_ajax' );
 	add_action( 'wp_ajax_nopriv_gallery', '\\Sgdg\\Frontend\\Gallery\\handle_ajax' );
 }
 
+/**
+ * Handles errors for the "gallery" AJAX endpoint.
+ *
+ * This function is a wrapper around `handle_ajax_body` that handles all the possible errors that can occur and sends them back as error messages.
+ */
 function handle_ajax() {
 	try {
 		ajax_handler_body();
@@ -20,21 +36,38 @@ function handle_ajax() {
 	}
 }
 
+/**
+ * Actually handles the "gallery" AJAX endpoint.
+ *
+ * Returns the names of the directories along the user-selected path and the first page of the gallery.
+ */
 function ajax_handler_body() {
 	list( $client, $dir, $options ) = \Sgdg\Frontend\Page\get_context();
 
 	$ret = [];
-	// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['path'] ) && '' !== $_GET['path'] ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-		$ret['path'] = path_names( $client, explode( '/', $_GET['path'] ), $options );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$ret['path'] = path_names( $client, explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) ), $options );
 	}
-		// phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-	$remaining = $options->get( 'page_size' ) * max( 1, (int) $_GET['page'] );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$page      = isset( $_GET['page'] ) ? max( 1, intval( $_GET['page'] ) ) : 1;
+	$remaining = $options->get( 'page_size' ) * $page;
 	$ret       = array_merge( $ret, \Sgdg\Frontend\Page\get_page( $client, $dir, 0, $remaining, $options ) );
 	wp_send_json( $ret );
 }
 
+/**
+ * Adds names to a path represented as a list of directory IDs
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
+ * @param array                             $path A list of directory IDs.
+ * @param \Sgdg\Frontend\Options_Proxy      $options Gallery options.
+ *
+ * @throws \Sgdg\Vendor\Google_Service_Exception A Google Drive API exception.
+ *
+ * @return array A list of records in the format `['id' => 'id', 'name' => 'name']`.
+ */
 function path_names( $client, array $path, $options ) {
 	$client->getClient()->setUseBatch( true );
 	$batch = $client->createBatch();
@@ -58,7 +91,7 @@ function path_names( $client, array $path, $options ) {
 		}
 		$name = $response->getName();
 		$pos  = false;
-		if ( $options->get( 'dir_prefix' ) ) {
+		if ( '' !== $options->get( 'dir_prefix' ) ) {
 			$pos = mb_strpos( $name, $options->get( 'dir_prefix' ) );
 		}
 		$ret[] = [

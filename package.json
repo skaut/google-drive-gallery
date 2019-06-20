@@ -1,6 +1,6 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "A WordPress gallery using Google Drive as file storage",
   "keywords": [
     "wordpress",
@@ -20,7 +20,7 @@
     "url": "git+https://github.com/skaut/skaut-google-drive-gallery.git"
   },
   "dependencies": {
-    "imagelightbox": "^0.14.0",
+    "imagelightbox": "^1.0.1",
     "imagesloaded": "^4.1.4",
     "justified-layout": "^2.1.2",
     "snyk": "^1.143.5"
@@ -28,16 +28,15 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-compat": "^3.1.1",
+    "eslint-plugin-compat": "^3.1.2",
     "gulp": "^4.0.2",
     "gulp-composer": "^0.4.5",
     "gulp-eslint": "^5.0.0",
     "gulp-replace": "^1.0.0",
-    "gulp-shell": "^0.7.0",
+    "gulp-shell": "^0.7.1",
     "gulp-stylelint": "^9.0.0",
-    "merge-stream": "^1.0.1",
-    "snyk": "^1.163.3",
-    "stylelint": "^10.0.1",
+    "merge-stream": "^2.0.0",
+    "stylelint": "^10.1.0",
     "stylelint-config-wordpress": "^14.0.0",
     "stylelint-no-unsupported-browser-features": "^3.0.2"
   },
@@ -46,10 +45,5 @@
     "cover 99.9% in CZ",
     "last 4 versions",
     "Firefox ESR"
-  ],
-  "scripts": {
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
-  },
-  "snyk": true
+  ]
 }

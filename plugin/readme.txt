@@ -1,9 +1,9 @@
-=== Google Drive gallery ===
-Contributors: skaut, genabitu, kalich5
+=== Google Drive Gallery ===
+Contributors: skaut, marekdedic, kalich5, genabitu
 Tags: skaut, google drive, google drive gallery, team drive, shared drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.2
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/license.txt
@@ -12,9 +12,15 @@ A WordPress gallery using Google Drive as file storage
 
 == Description ==
 
-Google Drive gallery enables you to insert image galleries into your WordPress site. The galleries are sourced from Google Drive, so that you don't have to store the images on your site, which saves you from having to upload them to the site and have them take up space on your hosting. Also, if you ever decide to reinstall or move your site, simply install this plugin again on the new site and your old galleries will still be there and working.
+Google Drive gallery is a plugin for WordPress that connects your site to your Google Drive. With this plugin, you can select any folder in your Drive or a Shared drive and the plugin will convert it into a gallery, displaying any photos or videos in a page or a post on your website. Any folders and their subfolders will also be displayed in the gallery as nested galleries.
 
-To see the plugin in action, head on to our [demo page](https://demo-skaut-google-drive-gallery.skauting.cz/).
+All the data is sourced from Google Drive with nothing but the plugin configuration being a part of your website. This enables your site to load faster as the images are loaded from Google and not from your hosting. It may also save you costs for your site hosting, as the big files of the gallery are not stored as part of your site. On top of that, if you ever decide to move or reinstall your site, simply install this plugin again on the new site and your old galleries will still be there and working.
+
+Having the photos in Google Drive also gives you a familiar and easy-to-navigate UI for gallery management. You can give individual people or groups granular permissions to the Drive folder, making them able to add photos to a particular gallery without giving them full access to your site. They will then be able to manage the content of the gallery through Google Drive, without having to learn how to work with WordPress. You can also manage all content in your organization with Shared drives owned by your organization's G Suite.
+
+Using this plugin is very straightforward. Once the plugin is installed and configured, you can add a Google Drive gallery to any page or post. If you are using WordPress 5 or newer with the block editor (i. e. Gutenberg), there is a block that you can add that will allow you to choose a folder with a graphical user interface. It also makes it possible to configure each individual gallery very easily, should you want to do that. If you are using an older WordPress version or are still using the classic editor, there is a shortcode you can use instead of the block.
+
+If you want to see how to install, configure and use the plugin, visit our [documentation](https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive-gallery). To see the plugin in action, head on to the [demo page](https://demo-skaut-google-drive-gallery.skauting.cz/).
 
 === Features ===
 * Display any Google Drive folder as a gallery
@@ -23,6 +29,7 @@ To see the plugin in action, head on to our [demo page](https://demo-skaut-googl
 * Insert a gallery with a shortcode or with a click of a button
 * Provides a Gutenberg block, making sure that your galleries will work even in WordPress 5
 * Also works with Shared drives (formerly known as Team drives)
+* Supports videos as well
 
 === Minimal requirements ===
 * WordPress 4.9.6 or higher
@@ -68,6 +75,11 @@ If no path is provided, then the root directory itself is used.
 6. Advanced options
 
 == Changelog ==
+
+= 2.6.0 =
+* Incorporated updates to Google Drive and its API, namely the rebranding of Team Drives as Shared drives.
+* Added support for image captions sourced from the "description" field in Google Drive.
+* Added more quality control with more still to follow.
 
 = 2.5.0 =
 * Added support for pagination of gallery items with configurable page size and optional (enabled by default) autoloading.

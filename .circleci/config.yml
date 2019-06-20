@@ -6,11 +6,8 @@ workflows:
       - unit-php72
       - unit-php73:
           coverage: true
-      - lint:
-          requires:
-            - unit-php71
-            - unit-php72
-            - unit-php73
+      - lint
+      - check-dependency-sync
 
 job-references:
   mysql_image: &mysql_image
@@ -39,7 +36,7 @@ job-references:
     name: "Install NPM dependencies"
     command: |
       sudo npm install --global gulp-cli
-      npm install
+      npm ci
 
   save_npm: &save_npm
     key: node-v1-{{ checksum "package.json" }}
@@ -121,7 +118,36 @@ jobs:
       - restore_cache: *restore_npm
       - run: *install_npm
       - save_cache: *save_npm
-
+      - run:
+          name: "Install php-ast"
+          command: |
+            sudo pecl install ast
+            echo 'extension=ast.so' | sudo tee /usr/local/etc/php/php.ini > /dev/null
       - run:
           name: "Lint"
           command: gulp lint
+
+  check-dependency-sync:
+    docker:
+      - image: circleci/php:latest-node
+    steps:
+      - checkout
+
+      - restore_cache: *restore_composer
+      - run: *install_composer
+      - save_cache: *save_composer
+
+      - restore_cache: *restore_npm
+      - run: *install_npm
+      - save_cache: *save_npm
+
+      - run:
+          name: "Check composer dependency sync"
+          command: |
+            gulp composer-copy
+            [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+      - run:
+          name: "Check NPM dependency sync"
+          command: |
+            gulp npm-copy
+            [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))

@@ -1,17 +1,34 @@
 <?xml version="1.0"?>
 <ruleset>
 	<file>plugin</file>
-	<exclude-pattern>plugin/bundled/vendor/*/*</exclude-pattern>
-	<exclude-pattern>plugin/bundled/*.min.*</exclude-pattern>
-	<exclude-pattern>*.js</exclude-pattern>
-	<exclude-pattern>*.css</exclude-pattern>
+	<exclude-pattern>plugin/bundled/vendor/</exclude-pattern>
 
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility"/>
-	<config name="testVersion" value="5.6-"/>
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/phpcompatibility-wp/PHPCompatibilityWP"/>
 
+	<arg name="basepath" value="plugin"/>
 	<arg name="colors"/>
 	<arg value="s"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
 
-	<rule ref="PHPCompatibility"/>
-	<rule ref="WordPress-Extra"/>
+	<config name="testVersion" value="5.6-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<config name="minimum_supported_wp_version" value="4.9"/>
+	<rule ref="WordPress"/>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array" value="Sgdg"/>
+		</properties>
+	</rule>
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="skaut-google-drive-gallery"/>
+		</properties>
+	</rule>
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+		<properties>
+			<property name="blank_line_check" value="true"/>
+		</properties>
+	</rule>
 </ruleset>
