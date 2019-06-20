@@ -22,8 +22,7 @@
   "dependencies": {
     "imagelightbox": "^1.0.1",
     "imagesloaded": "^4.1.4",
-    "justified-layout": "^2.1.2",
-    "snyk": "^1.143.5"
+    "justified-layout": "^2.1.2"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
