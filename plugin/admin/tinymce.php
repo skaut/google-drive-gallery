@@ -85,8 +85,7 @@ function ajax_handler_body() {
 		throw new \Exception( esc_html__( 'Insufficient role for this action.', 'skaut-google-drive-gallery' ) );
 	}
 	if ( false === get_option( 'sgdg_access_token', false ) ) {
-		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-		// translators: 1: Start of link to the settings 2: End of link to the settings
+		/* translators: 1: Start of link to the settings 2: End of link to the settings */
 		throw new \Exception( sprintf( esc_html__( 'Google Drive gallery hasn\'t been granted permissions yet. Please %1$sconfigure%2$s the plugin and try again.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( admin_url( 'admin.php?page=sgdg_basic' ) ) . '">', '</a>' ) );
 	}
 

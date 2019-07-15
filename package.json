@@ -1,6 +1,6 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.6.0",
+  "version": "2.7.1",
   "description": "A WordPress gallery using Google Drive as file storage",
   "keywords": [
     "wordpress",
@@ -14,7 +14,7 @@
     "url": "https://github.com/skaut/skaut-google-drive-gallery/issues"
   },
   "license": "MIT",
-  "author": "GenaBitu",
+  "author": "Marek Dědič",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/skaut/skaut-google-drive-gallery.git"
@@ -25,12 +25,12 @@
     "justified-layout": "^2.1.2"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-compat": "^3.1.2",
+    "eslint-plugin-compat": "^3.2.0",
     "gulp": "^4.0.2",
     "gulp-composer": "^0.4.5",
-    "gulp-eslint": "^5.0.0",
+    "gulp-eslint": "^6.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.7.1",
     "gulp-stylelint": "^9.0.0",

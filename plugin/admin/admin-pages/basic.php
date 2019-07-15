@@ -44,8 +44,7 @@ function html() {
 	}
 
 	$help_link = 'https://napoveda.skaut.cz/dobryweb/' . substr( get_locale(), 0, 2 ) . '-skaut-google-drive-gallery';
-	// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-	// translators: 1: Start of a help link 2: End of the help link
+	/* translators: 1: Start of a help link 2: End of the help link */
 	add_settings_error( 'general', 'help', sprintf( esc_html__( 'See the %1$sdocumentation%2$s for more information about how to configure the plugin.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( $help_link ) . '" target="_blank">', '</a>' ), 'notice-info' );
 
 	settings_errors();

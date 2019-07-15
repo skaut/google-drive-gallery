@@ -8,19 +8,19 @@
  */
 
 /*
-Plugin Name:	Google Drive Gallery
-Plugin URI:     https://github.com/skaut/skaut-google-drive-gallery/
+Plugin Name:	Image and video gallery from Google Drive
+Plugin URI:		https://github.com/skaut/skaut-google-drive-gallery/
 Description:	A WordPress gallery using Google Drive as file storage
-Version:	2.6.0
-Author:		Junák - český skaut
-Author URI:	https://github.com/skaut
-License:	MIT
+Version:		2.7.1
+Author:			Junák - český skaut
+Author URI:		https://github.com/skaut
+License:		MIT
 License URI:	https://raw.githubusercontent.com/skaut/skaut-google-drive-gallery/master/LICENSE.md
 Text Domain:	skaut-google-drive-gallery
 
 MIT License
 
-Copyright (c) 2018 Marek Dědič
+Copyright (c) Marek Dědič
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -103,8 +103,7 @@ function activation_notice() {
 	if ( false !== get_transient( 'sgdg_activation_notice' ) ) {
 		echo( '<div class="notice notice-info is-dismissible"><p>' );
 		$help_link = 'https://napoveda.skaut.cz/dobryweb/' . substr( get_locale(), 0, 2 ) . '-skaut-google-drive-gallery';
-		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-		// translators: 1: Start of a link to the settings 2: End of the link to the settings 3: Start of a help link 4: End of the help link
+		/* translators: 1: Start of a link to the settings 2: End of the link to the settings 3: Start of a help link 4: End of the help link */
 		printf( esc_html__( 'Google Drive gallery needs to be %1$sconfigured%2$s before it can be used. See the %3$sdocumentation%4$s for more information.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( admin_url( 'admin.php?page=sgdg_basic' ) ) . '">', '</a>', '<a href="' . esc_url( $help_link ) . '" target="_blank">', '</a>' );
 		echo( '</p></div>' );
 		delete_transient( 'sgdg_activation_notice' );

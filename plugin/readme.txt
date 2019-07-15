@@ -1,9 +1,9 @@
-=== Google Drive Gallery ===
+=== Image and video gallery from Google Drive ===
 Contributors: skaut, marekdedic, kalich5, genabitu
-Tags: skaut, google drive, google drive gallery, team drive, shared drive, gallery, multisite, shortcode
+Tags: skaut, google drive, google drive gallery, image and video gallery from google drive, team drive, shared drive, image gallery, video gallery, image and video gallery, gallery from google drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.2
-Stable tag: 2.6.0
+Stable tag: 2.7.1
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/license.txt
@@ -12,7 +12,7 @@ A WordPress gallery using Google Drive as file storage
 
 == Description ==
 
-Google Drive gallery is a plugin for WordPress that connects your site to your Google Drive. With this plugin, you can select any folder in your Drive or a Shared drive and the plugin will convert it into a gallery, displaying any photos or videos in a page or a post on your website. Any folders and their subfolders will also be displayed in the gallery as nested galleries.
+*Image and video gallery from Google Drive* is a plugin for WordPress that connects your site to your Google Drive. With this plugin, you can select any folder in your Drive or a Shared drive and the plugin will convert it into a gallery, displaying any photos or videos in a page or a post on your website. Any folders and their subfolders will also be displayed in the gallery as nested galleries.
 
 All the data is sourced from Google Drive with nothing but the plugin configuration being a part of your website. This enables your site to load faster as the images are loaded from Google and not from your hosting. It may also save you costs for your site hosting, as the big files of the gallery are not stored as part of your site. On top of that, if you ever decide to move or reinstall your site, simply install this plugin again on the new site and your old galleries will still be there and working.
 
@@ -60,6 +60,9 @@ To show a Google Drive gallery add the shortcode `[sgdg path="Folder name"]` to 
 It is also possible to use subdirectories with the shortcode `[sgdg path="Folder name/subfolder/subsubfolder"]`.
 If no path is provided, then the root directory itself is used.
 
+= Why isn't my video shown? =
+The plugin only shows videos that can be played by the browser. Unfortunately, at the moment, different browsers support different video formats. If you want the best support, we recommend using MP4. Detailed information about which formats are supported by each browser can be found on [Wikipedia](https://en.wikipedia.org/wiki/HTML5_video#Browser_support).
+
 == Screenshots ==
 
 1. A simple gallery
@@ -76,16 +79,24 @@ If no path is provided, then the root directory itself is used.
 
 == Changelog ==
 
+= 2.7.1 =
+* Fixed a bug causing galleries not to load
+* Slightly tweaked the grid layout
+
+= 2.7.0 =
+* Added video support
+* Documented all of the source code
+
 = 2.6.0 =
-* Incorporated updates to Google Drive and its API, namely the rebranding of Team Drives as Shared drives.
-* Added support for image captions sourced from the "description" field in Google Drive.
-* Added more quality control with more still to follow.
+* Incorporated updates to Google Drive and its API, namely the rebranding of Team Drives as Shared drives
+* Added support for image captions sourced from the "description" field in Google Drive
+* Added more quality control with more still to follow
 
 = 2.5.0 =
-* Added support for pagination of gallery items with configurable page size and optional (enabled by default) autoloading.
-* Added option to hide a part (a prefix to be more precise) of folder names. This is useful when folders are ordered by name to define own custom ordering.
-* Fixed an issue with incorrect Authorised JavaScript origin for websites located in a subdirectory.
-* Added more checks to plugin options to ensure they can't break it.
+* Added support for pagination of gallery items with configurable page size and optional (enabled by default) autoloading
+* Added option to hide a part (a prefix to be more precise) of folder names. This is useful when folders are ordered by name to define own custom ordering
+* Fixed an issue with incorrect Authorised JavaScript origin for websites located in a subdirectory
+* Added more checks to plugin options to ensure they can't break it
 * Enabled support for caching plugins
 
 = 2.4.0 =
@@ -169,6 +180,9 @@ If no path is provided, then the root directory itself is used.
 * Required PHP 5.6 and higher
 
 == Upgrade Notice ==
+
+= 2.7.0 =
+* Fixed a bug with paging which may break a small percentage of links to particular images.
 
 = 2.0.0 =
 * Changed the Google API redirect URI. All existing installs need to reconfigure the google app.

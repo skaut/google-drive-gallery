@@ -101,7 +101,7 @@ function html( $atts ) {
 		try {
 			$root = find_dir( $client, $root, $atts['path'] );
 		} catch ( \Exception $e ) {
-			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
+			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>'; // TODO: Handle properly.
 		}
 	}
 	$hash = hash( 'sha256', $root );

@@ -1,6 +1,6 @@
 # Google Drive Gallery
 
-![CircleCI branch](https://img.shields.io/circleci/project/github/skaut/skaut-google-drive-gallery/master.svg) ![Codecov branch](https://img.shields.io/codecov/c/github/skaut/skaut-google-drive-gallery/master.svg) ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/skaut-google-drive-gallery.svg) ![WordPress Plugin Rating](https://img.shields.io/wordpress/plugin/rating/skaut-google-drive-gallery.svg) ![WordPress Plugin: Tested WP Version](https://img.shields.io/wordpress/plugin/tested/skaut-google-drive-gallery.svg)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/skaut/skaut-google-drive-gallery/master.svg)](https://circleci.com/gh/skaut/workflows/skaut-google-drive-gallery/tree/master) [![Codecov branch](https://img.shields.io/codecov/c/github/skaut/skaut-google-drive-gallery/master.svg)](https://codecov.io/gh/skaut/skaut-google-drive-gallery/branch/master) [![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/skaut-google-drive-gallery.svg)](https://wordpress.org/plugins/skaut-google-drive-gallery/) [![WordPress Plugin Rating](https://img.shields.io/wordpress/plugin/rating/skaut-google-drive-gallery.svg)](https://wordpress.org/plugins/skaut-google-drive-gallery/) [![WordPress Plugin: Tested WP Version](https://img.shields.io/wordpress/plugin/tested/skaut-google-drive-gallery.svg)](https://wordpress.org/plugins/skaut-google-drive-gallery/)
 
 A WordPress gallery using Google Drive as file storage.
 

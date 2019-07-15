@@ -1,13 +1,21 @@
 {
     "name": "skaut/google-drive-gallery",
     "description": "A WordPress gallery using Google Drive as file storage",
-    "version": "2.6.0",
+    "version": "2.7.1",
     "type": "wordpress-plugin",
     "keywords": [
         "WordPress",
         "WordPress plugin",
+        "skaut",
         "Google Drive",
         "Google Drive gallery",
+        "Image and video gallery from Google Drive",
+        "Team drive",
+        "Shared drive",
+        "image gallery",
+        "video gallery",
+        "image and video gallery",
+        "gallery from Google Drive",
         "gallery",
         "gallery plugin"
     ],
@@ -16,8 +24,8 @@
     "license": "MIT",
     "authors": [
     {
-        "name": "GenaBitu",
-        "email": "genabitu@gmail.com"
+        "name": "Marek Dědič",
+        "email": "developer@dedic.eu"
     }
     ],
     "support": {

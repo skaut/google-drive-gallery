@@ -42,8 +42,7 @@ function oauth_redirect() {
 			update_option( 'sgdg_access_token', $access_token );
 		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 			if ( 'accessNotConfigured' === $e->getErrors()[0]['reason'] ) {
-				// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-				// translators: %s: Link to the Google developers console
+				/* translators: %s: Link to the Google developers console */
 				add_settings_error( 'general', 'oauth_failed', sprintf( esc_html__( 'Google Drive API is not enabled. Please enable it at %s and try again after a while.', 'skaut-google-drive-gallery' ), '<a href="https://console.developers.google.com/apis/library/drive.googleapis.com" target="_blank">https://console.developers.google.com/apis/library/drive.googleapis.com</a>' ), 'error' );
 			} else {
 				add_settings_error( 'general', 'oauth_failed', esc_html__( 'An unknown error has been encountered:', 'skaut-google-drive-gallery' ) . ' ' . $e->getErrors()[0]['message'], 'error' );
