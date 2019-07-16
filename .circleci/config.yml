@@ -2,12 +2,20 @@ version: 2.1
 workflows:
   main:
     jobs:
-      - unit-php71
-      - unit-php72
+      - build
+      - unit-php71:
+          requires:
+            - build
+      - unit-php72:
+          requires:
+            - build
       - unit-php73:
+          requires:
+            - build
           coverage: true
-      - lint
-      - check-dependency-sync
+      - lint:
+          requires:
+            - build
 
 job-references:
   mysql_image: &mysql_image
@@ -59,6 +67,9 @@ job-references:
       - run: *install_npm
       - save_cache: *save_npm
 
+      - attach_workspace:
+          at: dist
+
       - run:
           name: "Prepare WordPress"
           command: |
@@ -87,6 +98,27 @@ job-references:
                 path: ~/phpunit
 
 jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3-node
+    steps:
+      - checkout
+
+      - restore_cache: *restore_composer
+      - run: *install_composer
+      - save_cache: *save_composer
+
+      - restore_cache: *restore_npm
+      - run: *install_npm
+      - save_cache: *save_npm
+      - run:
+          name: "Build"
+          command: gulp build
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - "*"
+
   unit-php71:
     <<: *unit_test
     docker:
@@ -118,6 +150,10 @@ jobs:
       - restore_cache: *restore_npm
       - run: *install_npm
       - save_cache: *save_npm
+
+      - attach_workspace:
+          at: dist
+
       - run:
           name: "Install php-ast"
           command: |
@@ -126,28 +162,3 @@ jobs:
       - run:
           name: "Lint"
           command: gulp lint
-
-  check-dependency-sync:
-    docker:
-      - image: circleci/php:latest-node
-    steps:
-      - checkout
-
-      - restore_cache: *restore_composer
-      - run: *install_composer
-      - save_cache: *save_composer
-
-      - restore_cache: *restore_npm
-      - run: *install_npm
-      - save_cache: *save_npm
-
-      - run:
-          name: "Check composer dependency sync"
-          command: |
-            gulp composer-copy
-            [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
-      - run:
-          name: "Check NPM dependency sync"
-          command: |
-            gulp npm-copy
-            [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))

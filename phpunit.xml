@@ -29,10 +29,10 @@
 	</php>
 	<filter>
 		<whitelist>
-			<directory suffix=".php">plugin/</directory>
+			<directory suffix=".php">dist/</directory>
 			<exclude>
-				<directory>plugin/bundled/vendor/</directory>
-				<directory>plugin/bundled/vendor-includes.php</directory>
+				<directory>dist/bundled/vendor/</directory>
+				<directory>dist/bundled/vendor-includes.php</directory>
 			</exclude>
 		</whitelist>
 	</filter>

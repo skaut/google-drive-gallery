@@ -1,4 +1,9 @@
 <?php
+/**
+ * PHAN configuration
+ *
+ * @package skaut-google-drive-gallery
+ */
 
 return [
 	'target_php_version'              => '7.3',
@@ -6,11 +11,13 @@ return [
 	'analyze_signature_compatibility' => true,
 	'minimum_severity'                => 0,
 	'directory_list'                  => [
-		'plugin',
-		'.phan/stubs',
+		'src',
+		'tests',
+		'.phan',
+		'dist/bundled/vendor',
 	],
 	'exclude_analysis_directory_list' => [
-		'plugin/bundled/vendor/',
+		'dist/bundled/vendor/',
 	],
 	'suppress_issue_types'            => [
 		'PhanPluginDuplicateConditionalNullCoalescing',
