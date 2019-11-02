@@ -6,7 +6,7 @@ Tested up to: 5.2
 Stable tag: 2.7.1
 Requires PHP: 5.6
 License: MIT
-License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/license.txt
+License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
 
 A WordPress gallery using Google Drive as file storage
 

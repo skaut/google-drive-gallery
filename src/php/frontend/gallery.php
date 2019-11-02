@@ -79,6 +79,7 @@ function path_names( $client, array $path, $options ) {
 				'fields'            => 'name',
 			]
 		);
+		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, $segment );
 	}
 	$responses = $batch->execute();

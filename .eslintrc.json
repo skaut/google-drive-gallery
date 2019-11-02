@@ -1,10 +1,47 @@
 {
-	"env": {
-		"browser": true
+	"parserOptions": {
+		"project": "./tsconfig.json",
+		"sourceType": "script"
 	},
-	"plugins": ["compat"],
-	"extends": "wordpress",
+	"env": {
+		"browser": true,
+		"node": false
+	},
+	"plugins": [
+		"compat",
+		"@typescript-eslint"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@wordpress/eslint-plugin/recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+	],
 	"rules": {
-		"compat/compat": "warn"
+		"compat/compat": "warn",
+		"no-warning-comments": "warn",
+		"strict": ["error", "never"],
+		"@typescript-eslint/array-type": ["error", {"default": "generic"}],
+		"@typescript-eslint/member-ordering": "error",
+		"@typescript-eslint/no-extraneous-class": "error",
+		"@typescript-eslint/no-namespace": ["error", {"allowDeclarations": true}],
+		"@typescript-eslint/no-non-null-assertion": "off"
+	},
+	"globals": {
+		"SgdgBlockIconComponent": false,
+		"SgdgBooleanSettingsComponent": false,
+		"SgdgEditorComponent": false,
+		"SgdgIntegerSettingsComponent": false,
+		"SgdgOrderingSettingsComponent": false,
+		"SgdgSettingsComponent": false,
+		"SgdgSettingsOverrideComponent": false,
+		"jQuery": false,
+		"sgdgBlockLocalize": false,
+		"sgdgRootpathLocalize": false,
+		"sgdgShortcodeLocalize": false,
+		"sgdgTinymceLocalize": false,
+		"tb_remove": false,
+		"tb_show": false
 	}
 }

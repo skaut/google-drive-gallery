@@ -86,25 +86,24 @@ function get_context() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['path'] ) && '' !== $_GET['path'] ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$dir = apply_path( $client, $dir, explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) ) );
+		$path = explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) );
+		verify_path( $client, $dir, $path );
+		$dir = end( $path );
 	}
 
 	return [ $client, $dir, $options ];
 }
 
-// TODO: Why TF does this function even exist? Shouldn't the $path contain directory names? Or is it just for the exception checking? Because like safety and the directory coud've been moved out of the root directory? Or something...
 /**
- * Returns the ID of the last directory of a path
+ * Checks that a path is a valid path starting in a root directory.
  *
  * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
  * @param string                            $root The root directory the path is realtive to.
  * @param array                             $path A list of directory IDs.
  *
  * @throws \Exception An ivalid path.
- *
- * @return string An ID of a Google Drive directory.
  */
-function apply_path( $client, $root, array $path ) {
+function verify_path( $client, $root, array $path ) {
 	$page_token = null;
 	do {
 		$params   = [
@@ -121,11 +120,11 @@ function apply_path( $client, $root, array $path ) {
 		}
 		foreach ( $response->getFiles() as $file ) {
 			if ( $file->getId() === $path[0] ) {
-				if ( count( $path ) === 1 ) {
-					return $file->getId();
+				if ( count( $path ) > 1 ) {
+					array_shift( $path );
+					verify_path( $client, $file->getId(), $path );
 				}
-				array_shift( $path );
-				return apply_path( $client, $file->getId(), $path );
+				return;
 			}
 		}
 		$page_token = $response->getNextPageToken();
@@ -147,6 +146,9 @@ function apply_path( $client, $root, array $path ) {
  * @return array {
  *     @type array $directories A list of directories in the format `['id' =>, 'id', 'name' => 'name', 'thumbnail' => 'thumbnail', 'dircount' => 1, 'imagecount' => 1]`.
  *     @type array $images A list of images in the format `['id' =>, 'id', 'description' => 'description', 'image' => 'image', 'thumbnail' => 'thumbnail']`.
+ *     @type array $videos A list of videos in the format `['id' =>, 'id', 'thumbnail' => 'thumbnail', 'mimeType' => 'mimeType', 'src' => 'src']`.
+ *     @type bool $more Whether there are any more items remaining (in general, not just the page).
+
  * }
  */
 function get_page( $client, $dir, $skip, $remaining, $options ) {
@@ -233,11 +235,11 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 /**
  * Converts a list of Google Drive files into a list of IDs and a list of names.
  *
- * @param array                        $files A list of \Sgdg\Vendor\Google_Service_Drive_DriveFile.
- * @param \Sgdg\Frontend\Options_Proxy $options The configuration of the gallery.
- * @param int                          $skip How many items to skip from the beginning.
- * @param int                          $remaining How many items are still to be returned.
- * @param bool                         $more Whether there are any more items remaining (in general, not just the page).
+ * @param \Sgdg\Vendor\Google_Collection $files A list of \Sgdg\Vendor\Google_Service_Drive_DriveFile.
+ * @param \Sgdg\Frontend\Options_Proxy   $options The configuration of the gallery.
+ * @param int                            $skip How many items to skip from the beginning.
+ * @param int                            $remaining How many items are still to be returned.
+ * @param bool                           $more Whether there are any more items remaining (in general, not just the page).
  *
  * @return array {
  *     @type array A list of Google Drive directory IDs.
@@ -294,6 +296,7 @@ function dir_images_requests( $client, $batch, $dirs, $options ) {
 	foreach ( $dirs as $dir ) {
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false';
 		$request     = $client->files->listFiles( $params );
+		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, 'img-' . $dir );
 	}
 }
@@ -318,12 +321,15 @@ function dir_counts_requests( $client, $batch, $dirs ) {
 	foreach ( $dirs as $dir ) {
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "application/vnd.google-apps.folder" and trashed = false';
 		$request     = $client->files->listFiles( $params );
+		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, 'dircount-' . $dir );
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false';
 		$request     = $client->files->listFiles( $params );
+		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, 'imgcount-' . $dir );
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "video/" and trashed = false';
 		$request     = $client->files->listFiles( $params );
+		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, 'vidcount-' . $dir );
 	}
 }
@@ -443,7 +449,7 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token && ( 0 < $remaining || ! boolval( $more ) ) );
+	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 	$ret = images_order( $ret, $options );
 	return [ $ret, $skip, $remaining, $more ];
 }
@@ -472,9 +478,12 @@ function image_preprocess( $file, $options ) {
 	];
 	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 		if ( null !== $file->getImageMediaMetadata() && null !== $file->getImageMediaMetadata()->getTime() ) {
-			$ret['timestamp'] = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() )->format( 'U' );
+			$timestamp = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() );
 		} else {
-			$ret['timestamp'] = \DateTime::createFromFormat( 'Y-m-d\TH:i:s.uP', $file->getCreatedTime() )->format( 'U' );
+			$timestamp = \DateTime::createFromFormat( 'Y-m-d\TH:i:s.uP', $file->getCreatedTime() );
+		}
+		if ( false !== $timestamp ) {
+			$ret['timestamp'] = $timestamp->format( 'U' );
 		}
 	}
 	return $ret;
@@ -560,7 +569,7 @@ function videos( $client, $dir, $options, $skip, $remaining ) {
 			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token && ( 0 < $remaining || ! boolval( $more ) ) );
+	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 	$ret = videos_requests( $ret, $requests );
 	return [ $ret, $more ];
 }
@@ -580,7 +589,7 @@ function videos_requests( $videos, $requests ) {
 	$count     = count( $responses );
 	for ( $i = 0; $i < $count; $i++ ) {
 		$videos[ $i ]['src'] = \WP_Http::processHeaders( \WP_Http::processResponse( $responses[ $i ]->raw )['headers'] )['headers']['location'];
-		if ( ! $videos[ $i ]['src'] ) {
+		if ( ! isset( $videos[ $i ]['src'] ) ) {
 			unset( $videos[ $i ] );
 		}
 	}

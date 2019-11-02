@@ -3,6 +3,8 @@
  * Contains WordPress WP_Http class stub for PHAN
  *
  * @package skaut-google-drive-gallery
+ *
+ * @phan-file-suppress PhanUnusedPublicNoOverrideMethodParameter
  */
 
 // phpcs:disable Squiz.Commenting.ClassComment.Missing

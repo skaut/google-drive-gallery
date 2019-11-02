@@ -26,13 +26,13 @@ function add() {
  * Registers all the scripts and styles used by the shortcode.
  */
 function register_scripts_styles() {
-	\Sgdg\register_script( 'sgdg_gallery_init', '/frontend/js/shortcode.js', [ 'jquery' ] );
-	\Sgdg\register_style( 'sgdg_gallery_css', '/frontend/css/shortcode.css' );
+	\Sgdg\register_script( 'sgdg_gallery_init', 'frontend/js/shortcode.js', [ 'jquery' ] );
+	\Sgdg\register_style( 'sgdg_gallery_css', 'frontend/css/shortcode.css' );
 
-	\Sgdg\register_script( 'sgdg_imagelightbox_script', '/bundled/imagelightbox.min.js', [ 'jquery' ] );
-	\Sgdg\register_style( 'sgdg_imagelightbox_style', '/bundled/imagelightbox.min.css' );
-	\Sgdg\register_script( 'sgdg_imagesloaded', '/bundled/imagesloaded.pkgd.min.js', [ 'jquery' ] );
-	\Sgdg\register_script( 'sgdg_justified-layout', '/bundled/justified-layout.min.js' );
+	\Sgdg\register_script( 'sgdg_imagelightbox_script', 'bundled/imagelightbox.min.js', [ 'jquery' ] );
+	\Sgdg\register_style( 'sgdg_imagelightbox_style', 'bundled/imagelightbox.min.css' );
+	\Sgdg\register_script( 'sgdg_imagesloaded', 'bundled/imagesloaded.pkgd.min.js', [ 'jquery' ] );
+	\Sgdg\register_script( 'sgdg_justified-layout', 'bundled/justified-layout.min.js' );
 }
 
 /**
@@ -100,8 +100,13 @@ function html( $atts ) {
 		$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 		try {
 			$root = find_dir( $client, $root, $atts['path'] );
+		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
+			if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
+				return '<div class="sgdg-gallery-container">' . esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) . '</div>';
+			}
+			return '<div class="sgdg-gallery-container">' . $e->getErrors()[0]['message'] . '</div>';
 		} catch ( \Exception $e ) {
-			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>'; // TODO: Handle properly.
+			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
 		}
 	}
 	$hash = hash( 'sha256', $root );

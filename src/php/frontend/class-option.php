@@ -56,8 +56,7 @@ abstract class Option {
 	 * @param string $title A human-readable name of the option to be displayed to the user.
 	 */
 	public function __construct( $name, $default_value, $page, $section, $title ) {
-		$this->name = 'sgdg_' . $name;
-		// @phan-suppress-next-line PhanTypeMismatchProperty
+		$this->name          = 'sgdg_' . $name;
 		$this->default_value = $default_value;
 		$this->page          = 'sgdg_' . $page;
 		$this->section       = 'sgdg_' . $section;

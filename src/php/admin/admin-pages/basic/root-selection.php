@@ -54,9 +54,9 @@ function html() {
  * @param string $hook The current admin page.
  */
 function register_scripts_styles( $hook ) {
-	\Sgdg\enqueue_style( 'sgdg_options_root', '/admin/css/options-root.css' );
+	\Sgdg\enqueue_style( 'sgdg_options_root', 'admin/css/options-root.css' );
 	if ( 'toplevel_page_sgdg_basic' === $hook ) {
-		\Sgdg\enqueue_script( 'sgdg_root_selection_ajax', '/admin/js/root_selection.js', [ 'jquery' ] );
+		\Sgdg\enqueue_script( 'sgdg_root_selection_ajax', 'admin/js/root_selection.js', [ 'jquery' ] );
 		wp_localize_script(
 			'sgdg_root_selection_ajax',
 			'sgdgRootpathLocalize',
@@ -97,6 +97,7 @@ function handle_ajax() {
  *
  * Returns a list of all subdirectories of a directory, or a list of all drives if a directory is not provided. Additionaly, returns all the directory names for the current path.
  *
+ * @throws \Sgdg\Vendor\Google_Service_Exception Google API exception.
  * @throws \Exception Insufficient role.
  */
 function ajax_handler_body() {
@@ -108,9 +109,20 @@ function ajax_handler_body() {
 
 	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : [];
 	$ret  = [
-		'path'        => path_ids_to_names( $client, $path ),
 		'directories' => [],
 	];
+
+	try {
+		$ret['path'] = path_ids_to_names( $client, $path );
+	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
+		if ( 'notFound' === $e->getErrors()[0]['reason'] ) {
+			$path             = [];
+			$ret['path']      = [];
+			$ret['resetWarn'] = esc_html__( 'Root directory wasn\'t found. The plugin may be broken until a new one is chosen.', 'skaut-google-drive-gallery' );
+		} else {
+			throw $e;
+		}
+	}
 
 	if ( count( $path ) === 0 ) {
 		$ret['directories'] = list_drives( $client );

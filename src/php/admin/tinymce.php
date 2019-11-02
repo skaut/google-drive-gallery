@@ -38,8 +38,8 @@ function register_scripts_styles() {
 	if ( ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) || 'true' !== get_user_option( 'rich_editing' ) ) {
 		return;
 	}
-	\Sgdg\enqueue_style( 'sgdg_tinymce', '/admin/css/tinymce.css' );
-	\Sgdg\enqueue_script( 'sgdg_tinymce', '/admin/js/tinymce.js' );
+	\Sgdg\enqueue_style( 'sgdg_tinymce', 'admin/css/tinymce.css' );
+	\Sgdg\enqueue_script( 'sgdg_tinymce', 'admin/js/tinymce.js' );
 	wp_localize_script(
 		'sgdg_tinymce',
 		'sgdgTinymceLocalize',
@@ -136,6 +136,7 @@ function walk_path( $client, array $path, $root = null ) {
 				return walk_path( $client, $path, $file->getId() );
 			}
 		}
+		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
 	throw new \Exception( esc_html__( 'No such directory found - it may have been deleted or renamed. ', 'skaut-google-drive-gallery' ) );
 }

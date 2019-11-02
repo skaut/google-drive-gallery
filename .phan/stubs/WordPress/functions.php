@@ -3,9 +3,15 @@
  * Contains WordPress function stubs for PHAN
  *
  * @package skaut-google-drive-gallery
+ *
+ * @phan-file-suppress PhanPluginAlwaysReturnFunction
+ * @phan-file-suppress PhanTypeMissingReturn
+ * @phan-file-suppress PhanUnusedGlobalFunctionParameter
  */
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
 // phpcs:disable Squiz.Commenting.FunctionComment.Missing
+// phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals
 
 const DAY_IN_SECONDS = null;
@@ -120,6 +126,9 @@ function get_transient( $a ) {
 	}
 }
 
+/**
+ * @return mixed
+ */
 function get_user_option( $a ) {
 }
 
@@ -131,6 +140,14 @@ function plugin_basename( $a ) {
 }
 
 function plugins_url( $a ) {
+}
+
+function plugin_dir_path( $a ) {
+	return '';
+}
+
+function plugin_dir_url( $a ) {
+	return '';
 }
 
 function register_activation_hook( $a, $b ) {
@@ -218,4 +235,10 @@ function wp_unslash( $a ) {
 }
 
 function wp_verify_nonce( $a, $b ) {
+	switch ( wp_rand( 0, 1 ) ) {
+		case 0:
+			return false;
+		case 1:
+			return true;
+	}
 }

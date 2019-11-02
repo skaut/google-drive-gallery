@@ -15,7 +15,7 @@ Version:		2.7.1
 Author:			Junák - český skaut
 Author URI:		https://github.com/skaut
 License:		MIT
-License URI:	https://raw.githubusercontent.com/skaut/skaut-google-drive-gallery/master/LICENSE.md
+License URI:	https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
 Text Domain:	skaut-google-drive-gallery
 
 MIT License
@@ -120,8 +120,8 @@ function activation_notice() {
  * @param array  $deps A list of dependencies of the script. These can be either system dependencies like jquery, or other registered scripts. Default [].
  */
 function register_script( $handle, $src, $deps = [] ) {
-	$file = WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src;
-	wp_register_script( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, file_exists( $file ) ? filemtime( $file ) : false, true );
+	$file = plugin_dir_path( __FILE__ ) . $src;
+	wp_register_script( $handle, plugin_dir_url( __FILE__ ) . $src, $deps, file_exists( $file ) ? filemtime( $file ) : false, true );
 }
 
 /**
@@ -134,8 +134,8 @@ function register_script( $handle, $src, $deps = [] ) {
  * @param array  $deps A list of dependencies of the style. These can be either system dependencies or other registered styles. Default [].
  */
 function register_style( $handle, $src, $deps = [] ) {
-	$file = WP_PLUGIN_DIR . '/skaut-google-drive-gallery' . $src;
-	wp_register_style( $handle, plugins_url( '/skaut-google-drive-gallery' . $src ), $deps, file_exists( $file ) ? filemtime( $file ) : false );
+	$file = plugin_dir_path( __FILE__ ) . $src;
+	wp_register_style( $handle, plugin_dir_url( __FILE__ ) . $src, $deps, file_exists( $file ) ? filemtime( $file ) : false );
 }
 
 /**

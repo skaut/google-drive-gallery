@@ -39,7 +39,7 @@ function add() {
  * Enqueues styles for the section.
  */
 function register_scripts_styles() {
-	\Sgdg\enqueue_style( 'sgdg_options_grid', '/admin/css/options-grid.css' );
+	\Sgdg\enqueue_style( 'sgdg_options_grid', 'admin/css/options-grid.css' );
 }
 
 /**

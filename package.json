@@ -9,7 +9,7 @@
     "drive",
     "gallery"
   ],
-  "homepage": "https://github.com/skaut/skaut-google-drive-gallery#readme",
+  "homepage": "https://wordpress.org/plugins/skaut-google-drive-gallery",
   "bugs": {
     "url": "https://github.com/skaut/skaut-google-drive-gallery/issues"
   },
@@ -25,18 +25,34 @@
     "justified-layout": "^2.1.2"
   },
   "devDependencies": {
-    "eslint": "^6.0.1",
+    "@types/imagesloaded": "^4.1.2",
+    "@types/jquery": "^3.3.31",
+    "@types/tinymce": "^4.5.23",
+    "@types/wordpress__blocks": "^6.4.4",
+    "@types/wordpress__components": "^7.4.5",
+    "@types/wordpress__editor": "^9.4.1",
+    "@types/wordpress__element": "^2.4.0",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "@wordpress/eslint-plugin": "^3.1.0",
+    "eslint": "^6.6.0",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-compat": "^3.3.0",
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.7.1",
-    "gulp-stylelint": "^9.0.0",
+    "gulp-stylelint": "^10.0.0",
+    "gulp-typescript": "^5.0.1",
     "merge-stream": "^2.0.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-wordpress": "^14.0.0",
-    "stylelint-no-unsupported-browser-features": "^3.0.2"
+    "stylelint": "^11.1.1",
+    "stylelint-config-wordpress": "^15.0.0",
+    "stylelint-no-unsupported-browser-features": "^3.0.2",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  },
+  "scripts": {
+    "build": "gulp build"
   },
   "browserslist": [
     "cover 99.9%",

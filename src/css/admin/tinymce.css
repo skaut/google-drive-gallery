@@ -15,12 +15,18 @@
 	right: 15px;
 }
 
-#TB_ajaxContent {/* stylelint-disable-line selector-id-pattern */
-	height: 100% !important;
+#sgdg-tinymce-overflow {
+	bottom: 60px;
+	left: 0;
+	overflow-y: auto;
+	padding: 0 15px;
+	position: absolute;
+	right: 0;
+	top: 60px;
 }
 
 #sgdg-tinymce-table {
-	margin-top: 15px;
+	margin: 15px 0;
 }
 
 .sgdg-tinymce-path a {

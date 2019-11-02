@@ -47,7 +47,10 @@ class Array_Option extends Option {
 		if ( null === $value ) {
 			$value = $this->default_value;
 		}
-		return $value;
+		if ( is_array( $value ) ) {
+			return $value;
+		}
+		return $this->default_value;
 	}
 
 	/**

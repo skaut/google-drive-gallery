@@ -6,32 +6,46 @@
  */
 
 return [
-	'target_php_version'              => '7.3',
-	'backward_compatibility_checks'   => false,
-	'analyze_signature_compatibility' => true,
-	'minimum_severity'                => 0,
-	'directory_list'                  => [
+	'target_php_version'                        => '7.3',
+	'backward_compatibility_checks'             => false, // Covered by PHPCS.
+	'warn_about_undocumented_throw_statements'  => true,
+	'strict_method_checking'                    => true,
+	'strict_object_checking'                    => true,
+	'strict_property_checking'                  => true,
+	'strict_return_checking'                    => true,
+	'constant_variable_detection'               => true,
+	'redundant_condition_detection'             => true,
+	'unused_variable_detection'                 => true,
+	'warn_about_redundant_use_namespaced_class' => true,
+	'directory_list'                            => [
 		'src',
 		'tests',
 		'.phan',
 		'dist/bundled/vendor',
 	],
-	'exclude_analysis_directory_list' => [
+	'exclude_analysis_directory_list'           => [
 		'dist/bundled/vendor/',
 	],
-	'suppress_issue_types'            => [
+	'suppress_issue_types'                      => [
 		'PhanPluginDuplicateConditionalNullCoalescing',
 	],
-	'plugins'                         => [
+	'plugins'                                   => [
 		'AlwaysReturnPlugin',
+		'DollarDollarPlugin',
 		'DuplicateArrayKeyPlugin',
-		'PregRegexCheckerPlugin',
-		'UnreachableCodePlugin',
-		'NonBoolBranchPlugin',
-		'NonBoolInLogicalArithPlugin',
+		'DuplicateExpressionPlugin',
+		'EmptyStatementListPlugin',
 		'InvalidVariableIssetPlugin',
 		'NoAssertPlugin',
-		'DuplicateExpressionPlugin',
-		'DollarDollarPlugin',
+		'NonBoolBranchPlugin',
+		'NonBoolInLogicalArithPlugin',
+		'PossiblyStaticMethodPlugin',
+		'PreferNamespaceUsePlugin',
+		'PregRegexCheckerPlugin',
+		'StrictComparisonPlugin',
+		'SuspiciousParamOrderPlugin',
+		'UnreachableCodePlugin',
+		'UnusedSuppressionPlugin',
+		'UseReturnValuePlugin',
 	],
 ];
