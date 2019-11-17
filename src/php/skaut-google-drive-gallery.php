@@ -11,7 +11,7 @@
 Plugin Name:	Image and video gallery from Google Drive
 Plugin URI:		https://github.com/skaut/skaut-google-drive-gallery/
 Description:	A WordPress gallery using Google Drive as file storage
-Version:		2.7.1
+Version:		2.7.3
 Author:			Junák - český skaut
 Author URI:		https://github.com/skaut
 License:		MIT
@@ -67,7 +67,7 @@ require_once __DIR__ . '/admin/tinymce.php';
  */
 function init() {
 	register_activation_hook( __FILE__, '\\Sgdg\\activate' );
-	add_action( 'plugins_loaded', [ '\\Sgdg\\Options', 'init' ] );
+	add_action( 'plugins_loaded', array( '\\Sgdg\\Options', 'init' ) );
 	add_action( 'admin_notices', '\\Sgdg\\activation_notice' );
 	\Sgdg\Frontend\Shortcode\register();
 	\Sgdg\Frontend\Block\register();
@@ -119,7 +119,7 @@ function activation_notice() {
  * @param string $src Path to the file, relative to the plugin directory.
  * @param array  $deps A list of dependencies of the script. These can be either system dependencies like jquery, or other registered scripts. Default [].
  */
-function register_script( $handle, $src, $deps = [] ) {
+function register_script( $handle, $src, $deps = array() ) {
 	$file = plugin_dir_path( __FILE__ ) . $src;
 	wp_register_script( $handle, plugin_dir_url( __FILE__ ) . $src, $deps, file_exists( $file ) ? filemtime( $file ) : false, true );
 }
@@ -133,7 +133,7 @@ function register_script( $handle, $src, $deps = [] ) {
  * @param string $src Path to the file, relative to the plugin directory.
  * @param array  $deps A list of dependencies of the style. These can be either system dependencies or other registered styles. Default [].
  */
-function register_style( $handle, $src, $deps = [] ) {
+function register_style( $handle, $src, $deps = array() ) {
 	$file = plugin_dir_path( __FILE__ ) . $src;
 	wp_register_style( $handle, plugin_dir_url( __FILE__ ) . $src, $deps, file_exists( $file ) ? filemtime( $file ) : false );
 }
@@ -147,7 +147,7 @@ function register_style( $handle, $src, $deps = [] ) {
  * @param string $src Path to the file, relative to the plugin directory.
  * @param array  $deps A list of dependencies of the script. These can be either system dependencies like jquery, or other registered scripts. Default [].
  */
-function enqueue_script( $handle, $src, $deps = [] ) {
+function enqueue_script( $handle, $src, $deps = array() ) {
 	register_script( $handle, $src, $deps );
 	wp_enqueue_script( $handle );
 }
@@ -161,7 +161,7 @@ function enqueue_script( $handle, $src, $deps = [] ) {
  * @param string $src Path to the file, relative to the plugin directory.
  * @param array  $deps A list of dependencies of the style. These can be either system dependencies or other registered styles. Default [].
  */
-function enqueue_style( $handle, $src, $deps = [] ) {
+function enqueue_style( $handle, $src, $deps = array() ) {
 	register_style( $handle, $src, $deps );
 	wp_enqueue_style( $handle );
 }

@@ -35,10 +35,10 @@ class Boolean_Option extends Option {
 		register_setting(
 			$this->page,
 			$this->name,
-			[
+			array(
 				'type'              => 'boolean',
-				'sanitize_callback' => [ $this, 'sanitize' ],
-			]
+				'sanitize_callback' => array( $this, 'sanitize' ),
+			)
 		);
 	}
 

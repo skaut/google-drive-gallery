@@ -26,12 +26,12 @@ function add() {
  * Registers all the scripts and styles used by the shortcode.
  */
 function register_scripts_styles() {
-	\Sgdg\register_script( 'sgdg_gallery_init', 'frontend/js/shortcode.js', [ 'jquery' ] );
-	\Sgdg\register_style( 'sgdg_gallery_css', 'frontend/css/shortcode.css' );
+	\Sgdg\register_script( 'sgdg_gallery_init', 'frontend/js/shortcode.min.js', array( 'jquery' ) );
+	\Sgdg\register_style( 'sgdg_gallery_css', 'frontend/css/shortcode.min.css' );
 
-	\Sgdg\register_script( 'sgdg_imagelightbox_script', 'bundled/imagelightbox.min.js', [ 'jquery' ] );
+	\Sgdg\register_script( 'sgdg_imagelightbox_script', 'bundled/imagelightbox.min.js', array( 'jquery' ) );
 	\Sgdg\register_style( 'sgdg_imagelightbox_style', 'bundled/imagelightbox.min.css' );
-	\Sgdg\register_script( 'sgdg_imagesloaded', 'bundled/imagesloaded.pkgd.min.js', [ 'jquery' ] );
+	\Sgdg\register_script( 'sgdg_imagesloaded', 'bundled/imagesloaded.pkgd.min.js', array( 'jquery' ) );
 	\Sgdg\register_script( 'sgdg_justified-layout', 'bundled/justified-layout.min.js' );
 }
 
@@ -75,7 +75,7 @@ function html( $atts ) {
 	wp_localize_script(
 		'sgdg_gallery_init',
 		'sgdgShortcodeLocalize',
-		[
+		array(
 			'ajax_url'            => admin_url( 'admin-ajax.php' ),
 			'grid_height'         => $options->get( 'grid_height' ),
 			'grid_spacing'        => $options->get( 'grid_spacing' ),
@@ -89,7 +89,7 @@ function html( $atts ) {
 			'breadcrumbs_top'     => esc_html__( 'Gallery', 'skaut-google-drive-gallery' ),
 			'load_more'           => esc_html__( 'Load more', 'skaut-google-drive-gallery' ),
 			'empty_gallery'       => esc_html__( 'The gallery is empty.', 'skaut-google-drive-gallery' ),
-		]
+		)
 	);
 	wp_enqueue_style( 'sgdg_gallery_css' );
 	wp_add_inline_style( 'sgdg_gallery_css', '.sgdg-dir-name {font-size: ' . $options->get( 'dir_title_size' ) . ';}' );
@@ -112,10 +112,10 @@ function html( $atts ) {
 	$hash = hash( 'sha256', $root );
 	set_transient(
 		'sgdg_hash_' . $hash,
-		[
+		array(
 			'root'      => $root,
 			'overriden' => $options->overriden,
-		],
+		),
 		DAY_IN_SECONDS
 	);
 
@@ -136,14 +136,14 @@ function html( $atts ) {
 function find_dir( $client, $root, array $path ) {
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
 			'fields'                    => 'nextPageToken, files(id, name)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		foreach ( $response->getFiles() as $file ) {
 			if ( $file->getName() === $path[0] ) {

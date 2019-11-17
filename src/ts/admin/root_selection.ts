@@ -1,46 +1,58 @@
 jQuery( document ).ready( function( $ ) {
+	let path: Array<string> = sgdgRootpathLocalize.root_dir;
+
 	function resetWarn( message: string ): void {
-		const html = '<div class="notice notice-warning"><p>' + message + '</p></div>';
+		const html = '<div class="notice notice-warning">' +
+			'<p>' + message + '</p>' +
+		'</div>';
 		$( html ).insertBefore( '.sgdg_root_selection' );
 	}
 
-	function pathClick( path: Array<string>, el: HTMLElement ): void {
+	function pathClick( el: HTMLElement ): void {
 		const stop = $( el ).data( 'id' );
-		listGdriveDir( path.slice( 0, path.indexOf( stop ) + 1 ) ); // eslint-disable-line @typescript-eslint/no-use-before-define
+		path = path.slice( 0, path.indexOf( stop ) + 1 );
+		listGdriveDir(); // eslint-disable-line @typescript-eslint/no-use-before-define
 	}
 
-	function click( path: Array<string>, el: HTMLElement ): void {
+	function click( el: HTMLElement ): void {
 		const newId = $( el ).data( 'id' );
 		if ( newId ) {
 			path.push( newId );
 		} else {
 			path.pop();
 		}
-		listGdriveDir( path ); // eslint-disable-line @typescript-eslint/no-use-before-define
+		listGdriveDir(); // eslint-disable-line @typescript-eslint/no-use-before-define
 	}
 
-	function success( path: Array<string>, data: ListGdriveDirSuccessResponse ): void {
+	function success( data: ListGdriveDirSuccessResponse ): void {
 		let html = '';
-		let len = data.directories.length;
 		if ( 0 < path.length ) {
-			html += '<tr><td class="row-title"><label>..</label></td></tr>';
+			html += '<tr>' +
+				'<td class="row-title">' +
+					'<label>..</label>' +
+				'</td>' +
+			'</tr>';
 		}
-		for ( let i = 0; i < len; i++ ) {
+		for ( let i = 0; i < data.directories.length; i++ ) {
 			html += '<tr class="';
 			if ( ( 0 === path.length && 1 === i % 2 ) || ( 0 < path.length && 0 === i % 2 ) ) {
 				html += 'alternate';
 			}
-			html += '"><td class="row-title"><label data-id="' + data.directories[ i ].id + '">' + data.directories[ i ].name + '</label></td></tr>';
+			html += '">' +
+				'<td class="row-title">' +
+					'<label data-id="' + data.directories[ i ].id + '">' + data.directories[ i ].name + '</label>' +
+				'</td>' +
+			'</tr>';
 		}
 		$( '#sgdg_root_selection_body' ).html( html );
+
 		html = '';
 		if ( 0 === path.length ) {
 			html = sgdgRootpathLocalize.drive_list;
 		} else {
 			$( '#submit' ).removeAttr( 'disabled' );
 		}
-		len = path.length;
-		for ( let i = 0; i < len; i++ ) {
+		for ( let i = 0; i < path.length; i++ ) {
 			if ( 0 < i ) {
 				html += ' > ';
 			}
@@ -48,10 +60,10 @@ jQuery( document ).ready( function( $ ) {
 		}
 		$( '.sgdg_root_selection_path' ).html( html );
 		$( '.sgdg_root_selection_path a' ).click( function() {
-			pathClick( path, this );
+			pathClick( this );
 		} );
 		$( '#sgdg_root_selection_body label' ).click( function() {
-			click( path, this );
+			click( this );
 		} );
 		$( '#sgdg_root_path' ).val( JSON.stringify( path ) );
 	}
@@ -61,11 +73,7 @@ jQuery( document ).ready( function( $ ) {
 		$( '.sgdg_root_selection' ).replaceWith( html );
 	}
 
-	function isError( data: ListGdriveDirResponse ): data is ErrorResponse {
-		return ( data as ErrorResponse ).error !== undefined;
-	}
-
-	function listGdriveDir( path: Array<string> ): void {
+	function listGdriveDir(): void {
 		$( '#sgdg_root_selection_body' ).html( '' );
 		$( '#submit' ).attr( 'disabled', 'disabled' );
 		$.get( sgdgRootpathLocalize.ajax_url, {
@@ -82,10 +90,10 @@ jQuery( document ).ready( function( $ ) {
 				resetWarn( data.resetWarn );
 			}
 			if ( data.directories ) {
-				success( path, data );
+				success( data );
 			}
 		} );
 	}
 
-	listGdriveDir( sgdgRootpathLocalize.root_dir );
+	listGdriveDir();
 } );

@@ -10,24 +10,24 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function tinymceHtml(): void {
-		let html = '<div id="sgdg-tinymce-overflow">';
-		html += '<table id="sgdg-tinymce-table" class="widefat">';
-		html += '<thead>';
-		html += '<tr>';
-		html += '<th class="sgdg-tinymce-path">' + sgdgTinymceLocalize.root_name + '</th>';
-		html += '</tr>';
-		html += '</thead>';
-		html += '<tbody id="sgdg-tinymce-list"></tbody>';
-		html += '<tfoot>';
-		html += '<tr>';
-		html += '<td class="sgdg-tinymce-path">' + sgdgTinymceLocalize.root_name + '</td>';
-		html += '</tr>';
-		html += '</tfoot>';
-		html += '</table>';
-		html += '</div>';
-		html += '<div class="sgdg-tinymce-footer">';
-		html += '<a id="sgdg-tinymce-insert" class="button button-primary">' + sgdgTinymceLocalize.insert_button + '</a>';
-		html += '</div>';
+		const html = '<div id="sgdg-tinymce-overflow">' +
+			'<table id="sgdg-tinymce-table" class="widefat">' +
+				'<thead>' +
+					'<tr>' +
+						'<th class="sgdg-tinymce-path">' + sgdgTinymceLocalize.root_name + '</th>' +
+					'</tr>' +
+				'</thead>' +
+				'<tbody id="sgdg-tinymce-list"></tbody>' +
+				'<tfoot>' +
+					'<tr>' +
+						'<td class="sgdg-tinymce-path">' + sgdgTinymceLocalize.root_name + '</td>' +
+					'</tr>' +
+				'</tfoot>' +
+			'</table>' +
+		'</div>' +
+		'<div class="sgdg-tinymce-footer">' +
+			'<a id="sgdg-tinymce-insert" class="button button-primary">' + sgdgTinymceLocalize.insert_button + '</a>' +
+		'</div>';
 		$( '#sgdg-tinymce-modal' ).html( html );
 		$( '#sgdg-tinymce-insert' ).click( function() {
 			tinymceSubmit();
@@ -39,7 +39,7 @@ jQuery( document ).ready( function( $ ) {
 		ajaxQuery(); // eslint-disable-line @typescript-eslint/no-use-before-define
 	}
 
-	function click( this: HTMLElement ): void {
+	function tableClick( this: HTMLElement ): void {
 		const newDir = $( this ).text();
 		if ( '..' === newDir ) {
 			path.pop();
@@ -51,37 +51,41 @@ jQuery( document ).ready( function( $ ) {
 
 	function success( data: Array<string> ): void {
 		let html = '';
-		let len = data.length;
 		$( '#sgdg-tinymce-insert' ).removeAttr( 'disabled' );
 		if ( 0 < path.length ) {
-			html += '<tr><td class="row-title"><label>..</label></td></tr>';
+			html += '<tr>' +
+				'<td class="row-title">' +
+					'<label>..</label>' +
+				'</td>' +
+			'</tr>';
 		}
-		for ( let i = 0; i < len; i++ ) {
+		for ( let i = 0; i < data.length; i++ ) {
 			html += '<tr class="';
 			if ( ( 0 === path.length && 1 === i % 2 ) || ( 0 < path.length && 0 === i % 2 ) ) {
 				html += 'alternate';
 			}
-			html += '"><td class="row-title"><label>' + data[ i ] + '</label></td></tr>';
+			html += '">' +
+				'<td class="row-title">' +
+					'<label>' + data[ i ] + '</label>' +
+				'</td>' +
+			'</tr>';
 		}
 		$( '#sgdg-tinymce-list' ).html( html );
+
 		html = '<a>' + sgdgTinymceLocalize.root_name + '</a>';
-		len = path.length;
-		for ( let i = 0; i < len; i++ ) {
-			html += ' > ';
-			html += '<a data-name="' + path[ i ] + '">' + path[ i ] + '</a>';
+		for ( let i = 0; i < path.length; i++ ) {
+			html += ' > <a data-name="' + path[ i ] + '">' + path[ i ] + '</a>';
 		}
 		$( '.sgdg-tinymce-path' ).html( html );
 		$( '.sgdg-tinymce-path a' ).click( pathClick );
-		$( '#sgdg-tinymce-list label' ).click( click );
+		$( '#sgdg-tinymce-list label' ).click( tableClick );
 	}
 
 	function error( message: string ): void {
-		const html = '<div class="notice notice-error"><p>' + message + '</p></div>';
+		const html = '<div class="notice notice-error">' +
+			'<p>' + message + '</p>' +
+		'</div>';
 		$( '#TB_ajaxContent' ).html( html );
-	}
-
-	function isError( data: ListGalleryDirResponse ): data is ErrorResponse {
-		return ( data as ErrorResponse ).error !== undefined;
 	}
 
 	function ajaxQuery(): void {

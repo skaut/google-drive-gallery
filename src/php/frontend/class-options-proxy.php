@@ -88,8 +88,8 @@ class Options_Proxy {
 	 *     @see $overriden
 	 * }
 	 */
-	public function __construct( $overriden = [] ) {
-		$this->option_list          = [
+	public function __construct( $overriden = array() ) {
+		$this->option_list          = array(
 			'grid_height'                => \Sgdg\Options::$grid_height,
 			'grid_spacing'               => \Sgdg\Options::$grid_spacing,
 			'dir_title_size'             => \Sgdg\Options::$dir_title_size,
@@ -105,12 +105,12 @@ class Options_Proxy {
 			'preview_loop'               => \Sgdg\Options::$preview_loop,
 			'preview_activity_indicator' => \Sgdg\Options::$preview_activity_indicator,
 			'preview_captions'           => \Sgdg\Options::$preview_captions,
-		];
-		$this->ordering_option_list = [
+		);
+		$this->ordering_option_list = array(
 			'image_ordering' => \Sgdg\Options::$image_ordering,
 			'dir_ordering'   => \Sgdg\Options::$dir_ordering,
-		];
-		$this->overriden            = [];
+		);
+		$this->overriden            = array();
 		if ( is_array( $overriden ) ) {
 			foreach ( $overriden as $key => $value ) {
 				if ( array_key_exists( $key, $this->option_list ) ) {

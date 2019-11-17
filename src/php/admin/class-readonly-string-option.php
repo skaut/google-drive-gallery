@@ -75,7 +75,7 @@ class Readonly_String_Option {
 	 * @see html()
 	 */
 	public function add_field() {
-		add_settings_field( $this->name, $this->title, [ $this, 'html' ], $this->page, $this->section );
+		add_settings_field( $this->name, $this->title, array( $this, 'html' ), $this->page, $this->section );
 	}
 
 	/**

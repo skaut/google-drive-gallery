@@ -27,12 +27,12 @@ function handle_ajax() {
 		ajax_handler_body();
 	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( [ 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ] );
+			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
 		} else {
-			wp_send_json( [ 'error' => $e->getErrors()[0]['message'] ] );
+			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
 		}
 	} catch ( \Exception $e ) {
-		wp_send_json( [ 'error' => $e->getMessage() ] );
+		wp_send_json( array( 'error' => $e->getMessage() ) );
 	}
 }
 
@@ -44,7 +44,7 @@ function handle_ajax() {
 function ajax_handler_body() {
 	list( $client, $dir, $options ) = \Sgdg\Frontend\Page\get_context();
 
-	$ret = [];
+	$ret = array();
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['path'] ) && '' !== $_GET['path'] ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -74,17 +74,17 @@ function path_names( $client, array $path, $options ) {
 	foreach ( $path as $segment ) {
 		$request = $client->files->get(
 			$segment,
-			[
+			array(
 				'supportsAllDrives' => true,
 				'fields'            => 'name',
-			]
+			)
 		);
 		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, $segment );
 	}
 	$responses = $batch->execute();
 	$client->getClient()->setUseBatch( false );
-	$ret = [];
+	$ret = array();
 	foreach ( $path as $segment ) {
 		$response = $responses[ 'response-' . $segment ];
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -95,10 +95,10 @@ function path_names( $client, array $path, $options ) {
 		if ( '' !== $options->get( 'dir_prefix' ) ) {
 			$pos = mb_strpos( $name, $options->get( 'dir_prefix' ) );
 		}
-		$ret[] = [
+		$ret[] = array(
 			'id'   => $segment,
 			'name' => mb_substr( $name, false !== $pos ? $pos + 1 : 0 ),
-		];
+		);
 	}
 	return $ret;
 }

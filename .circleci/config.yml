@@ -2,7 +2,10 @@ version: 2.1
 workflows:
   main:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /.*/
       - unit-php71:
           requires:
             - build
@@ -13,6 +16,15 @@ workflows:
           requires:
             - build
           coverage: true
+      - platform-check
+      - package:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+          requires:
+            - build
       - lint:
           requires:
             - build
@@ -136,6 +148,35 @@ jobs:
     docker:
       - image: circleci/php:7.3-node
       - image: *mysql_image
+
+  platform-check:
+    docker:
+      - image: circleci/php:5.6-node
+    steps:
+      - checkout
+
+      - run:
+          name: "Check platform reqs"
+          command: composer check-platform-reqs --no-dev
+
+  package:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - run:
+          name: "Install ghr"
+          command: go get github.com/tcnksm/ghr
+      - run:
+          name: "Create zip package"
+          command: |
+            cp -r dist skaut-google-drive-gallery
+            zip -r skaut-google-drive-gallery.${CIRCLE_TAG}.zip skaut-google-drive-gallery
+      - run:
+          name: "Upload the package to GitHub"
+          command: ghr -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "Version ${CIRCLE_TAG}" ${CIRCLE_TAG} skaut-google-drive-gallery.${CIRCLE_TAG}.zip
 
   lint:
     docker:

@@ -22,10 +22,10 @@ class Integer_Option extends Option {
 		register_setting(
 			$this->page,
 			$this->name,
-			[
+			array(
 				'type'              => 'integer',
-				'sanitize_callback' => [ $this, 'sanitize' ],
-			]
+				'sanitize_callback' => array( $this, 'sanitize' ),
+			)
 		);
 	}
 

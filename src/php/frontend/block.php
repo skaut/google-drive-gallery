@@ -22,34 +22,27 @@ function register() {
  * This function registers the Gutenberg block and enqueues all the scripts and style it uses.
  */
 function add() {
-	\Sgdg\register_script( 'sgdg_block_icon', 'frontend/js/iconSvg.js', [ 'wp-element' ] );
-	\Sgdg\register_script( 'sgdg_block_settings_component', 'frontend/js/SgdgSettingsComponent.js', [ 'wp-element' ] );
-	\Sgdg\register_script( 'sgdg_block_boolean_settings_component', 'frontend/js/SgdgBooleanSettingsComponent.js', [ 'wp-element', 'sgdg_block_settings_component' ] );
-	\Sgdg\register_script( 'sgdg_block_integer_settings_component', 'frontend/js/SgdgIntegerSettingsComponent.js', [ 'wp-element', 'sgdg_block_settings_component' ] );
-	\Sgdg\register_script( 'sgdg_block_ordering_settings_component', 'frontend/js/SgdgOrderingSettingsComponent.js', [ 'wp-element' ] );
-	\Sgdg\register_script( 'sgdg_block_settings_override_component', 'frontend/js/SgdgSettingsOverrideComponent.js', [ 'wp-element', 'sgdg_block_boolean_settings_component', 'sgdg_block_integer_settings_component', 'sgdg_block_ordering_settings_component' ] );
-	\Sgdg\register_script( 'sgdg_block_editor_component', 'frontend/js/SgdgEditorComponent.js', [ 'wp-element', 'sgdg_block_settings_override_component' ] );
-	\Sgdg\register_script( 'sgdg_block', 'frontend/js/block.js', [ 'wp-blocks', 'wp-components', 'wp-editor', 'wp-element', 'sgdg_block_icon', 'sgdg_block_editor_component' ] );
+	\Sgdg\register_script( 'sgdg_block', 'frontend/js/block.min.js', array( 'wp-blocks', 'wp-components', 'wp-editor', 'wp-element' ) );
 
 	$options             = new \Sgdg\Frontend\Options_Proxy();
 	$get_option          = function( $name ) use ( $options ) {
-		return [
+		return array(
 			'default' => $options->get( $name ),
 			'name'    => $options->get_title( $name ),
-		];
+		);
 	};
 	$get_ordering_option = function( $name ) use ( $options ) {
-		return [
+		return array(
 			'default_by'    => $options->get_by( $name ),
 			'default_order' => $options->get_order( $name ),
 			'name'          => $options->get_title( $name ),
-		];
+		);
 	};
 
 	wp_localize_script(
 		'sgdg_block',
 		'sgdgBlockLocalize',
-		[
+		array(
 			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
 			'nonce'                      => wp_create_nonce( 'sgdg_editor_plugin' ),
 			'block_name'                 => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
@@ -71,15 +64,15 @@ function add() {
 			'dir_ordering'               => $get_ordering_option( 'dir_ordering' ),
 			'preview_size'               => $get_option( 'preview_size' ),
 			'preview_loop'               => $get_option( 'preview_loop' ),
-		]
+		)
 	);
-	\Sgdg\enqueue_style( 'sgdg_block', 'frontend/css/block.css' );
+	\Sgdg\enqueue_style( 'sgdg_block', 'frontend/css/block.min.css' );
 	register_block_type(
 		'skaut-google-drive-gallery/gallery',
-		[
+		array(
 			'editor_script'   => 'sgdg_block',
 			'render_callback' => '\\Sgdg\\Frontend\\Block\\html',
-		]
+		)
 	);
 }
 

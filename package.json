@@ -1,6 +1,6 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.7.1",
+  "version": "2.7.3",
   "description": "A WordPress gallery using Google Drive as file storage",
   "keywords": [
     "wordpress",
@@ -22,7 +22,8 @@
   "dependencies": {
     "imagelightbox": "^1.0.1",
     "imagesloaded": "^4.1.4",
-    "justified-layout": "^2.1.2"
+    "justified-layout": "^2.1.2",
+    "uglify-js": "^3.6.9"
   },
   "devDependencies": {
     "@types/imagesloaded": "^4.1.2",
@@ -32,24 +33,29 @@
     "@types/wordpress__components": "^7.4.5",
     "@types/wordpress__editor": "^9.4.1",
     "@types/wordpress__element": "^2.4.0",
-    "@typescript-eslint/eslint-plugin": "^2.6.0",
-    "@typescript-eslint/parser": "^2.6.0",
-    "@wordpress/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "@wordpress/eslint-plugin": "^3.2.0",
     "eslint": "^6.6.0",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-compat": "^3.3.0",
     "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
     "gulp-eslint": "^6.0.0",
+    "gulp-inject-string": "^1.1.2",
+    "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.7.1",
     "gulp-stylelint": "^10.0.0",
     "gulp-typescript": "^5.0.1",
+    "gulp-uglify": "^3.0.2",
     "merge-stream": "^2.0.0",
-    "stylelint": "^11.1.1",
+    "stylelint": "^12.0.0",
     "stylelint-config-wordpress": "^15.0.0",
-    "stylelint-no-unsupported-browser-features": "^3.0.2",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "stylelint-no-unsupported-browser-features": "^4.0.0",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2"
   },
   "scripts": {
     "build": "gulp build"

@@ -54,18 +54,18 @@ function html() {
  * @param string $hook The current admin page.
  */
 function register_scripts_styles( $hook ) {
-	\Sgdg\enqueue_style( 'sgdg_options_root', 'admin/css/options-root.css' );
+	\Sgdg\enqueue_style( 'sgdg_options_root', 'admin/css/options-root.min.css' );
 	if ( 'toplevel_page_sgdg_basic' === $hook ) {
-		\Sgdg\enqueue_script( 'sgdg_root_selection_ajax', 'admin/js/root_selection.js', [ 'jquery' ] );
+		\Sgdg\enqueue_script( 'sgdg_root_selection_ajax', 'admin/js/root_selection.min.js', array( 'jquery' ) );
 		wp_localize_script(
 			'sgdg_root_selection_ajax',
 			'sgdgRootpathLocalize',
-			[
+			array(
 				'ajax_url'   => admin_url( 'admin-ajax.php' ),
 				'nonce'      => wp_create_nonce( 'sgdg_root_selection' ),
-				'root_dir'   => \Sgdg\Options::$root_path->get( [] ),
+				'root_dir'   => \Sgdg\Options::$root_path->get( array() ),
 				'drive_list' => esc_html__( 'Shared drive list', 'skaut-google-drive-gallery' ),
-			]
+			)
 		);
 	}
 }
@@ -82,12 +82,12 @@ function handle_ajax() {
 		ajax_handler_body();
 	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( [ 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ] );
+			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
 		} else {
-			wp_send_json( [ 'error' => $e->getErrors()[0]['message'] ] );
+			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
 		}
 	} catch ( \Exception $e ) {
-		wp_send_json( [ 'error' => $e->getMessage() ] );
+		wp_send_json( array( 'error' => $e->getMessage() ) );
 	}
 }
 
@@ -107,17 +107,17 @@ function ajax_handler_body() {
 	}
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
-	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : [];
-	$ret  = [
-		'directories' => [],
-	];
+	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
+	$ret  = array(
+		'directories' => array(),
+	);
 
 	try {
 		$ret['path'] = path_ids_to_names( $client, $path );
 	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 		if ( 'notFound' === $e->getErrors()[0]['reason'] ) {
-			$path             = [];
-			$ret['path']      = [];
+			$path             = array();
+			$ret['path']      = array();
 			$ret['resetWarn'] = esc_html__( 'Root directory wasn\'t found. The plugin may be broken until a new one is chosen.', 'skaut-google-drive-gallery' );
 		} else {
 			throw $e;
@@ -141,22 +141,22 @@ function ajax_handler_body() {
  * @return array An array of directory names.
  */
 function path_ids_to_names( $client, $path ) {
-	$ret = [];
+	$ret = array();
 	if ( count( $path ) > 0 ) {
 		if ( 'root' === $path[0] ) {
 			$ret[] = esc_html__( 'My Drive', 'skaut-google-drive-gallery' );
 		} else {
-			$response = $client->drives->get( $path[0], [ 'fields' => 'name' ] );
+			$response = $client->drives->get( $path[0], array( 'fields' => 'name' ) );
 			$ret[]    = $response->getName();
 		}
 	}
 	foreach ( array_slice( $path, 1 ) as $path_element ) {
 		$response = $client->files->get(
 			$path_element,
-			[
+			array(
 				'supportsAllDrives' => true,
 				'fields'            => 'name',
-			]
+			)
 		);
 		$ret[]    = $response->getName();
 	}
@@ -175,28 +175,28 @@ function path_ids_to_names( $client, $path ) {
  * @return array An array of drive records in the format `['name' => '', 'id' => '']`
  */
 function list_drives( $client ) {
-	$ret        = [
-		[
+	$ret        = array(
+		array(
 			'name' => esc_html__( 'My Drive', 'skaut-google-drive-gallery' ),
 			'id'   => 'root',
-		],
-	];
+		),
+	);
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'pageToken' => $page_token,
 			'pageSize'  => 100,
 			'fields'    => 'nextPageToken, drives(id, name)',
-		];
+		);
 		$response = $client->drives->listDrives( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
 		foreach ( $response->getDrives() as $drive ) {
-			$ret[] = [
+			$ret[] = array(
 				'name' => $drive->getName(),
 				'id'   => $drive->getId(),
-			];
+			);
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );
@@ -214,26 +214,26 @@ function list_drives( $client ) {
  * @return array An array of directory records in the format `['name' => '', 'id' => '']`
  */
 function list_directories( $client, $root ) {
-	$ret        = [];
+	$ret        = array();
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
 			'fields'                    => 'nextPageToken, files(id, name)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
 		foreach ( $response->getFiles() as $file ) {
-			$ret[] = [
+			$ret[] = array(
 				'name' => $file->getName(),
 				'id'   => $file->getId(),
-			];
+			);
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token );

@@ -38,18 +38,18 @@ function register_scripts_styles() {
 	if ( ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) || 'true' !== get_user_option( 'rich_editing' ) ) {
 		return;
 	}
-	\Sgdg\enqueue_style( 'sgdg_tinymce', 'admin/css/tinymce.css' );
-	\Sgdg\enqueue_script( 'sgdg_tinymce', 'admin/js/tinymce.js' );
+	\Sgdg\enqueue_style( 'sgdg_tinymce', 'admin/css/tinymce.min.css' );
+	\Sgdg\enqueue_script( 'sgdg_tinymce', 'admin/js/tinymce.min.js' );
 	wp_localize_script(
 		'sgdg_tinymce',
 		'sgdgTinymceLocalize',
-		[
+		array(
 			'dialog_title'  => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
 			'root_name'     => esc_html__( 'Google Drive gallery', 'skaut-google-drive-gallery' ),
 			'insert_button' => esc_html__( 'Insert', 'skaut-google-drive-gallery' ),
 			'ajax_url'      => admin_url( 'admin-ajax.php' ),
 			'nonce'         => wp_create_nonce( 'sgdg_editor_plugin' ),
-		]
+		)
 	);
 }
 
@@ -63,12 +63,12 @@ function handle_ajax() {
 		ajax_handler_body();
 	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( [ 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ] );
+			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
 		} else {
-			wp_send_json( [ 'error' => $e->getErrors()[0]['message'] ] );
+			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
 		}
 	} catch ( \Exception $e ) {
-		wp_send_json( [ 'error' => $e->getMessage() ] );
+		wp_send_json( array( 'error' => $e->getMessage() ) );
 	}
 }
 
@@ -91,10 +91,10 @@ function ajax_handler_body() {
 
 	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
 
-	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : [];
+	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
 	$ret  = walk_path( $client, $path );
 
-	wp_send_json( [ 'directories' => $ret ] );
+	wp_send_json( array( 'directories' => $ret ) );
 }
 
 /**
@@ -118,14 +118,14 @@ function walk_path( $client, array $path, $root = null ) {
 	}
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
 			'fields'                    => 'nextPageToken, files(id, name)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
@@ -152,17 +152,17 @@ function walk_path( $client, array $path, $root = null ) {
  * @return array A list of directory names.
  */
 function list_files( $client, $root ) {
-	$ret        = [];
+	$ret        = array();
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
 			'fields'                    => 'nextPageToken, files(id, name)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;

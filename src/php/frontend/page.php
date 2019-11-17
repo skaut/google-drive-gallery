@@ -27,12 +27,12 @@ function handle_ajax() {
 		ajax_handler_body();
 	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
 		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] || 'rateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( [ 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ] );
+			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
 		} else {
-			wp_send_json( [ 'error' => $e->getErrors()[0]['message'] ] );
+			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
 		}
 	} catch ( \Exception $e ) {
-		wp_send_json( [ 'error' => $e->getMessage() ] );
+		wp_send_json( array( 'error' => $e->getMessage() ) );
 	}
 }
 
@@ -91,7 +91,7 @@ function get_context() {
 		$dir = end( $path );
 	}
 
-	return [ $client, $dir, $options ];
+	return array( $client, $dir, $options );
 }
 
 /**
@@ -106,14 +106,14 @@ function get_context() {
 function verify_path( $client, $root, array $path ) {
 	$page_token = null;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
 			'fields'                    => 'nextPageToken, files(id)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
@@ -152,7 +152,7 @@ function verify_path( $client, $root, array $path ) {
  * }
  */
 function get_page( $client, $dir, $skip, $remaining, $options ) {
-	$ret = [ 'more' => false ];
+	$ret = array( 'more' => false );
 	if ( 0 < $remaining ) {
 		list( $ret['directories'], $skip, $remaining, $ret['more'] ) = directories( $client, $dir, $options, $skip, $remaining );
 	}
@@ -187,7 +187,7 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 	$page_token = null;
 	$more       = false;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $dir . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
@@ -195,7 +195,7 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 			'pageToken'                 => $page_token,
 			'pageSize'                  => min( 1000, $skip + $remaining + 1 ),
 			'fields'                    => 'nextPageToken, files(id, name)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
@@ -214,14 +214,14 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 	$dir_images = dir_images_responses( $responses, $ids, $options );
 	$dir_counts = dir_counts_responses( $responses, $ids );
 
-	$ret   = [];
+	$ret   = array();
 	$count = count( $ids );
 	for ( $i = 0; $i < $count; $i++ ) {
-		$val = [
+		$val = array(
 			'id'        => $ids[ $i ],
 			'name'      => $names[ $i ],
 			'thumbnail' => $dir_images[ $i ],
-		];
+		);
 		if ( 'true' === $options->get( 'dir_counts' ) ) {
 			$val = array_merge( $val, $dir_counts[ $i ] );
 		}
@@ -229,7 +229,7 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 			$ret[] = $val;
 		}
 	}
-	return [ $ret, $skip, $remaining, $more ];
+	return array( $ret, $skip, $remaining, $more );
 }
 
 /**
@@ -250,8 +250,8 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
  * }
  */
 function dir_ids_names( $files, $options, $skip, $remaining, $more ) {
-	$ids   = [];
-	$names = [];
+	$ids   = array();
+	$names = array();
 	foreach ( $files as $file ) {
 		if ( 0 < $skip ) {
 			$skip--;
@@ -271,7 +271,7 @@ function dir_ids_names( $files, $options, $skip, $remaining, $more ) {
 		}
 		$remaining--;
 	}
-	return [ $ids, $names, $skip, $remaining, $more ];
+	return array( $ids, $names, $skip, $remaining, $more );
 }
 
 /**
@@ -285,13 +285,13 @@ function dir_ids_names( $files, $options, $skip, $remaining, $more ) {
  * @param \Sgdg\Frontend\Options_Proxy      $options The configuration of the gallery.
  */
 function dir_images_requests( $client, $batch, $dirs, $options ) {
-	$params = [
+	$params = array(
 		'supportsAllDrives'         => true,
 		'includeItemsFromAllDrives' => true,
 		'orderBy'                   => $options->get( 'image_ordering' ),
 		'pageSize'                  => 1,
 		'fields'                    => 'files(imageMediaMetadata(width, height), thumbnailLink)',
-	];
+	);
 
 	foreach ( $dirs as $dir ) {
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false';
@@ -311,12 +311,12 @@ function dir_images_requests( $client, $batch, $dirs, $options ) {
  * @param array                             $dirs A list of directory IDs.
  */
 function dir_counts_requests( $client, $batch, $dirs ) {
-	$params = [
+	$params = array(
 		'supportsAllDrives'         => true,
 		'includeItemsFromAllDrives' => true,
 		'pageSize'                  => 1000,
 		'fields'                    => 'files(id)',
-	];
+	);
 
 	foreach ( $dirs as $dir ) {
 		$params['q'] = '"' . $dir . '" in parents and mimeType contains "application/vnd.google-apps.folder" and trashed = false';
@@ -346,7 +346,7 @@ function dir_counts_requests( $client, $batch, $dirs ) {
  * @return array An array of string|bool containing either `false` if there is no thumbnail available or a link if ther is.
  */
 function dir_images_responses( $responses, $dirs, $options ) {
-	$ret = [];
+	$ret = array();
 	foreach ( $dirs as $dir ) {
 		$response = $responses[ 'response-img-' . $dir ];
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -373,7 +373,7 @@ function dir_images_responses( $responses, $dirs, $options ) {
  * @return array A list of subdirectory and image counts of format `['dircount' => 1, 'imagecount' => 1]` for each directory.
  */
 function dir_counts_responses( $responses, $dirs ) {
-	$ret = [];
+	$ret = array();
 	foreach ( $dirs as $dir ) {
 		$dir_response = $responses[ 'response-dircount-' . $dir ];
 		$img_response = $responses[ 'response-imgcount-' . $dir ];
@@ -387,11 +387,11 @@ function dir_counts_responses( $responses, $dirs ) {
 		if ( $vid_response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $vid_response;
 		}
-		$ret[] = [
+		$ret[] = array(
 			'dircount'   => count( $dir_response->getFiles() ),
 			'imagecount' => count( $img_response->getFiles() ),
 			'videocount' => count( $vid_response->getFiles() ),
-		];
+		);
 	}
 	return $ret;
 }
@@ -415,17 +415,17 @@ function dir_counts_responses( $responses, $dirs ) {
  * }
  */
 function images( $client, $dir, $options, $skip, $remaining ) {
-	$ret        = [];
+	$ret        = array();
 	$page_token = null;
 	$more       = false;
 	do {
-		$params = [
+		$params = array(
 			'q'                         => '"' . $dir . '" in parents and mimeType contains "image/" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => min( 1000, $skip + $remaining + 1 ),
-		];
+		);
 		if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 			$params['fields'] = 'nextPageToken, files(id, thumbnailLink, createdTime, imageMediaMetadata(time), description)';
 		} else {
@@ -451,7 +451,7 @@ function images( $client, $dir, $options, $skip, $remaining ) {
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 	$ret = images_order( $ret, $options );
-	return [ $ret, $skip, $remaining, $more ];
+	return array( $ret, $skip, $remaining, $more );
 }
 
 /**
@@ -470,12 +470,12 @@ function images( $client, $dir, $options, $skip, $remaining ) {
  */
 function image_preprocess( $file, $options ) {
 	$description = $file->getDescription();
-	$ret         = [
+	$ret         = array(
 		'id'          => $file->getId(),
 		'description' => ( isset( $description ) ? esc_attr( $description ) : '' ),
 		'image'       => substr( $file->getThumbnailLink(), 0, -3 ) . $options->get( 'preview_size' ),
 		'thumbnail'   => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
-	];
+	);
 	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 		if ( null !== $file->getImageMediaMetadata() && null !== $file->getImageMediaMetadata()->getTime() ) {
 			$timestamp = \DateTime::createFromFormat( 'Y:m:d H:i:s', $file->getImageMediaMetadata()->getTime() );
@@ -533,12 +533,12 @@ function images_order( $images, $options ) {
  * }
  */
 function videos( $client, $dir, $options, $skip, $remaining ) {
-	$ret        = [];
-	$requests   = [];
+	$ret        = array();
+	$requests   = array();
 	$page_token = null;
 	$more       = false;
 	do {
-		$params   = [
+		$params   = array(
 			'q'                         => '"' . $dir . '" in parents and mimeType contains "video/" and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
@@ -546,7 +546,7 @@ function videos( $client, $dir, $options, $skip, $remaining ) {
 			'pageToken'                 => $page_token,
 			'pageSize'                  => min( 1000, $skip + $remaining + 1 ),
 			'fields'                    => 'nextPageToken, files(id, mimeType, thumbnailLink)',
-		];
+		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
@@ -560,18 +560,18 @@ function videos( $client, $dir, $options, $skip, $remaining ) {
 				$more = true;
 				break;
 			}
-			$ret[]      = [
+			$ret[]      = array(
 				'id'        => $file->getId(),
 				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
 				'mimeType'  => $file->getMimeType(),
-			];
-			$requests[] = [ 'url' => 'https://www.googleapis.com/drive/v3/files/' . $file->getId() . '?alt=media&access_token=' . $client->getClient()->getAccessToken()['access_token'] ];
+			);
+			$requests[] = array( 'url' => 'https://www.googleapis.com/drive/v3/files/' . $file->getId() . '?alt=media&access_token=' . $client->getClient()->getAccessToken()['access_token'] );
 			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 	$ret = videos_requests( $ret, $requests );
-	return [ $ret, $more ];
+	return array( $ret, $more );
 }
 
 /**
@@ -585,9 +585,12 @@ function videos( $client, $dir, $options, $skip, $remaining ) {
  * @return array A list of videos in the format `['id' =>, 'id', 'thumbnail' => 'thumbnail', 'mimeType' => 'mimeType', 'src' => 'src']`.
  */
 function videos_requests( $videos, $requests ) {
-	$responses = \Requests::request_multiple( $requests, [ 'follow_redirects' => false ] );
+	$responses = \Requests::request_multiple( $requests, array( 'follow_redirects' => false ) );
 	$count     = count( $responses );
 	for ( $i = 0; $i < $count; $i++ ) {
+		if ( $responses[ $i ] instanceof \Requests_Exception ) {
+			continue;
+		}
 		$videos[ $i ]['src'] = \WP_Http::processHeaders( \WP_Http::processResponse( $responses[ $i ]->raw )['headers'] )['headers']['location'];
 		if ( ! isset( $videos[ $i ]['src'] ) ) {
 			unset( $videos[ $i ] );

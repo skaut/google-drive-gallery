@@ -94,7 +94,7 @@ abstract class Option {
 	 */
 	public function add_field() {
 		$this->register();
-		add_settings_field( $this->name, $this->title, [ $this, 'html' ], $this->page, $this->section );
+		add_settings_field( $this->name, $this->title, array( $this, 'html' ), $this->page, $this->section );
 	}
 
 	/**

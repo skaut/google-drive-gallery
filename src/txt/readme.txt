@@ -2,8 +2,8 @@
 Contributors: skaut, marekdedic, kalich5, genabitu
 Tags: skaut, google drive, google drive gallery, image and video gallery from google drive, team drive, shared drive, image gallery, video gallery, image and video gallery, gallery from google drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
-Tested up to: 5.2
-Stable tag: 2.7.1
+Tested up to: 5.3
+Stable tag: 2.7.3
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
@@ -36,7 +36,7 @@ If you want to see how to install, configure and use the plugin, visit our [docu
 * PHP 5.6 or higher
 
 === GitHub ===
-[https://github.com/skaut/skaut-google-drive-gallery/](https://github.com/skaut/skaut-google-drive-gallery/)
+All the sources for the plugin and the build process are detailed in our [Github repo](https://github.com/skaut/skaut-google-drive-gallery/).
 
 == Installation ==
 1. Download and install the plugin from the WordPress plugin directory or from [GitHub](https://github.com/skaut/skaut-google-drive-gallery/releases)
@@ -79,6 +79,18 @@ The plugin only shows videos that can be played by the browser. Unfortunately, a
 
 == Changelog ==
 
+= 2.7.3 =
+* Reverted a dependency update causing issues and PHP version incompatibility
+
+= 2.7.2 =
+* Checking JS with TypeScript
+* JS and CSS is now minified in the plugin, original sources available in the repository
+* Fixed issue with TinyMCE plugin table overflowing the thickbox
+* Handling Google errors in root selection when changing user account
+* Handling Google errors in gallery enqueueing
+* Refactored all JS code
+* Fixed issue with & in folder name
+
 = 2.7.1 =
 * Fixed a bug causing galleries not to load
 * Slightly tweaked the grid layout
@@ -117,7 +129,7 @@ The plugin only shows videos that can be played by the browser. Unfortunately, a
 
 = 2.3.2 =
 * Image ordering by time now uses EXIF DateTime
-* Partialy fixed issue with url being overriden when not terminated by a slash
+* Partially fixed issue with url being overridden when not terminated by a slash
 * Fixed imprecise directory item counts
 * Fixed issue with other plugins overriding styles
 
