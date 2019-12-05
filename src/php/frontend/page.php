@@ -501,14 +501,14 @@ function images_order( $images, $options ) {
 	if ( $options->get_by( 'image_ordering' ) === 'time' ) {
 		usort(
 			$images,
-			function( $first, $second ) use ( $options ) {
+			static function( $first, $second ) use ( $options ) {
 				$asc = $first['timestamp'] - $second['timestamp'];
 				return $options->get_order( 'image_ordering' ) === 'ascending' ? $asc : -$asc;
 			}
 		);
 		array_walk(
 			$images,
-			function( &$item ) {
+			static function( &$item ) {
 				unset( $item['timestamp'] );
 			}
 		);

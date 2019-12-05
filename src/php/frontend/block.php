@@ -25,13 +25,13 @@ function add() {
 	\Sgdg\register_script( 'sgdg_block', 'frontend/js/block.min.js', array( 'wp-blocks', 'wp-components', 'wp-editor', 'wp-element' ) );
 
 	$options             = new \Sgdg\Frontend\Options_Proxy();
-	$get_option          = function( $name ) use ( $options ) {
+	$get_option          = static function( $name ) use ( $options ) {
 		return array(
 			'default' => $options->get( $name ),
 			'name'    => $options->get_title( $name ),
 		);
 	};
-	$get_ordering_option = function( $name ) use ( $options ) {
+	$get_ordering_option = static function( $name ) use ( $options ) {
 		return array(
 			'default_by'    => $options->get_by( $name ),
 			'default_order' => $options->get_order( $name ),
