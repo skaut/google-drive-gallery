@@ -38,7 +38,6 @@ job-references:
     keys:
       - composer-dependencies-{{ checksum "~/DEPENDENCY_CACHE_VERSION" }}-{{ checksum "composer.json" }}
       - composer-dependencies-{{ checksum "~/DEPENDENCY_CACHE_VERSION" }}-
-      - composer-dependencies--
 
   install_composer: &install_composer
     name: "Install Composer dependencies"
@@ -53,7 +52,6 @@ job-references:
     keys:
       - npm-dependencies-{{ checksum "~/DEPENDENCY_CACHE_VERSION" }}-{{ checksum "package.json" }}
       - npm-dependencies-{{ checksum "~/DEPENDENCY_CACHE_VERSION" }}-
-      - npm-dependencies--
 
   install_npm: &install_npm
     name: "Install NPM dependencies"

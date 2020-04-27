@@ -1,5 +1,5 @@
 declare interface ListGalleryDirSuccessResponse {
-	directories: Array<string>;
+	directories: Array< string >;
 }
 
 type ListGalleryDirResponse = ListGalleryDirSuccessResponse | ErrorResponse;

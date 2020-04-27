@@ -19,6 +19,13 @@ require_once __DIR__ . '/vendor/psr/log/Psr/Log/LoggerInterface.php';
 require_once __DIR__ . '/vendor/psr/cache/src/CacheItemPoolInterface.php';
 require_once __DIR__ . '/vendor/psr/cache/src/CacheItemInterface.php';
 
+require_once __DIR__ . '/vendor/symfony/polyfill-intl-idn/Idn.php';
+require_once __DIR__ . '/vendor/symfony/polyfill-intl-idn/bootstrap.php';
+
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/GuzzleException.php';
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/TransferException.php';
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/RequestException.php';
+
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Handler/StreamHandler.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Handler/CurlHandler.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Handler/CurlFactoryInterface.php';
@@ -35,6 +42,7 @@ require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Middleware.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/ClientInterface.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Client.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/HandlerStack.php';
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Utils.php';
 
 require_once __DIR__ . '/vendor/guzzlehttp/psr7/src/functions.php';
 require_once __DIR__ . '/vendor/guzzlehttp/psr7/src/Stream.php';
@@ -50,6 +58,7 @@ require_once __DIR__ . '/vendor/guzzlehttp/promises/src/Promise.php';
 require_once __DIR__ . '/vendor/guzzlehttp/promises/src/TaskQueueInterface.php';
 require_once __DIR__ . '/vendor/guzzlehttp/promises/src/TaskQueue.php';
 require_once __DIR__ . '/vendor/guzzlehttp/promises/src/FulfilledPromise.php';
+require_once __DIR__ . '/vendor/guzzlehttp/promises/src/RejectedPromise.php';
 
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/ResettableInterface.php';
 require_once __DIR__ . '/vendor/monolog/monolog/src/Monolog/Logger.php';

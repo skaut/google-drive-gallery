@@ -1,6 +1,6 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.7.4",
+  "version": "2.7.8",
   "description": "A WordPress gallery using Google Drive as file storage",
   "keywords": [
     "wordpress",
@@ -21,8 +21,18 @@
   },
   "scripts": {
     "build": "gulp build",
-    "lint": "gulp lint",
-    "unit": "gulp unit"
+    "lint:css:stylelint": "stylelint src/**/*.css",
+    "disabled_lint:css": "run-s -c lint:css:*",
+    "lint:php:phan": "export PHAN_DISABLE_XDEBUG_WARN=1; vendor/bin/phan",
+    "lint:php:phpcs": "vendor/bin/phpcs",
+    "lint:php:phpmd": "vendor/bin/phpmd src,tests text phpmd.xml",
+    "lint:php": "run-s -c lint:php:*",
+    "lint:ts:eslint": "eslint src/**/*.ts gulpfile.ts",
+    "lint:ts": "run-s -c lint:ts:*",
+    "lint": "run-s -c lint:*",
+    "unit:php:phpunit": "vendor/bin/phpunit",
+    "unit:php": "run-s -c unit:php:*",
+    "unit": "run-s -c unit:*"
   },
   "dependencies": {
     "imagelightbox": "^1.0.1",
@@ -31,39 +41,37 @@
   },
   "devDependencies": {
     "@types/imagesloaded": "^4.1.2",
-    "@types/jquery": "^3.3.31",
-    "@types/tinymce": "^4.5.23",
-    "@types/wordpress__blocks": "^6.4.4",
-    "@types/wordpress__components": "^8.2.1",
+    "@types/jquery": "^3.3.35",
+    "@types/node": "^13.13.4",
+    "@types/tinymce": "^4.5.24",
+    "@types/wordpress__blocks": "^6.4.5",
+    "@types/wordpress__components": "^8.5.2",
     "@types/wordpress__editor": "^9.4.1",
     "@types/wordpress__element": "^2.4.0",
-    "@typescript-eslint/eslint-plugin": "^2.10.0",
-    "@typescript-eslint/parser": "^2.10.0",
-    "@wordpress/eslint-plugin": "^3.2.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-compat": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "@wordpress/browserslist-config": "^2.6.0",
+    "@wordpress/eslint-plugin": "^5.0.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-compat": "^3.5.1",
     "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2.0",
+    "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^6.0.0",
     "gulp-inject-string": "^1.1.2",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.0.0",
-    "gulp-shell": "^0.7.1",
-    "gulp-stylelint": "^10.0.0",
+    "gulp-shell": "^0.8.0",
     "gulp-typescript": "^5.0.1",
     "gulp-uglify": "^3.0.2",
     "merge-stream": "^2.0.0",
-    "stylelint": "^12.0.0",
-    "stylelint-config-wordpress": "^15.0.0",
+    "npm-run-all": "^4.1.5",
+    "stylelint": "^13.3.3",
+    "stylelint-config-wordpress": "^16.0.0",
     "stylelint-no-unsupported-browser-features": "^4.0.0",
-    "ts-node": "^8.5.4",
-    "typescript": "^3.7.3"
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3"
   },
   "browserslist": [
-    "cover 99.9%",
-    "cover 99.9% in CZ",
-    "last 4 versions",
-    "Firefox ESR"
+    "extends @wordpress/browserslist-config"
   ]
 }

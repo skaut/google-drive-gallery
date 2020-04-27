@@ -1,5 +1,5 @@
 interface ShortcodeRegistry {
-	shortcodes: Record<string, Shortcode>;
+	shortcodes: Record< string, Shortcode >;
 	init(): void;
 	reflowAll(): void;
 	onLightboxNavigation( e: JQuery ): void;
@@ -13,11 +13,16 @@ const ShortcodeRegistry: ShortcodeRegistry = {
 		$( '.sgdg-gallery-container' ).each( ( _, container ) => {
 			const hash = $( container ).data( 'sgdgHash' );
 			if ( hash ) {
-				this.shortcodes[ hash.substr( 0, 8 ) ] = new Shortcode( container, hash );
+				this.shortcodes[ hash.substr( 0, 8 ) ] = new Shortcode(
+					container,
+					hash
+				);
 			}
 		} );
 
-		$( document ).on( 'start.ilb2 next.ilb2 previous.ilb2', ( _, e ) => this.onLightboxNavigation( e ) );
+		$( document ).on( 'start.ilb2 next.ilb2 previous.ilb2', ( _, e ) =>
+			this.onLightboxNavigation( e )
+		);
 		$( document ).on( 'quit.ilb2', () => this.onLightboxQuit() );
 	},
 

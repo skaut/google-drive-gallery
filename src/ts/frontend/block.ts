@@ -2,11 +2,16 @@ function renderFrontend(): null {
 	return null;
 }
 
-function extractFromShortcode( attributes: ShortcodeToBlockTransformAttributes ): Array<string> {
+function extractFromShortcode(
+	attributes: ShortcodeToBlockTransformAttributes
+): Array< string > {
 	if ( ! attributes.named.path ) {
 		return [];
 	}
-	return attributes.named.path.trim().replace( /^\/+|\/+$/g, '' ).split( '/' );
+	return attributes.named.path
+		.trim()
+		.replace( /^\/+|\/+$/g, '' )
+		.split( '/' );
 }
 
 wp.blocks.registerBlockType( 'skaut-google-drive-gallery/gallery', {
@@ -19,37 +24,48 @@ wp.blocks.registerBlockType( 'skaut-google-drive-gallery/gallery', {
 			type: 'array',
 			default: [],
 		},
-		grid_height: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		grid_height: {
 			type: 'number',
 		},
-		grid_spacing: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		grid_spacing: {
 			type: 'number',
 		},
-		dir_counts: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		dir_counts: {
 			type: 'string',
 		},
-		page_size: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		page_size: {
 			type: 'number',
 		},
-		page_autoload: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		page_autoload: {
 			type: 'string',
 		},
-		image_ordering_order: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		image_ordering_order: {
 			type: 'string',
 		},
-		image_ordering_by: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		image_ordering_by: {
 			type: 'string',
 		},
-		dir_ordering_order: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		dir_ordering_order: {
 			type: 'string',
 		},
-		dir_ordering_by: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		dir_ordering_by: {
 			type: 'string',
 		},
-		preview_size: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		preview_size: {
 			type: 'number',
 		},
-		preview_loop: { // eslint-disable-line @typescript-eslint/camelcase
+		// eslint-disable-next-line @typescript-eslint/camelcase
+		preview_loop: {
 			type: 'string',
 		},
 	},

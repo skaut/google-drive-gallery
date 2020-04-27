@@ -32,12 +32,12 @@ function oauth_redirect() {
 	}
 	if ( count( get_settings_errors() ) === 0 && false === get_option( 'sgdg_access_token', false ) ) {
 		$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$client->fetchAccessTokenWithAuthCode( sanitize_text_field( wp_unslash( $_GET['code'] ) ) );
-		$access_token = $client->getAccessToken();
-
-		$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
 		try {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$client->fetchAccessTokenWithAuthCode( sanitize_text_field( wp_unslash( $_GET['code'] ) ) );
+			$access_token = $client->getAccessToken();
+
+			$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
 			\Sgdg\Admin\AdminPages\Basic\RootSelection\list_drives( $drive_client );
 			update_option( 'sgdg_access_token', $access_token );
 		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
@@ -47,6 +47,8 @@ function oauth_redirect() {
 			} else {
 				add_settings_error( 'general', 'oauth_failed', esc_html__( 'An unknown error has been encountered:', 'skaut-google-drive-gallery' ) . ' ' . $e->getErrors()[0]['message'], 'error' );
 			}
+		} catch ( \Sgdg\Vendor\GuzzleHttp\Exception\TransferException $e ) {
+			add_settings_error( 'general', 'oauth_failed', esc_html__( 'An unknown error has been encountered:', 'skaut-google-drive-gallery' ) . ' ' . $e->getMessage(), 'error' );
 		}
 	}
 	if ( count( get_settings_errors() ) === 0 ) {
@@ -61,9 +63,15 @@ function oauth_redirect() {
  */
 function oauth_revoke() {
 	$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
-	$client->revokeToken();
-	delete_option( 'sgdg_access_token' );
-	add_settings_error( 'general', 'oauth_updated', __( 'Permission revoked.', 'skaut-google-drive-gallery' ), 'updated' );
+	try {
+		$client->revokeToken();
+		delete_option( 'sgdg_access_token' );
+	} catch ( \Sgdg\Vendor\GuzzleHttp\Exception\TransferException $e ) {
+		add_settings_error( 'general', 'oauth_failed', esc_html__( 'An unknown error has been encountered:', 'skaut-google-drive-gallery' ) . ' ' . $e->getMessage(), 'error' );
+	}
+	if ( count( get_settings_errors() ) === 0 ) {
+		add_settings_error( 'general', 'oauth_updated', __( 'Permission revoked.', 'skaut-google-drive-gallery' ), 'updated' );
+	}
 	set_transient( 'settings_errors', get_settings_errors(), 30 );
 	header( 'Location: ' . esc_url_raw( admin_url( 'admin.php?page=sgdg_basic&settings-updated=true' ) ) );
 }

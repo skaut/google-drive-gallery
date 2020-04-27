@@ -18,15 +18,15 @@ declare module 'justified-layout' {
 
 	interface Config {
 		containerWidth: number;
-		containerPadding: number|ContainerPadding;
-		boxSpacing: number|BoxSpacing;
+		containerPadding: number | ContainerPadding;
+		boxSpacing: number | BoxSpacing;
 		targetRowHeight: number;
 		targetRowHeightTolerance: number;
 		maxNumRows: number;
-		forceAspectRatio: boolean|number;
+		forceAspectRatio: boolean | number;
 		showWidows: boolean;
-		fullWidthBreakoutRowCadence: boolean|number;
-		widowLayoutStyle: 'left'|'justify'|'center';
+		fullWidthBreakoutRowCadence: boolean | number;
+		widowLayoutStyle: 'left' | 'justify' | 'center';
 		edgeCaseMinRowHeight: number;
 		edgeCaseMaxRowHeight: number;
 	}
@@ -42,10 +42,13 @@ declare module 'justified-layout' {
 	interface Result {
 		containerHeight: number;
 		widowCount: number;
-		boxes: Array<Box>;
+		boxes: Array< Box >;
 	}
 
-	function convertSizesToAspectRatios( input: Array<number>|Array<SizeObject>, config: Partial<Config> ): Result;
+	function convertSizesToAspectRatios(
+		input: Array< number > | Array< SizeObject >,
+		config: Partial< Config >
+	): Result;
 
 	export = convertSizesToAspectRatios;
 }
