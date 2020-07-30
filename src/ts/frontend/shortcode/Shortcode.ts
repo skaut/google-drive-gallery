@@ -476,7 +476,11 @@ class Shortcode {
 			'data-sgdg-page="' +
 			page +
 			'" ' +
-			'data-ilb2-video=\'{ "controls": "controls", "autoplay": "autoplay", "sources": [ { "src": "' +
+			'data-ilb2-video=\'{ "controls": "controls", "autoplay": "autoplay", "height": ' +
+			video.height +
+			', "width": ' +
+			video.width +
+			', "sources": [ { "src": "' +
 			video.src +
 			'", "type": "' +
 			video.mimeType +

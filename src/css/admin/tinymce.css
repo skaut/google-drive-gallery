@@ -6,12 +6,12 @@
 	margin-left: -5px;
 }
 
-#TB_title {/* stylelint-disable-line selector-id-pattern */
+#TB_title { /* stylelint-disable-line selector-id-pattern */
 	font-size: x-large;
 	padding: 15px;
 }
 
-#TB_closeWindowButton {/* stylelint-disable-line selector-id-pattern */
+#TB_closeWindowButton { /* stylelint-disable-line selector-id-pattern */
 	right: 15px;
 }
 

@@ -1,4 +1,4 @@
-declare module 'justified-layout' {
+declare namespace JustifiedLayout {
 	interface SizeObject {
 		height: number;
 		width: number;
@@ -49,6 +49,11 @@ declare module 'justified-layout' {
 		input: Array< number > | Array< SizeObject >,
 		config: Partial< Config >
 	): Result;
-
-	export = convertSizesToAspectRatios;
 }
+
+declare function require(
+	module: 'justified-layout'
+): (
+	input: Array< number > | Array< JustifiedLayout.SizeObject >,
+	config: Partial< JustifiedLayout.Config >
+) => JustifiedLayout.Result;

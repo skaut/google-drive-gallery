@@ -1,5 +1,5 @@
 declare interface JQuery {
-	addToImageLightbox: ( elements: JQuery ) => void;
+	addToImageLightbox: ( elements: JQuery< Element > ) => void;
 	imageLightbox: ( opts: ILB.Options ) => JQuery;
 	openHistory: () => void;
 }

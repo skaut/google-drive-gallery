@@ -14,12 +14,12 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:@wordpress/eslint-plugin/recommended",
-		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:@typescript-eslint/recommended-requiring-type-checking"
 	],
 	"rules": {
 		"compat/compat": "warn",
+		"camelcase": "off",
 		"no-warning-comments": "warn",
 		"strict": ["error", "never"],
 		"@typescript-eslint/array-type": ["error", {"default": "generic"}],
@@ -29,6 +29,19 @@
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-var-requires": "off"
 	},
+	"overrides": [
+		{
+			"files": ["gulpfile.js"],
+			"rules": {
+				"@typescript-eslint/explicit-function-return-type": "off",
+				"@typescript-eslint/no-unsafe-assignment": "off",
+				"@typescript-eslint/no-unsafe-call": "off",
+				"@typescript-eslint/no-unsafe-member-access": "off",
+				"@typescript-eslint/no-unsafe-return": "off",
+				"@typescript-eslint/restrict-plus-operands": "off"
+			}
+		}
+	],
 	"globals": {
 		"SgdgBlockIconComponent": false,
 		"SgdgBooleanSettingsComponent": false,

@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 const gulp = require( 'gulp' );
 
 const cleanCSS = require( 'gulp-clean-css' );
@@ -13,7 +15,7 @@ const uglify = require( 'uglify-js' );
 
 const minify = composer( uglify, console );
 
-gulp.task( 'build:css:admin', function() {
+gulp.task( 'build:css:admin', function () {
 	return gulp
 		.src( [ 'src/css/admin/*.css' ] )
 		.pipe( cleanCSS( { compatibility: 'ie8' } ) )
@@ -21,7 +23,7 @@ gulp.task( 'build:css:admin', function() {
 		.pipe( gulp.dest( 'dist/admin/css/' ) );
 } );
 
-gulp.task( 'build:css:frontend', function() {
+gulp.task( 'build:css:frontend', function () {
 	return gulp
 		.src( [ 'src/css/frontend/*.css' ] )
 		.pipe( cleanCSS( { compatibility: 'ie8' } ) )
@@ -34,7 +36,7 @@ gulp.task(
 	gulp.parallel( 'build:css:admin', 'build:css:frontend' )
 );
 
-gulp.task( 'build:deps:composer:apiclient', function() {
+gulp.task( 'build:deps:composer:apiclient', function () {
 	return merge(
 		gulp
 			.src(
@@ -101,7 +103,7 @@ gulp.task( 'build:deps:composer:apiclient', function() {
 	).pipe( gulp.dest( 'dist/bundled/vendor/' ) );
 } );
 
-gulp.task( 'build:deps:composer:apiclient-services', function() {
+gulp.task( 'build:deps:composer:apiclient-services', function () {
 	return gulp
 		.src(
 			[
@@ -109,6 +111,7 @@ gulp.task( 'build:deps:composer:apiclient-services', function() {
 				'vendor/google/apiclient-services/src/Google/Service/Drive/Drive.php',
 				'vendor/google/apiclient-services/src/Google/Service/Drive/DriveList.php',
 				'vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileImageMediaMetadata.php',
+				'vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileVideoMediaMetadata.php',
 				'vendor/google/apiclient-services/src/Google/Service/Drive/DriveFile.php',
 				'vendor/google/apiclient-services/src/Google/Service/Drive/FileList.php',
 				'vendor/google/apiclient-services/src/Google/Service/Drive/Resource/*',
@@ -120,7 +123,7 @@ gulp.task( 'build:deps:composer:apiclient-services', function() {
 		.pipe( gulp.dest( 'dist/bundled/vendor/' ) );
 } );
 
-gulp.task( 'build:deps:composer:licenses', function() {
+gulp.task( 'build:deps:composer:licenses', function () {
 	return gulp
 		.src(
 			[
@@ -134,13 +137,15 @@ gulp.task( 'build:deps:composer:licenses', function() {
 				'vendor/psr/cache/LICENSE.txt',
 				'vendor/psr/http-message/LICENSE',
 				'vendor/psr/log/LICENSE',
+				'vendor/symfony/polyfill-intl-idn/LICENSE',
+				'vendor/symfony/polyfill-mbstring/LICENSE',
 			],
 			{ base: 'vendor/' }
 		)
 		.pipe( gulp.dest( 'dist/bundled/vendor/' ) );
 } );
 
-gulp.task( 'build:deps:composer:other', function() {
+gulp.task( 'build:deps:composer:other', function () {
 	return gulp
 		.src(
 			[
@@ -154,6 +159,9 @@ gulp.task( 'build:deps:composer:other', function() {
 				'vendor/google/auth/src/OAuth2.php',
 				'vendor/guzzlehttp/guzzle/src/Client.php',
 				'vendor/guzzlehttp/guzzle/src/ClientInterface.php',
+				'vendor/guzzlehttp/guzzle/src/Cookie/CookieJarInterface.php',
+				'vendor/guzzlehttp/guzzle/src/Cookie/CookieJar.php',
+				'vendor/guzzlehttp/guzzle/src/Cookie/SetCookie.php',
 				'vendor/guzzlehttp/guzzle/src/Exception/GuzzleException.php',
 				'vendor/guzzlehttp/guzzle/src/Exception/TransferException.php',
 				'vendor/guzzlehttp/guzzle/src/Exception/RequestException.php',
@@ -191,6 +199,7 @@ gulp.task( 'build:deps:composer:other', function() {
 				'vendor/monolog/monolog/src/Monolog/Handler/StreamHandler.php',
 				'vendor/monolog/monolog/src/Monolog/Logger.php',
 				'vendor/monolog/monolog/src/Monolog/ResettableInterface.php',
+				'vendor/monolog/monolog/src/Monolog/Utils.php',
 				'vendor/psr/cache/src/CacheItemInterface.php',
 				'vendor/psr/cache/src/CacheItemPoolInterface.php',
 				'vendor/psr/http-message/src/MessageInterface.php',
@@ -201,6 +210,8 @@ gulp.task( 'build:deps:composer:other', function() {
 				'vendor/psr/log/Psr/Log/LoggerInterface.php',
 				'vendor/symfony/polyfill-intl-idn/bootstrap.php',
 				'vendor/symfony/polyfill-intl-idn/Idn.php',
+				'vendor/symfony/polyfill-mbstring/bootstrap.php',
+				'vendor/symfony/polyfill-mbstring/Mbstring.php',
 			],
 			{ base: 'vendor/' }
 		)
@@ -220,13 +231,13 @@ gulp.task(
 	)
 );
 
-gulp.task( 'build:deps:npm:imagelightbox', function() {
+gulp.task( 'build:deps:npm:imagelightbox', function () {
 	return gulp
 		.src( 'node_modules/imagelightbox/dist/imagelightbox.min.*' )
 		.pipe( gulp.dest( 'dist/bundled/' ) );
 } );
 
-gulp.task( 'build:deps:npm:imagesloaded', function() {
+gulp.task( 'build:deps:npm:imagesloaded', function () {
 	return gulp
 		.src( 'node_modules/imagesloaded/imagesloaded.pkgd.min.js' )
 		.pipe( gulp.dest( 'dist/bundled/' ) );
@@ -252,11 +263,8 @@ gulp.task(
 	gulp.parallel( 'build:deps:composer', 'build:deps:npm' )
 );
 
-gulp.task( 'build:ts:admin', function() {
-	function bundle(
-		name: string,
-		sources: Array< string >
-	): NodeJS.ReadWriteStream {
+gulp.task( 'build:js:admin', function () {
+	function bundle( name, sources ) {
 		const tsProject = ts.createProject( 'tsconfig.json' );
 		return gulp
 			.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
@@ -275,12 +283,8 @@ gulp.task( 'build:ts:admin', function() {
 	);
 } );
 
-gulp.task( 'build:ts:frontend', function() {
-	function bundle(
-		name: string,
-		sources: Array< string >,
-		jQuery = false
-	): NodeJS.ReadWriteStream {
+gulp.task( 'build:js:frontend', function () {
+	function bundle( name, sources, jQuery = false ) {
 		const tsProject = ts.createProject( 'tsconfig.json' );
 		let ret = gulp
 			.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
@@ -331,25 +335,25 @@ gulp.task( 'build:ts:frontend', function() {
 	);
 } );
 
-gulp.task( 'build:ts', gulp.parallel( 'build:ts:admin', 'build:ts:frontend' ) );
+gulp.task( 'build:js', gulp.parallel( 'build:js:admin', 'build:js:frontend' ) );
 
-gulp.task( 'build:php:admin', function() {
+gulp.task( 'build:php:admin', function () {
 	return gulp
 		.src( [ 'src/php/admin/**/*.php' ] )
 		.pipe( gulp.dest( 'dist/admin/' ) );
 } );
 
-gulp.task( 'build:php:base', function() {
+gulp.task( 'build:php:base', function () {
 	return gulp.src( [ 'src/php/*.php' ] ).pipe( gulp.dest( 'dist/' ) );
 } );
 
-gulp.task( 'build:php:bundled', function() {
+gulp.task( 'build:php:bundled', function () {
 	return gulp
 		.src( [ 'src/php/bundled/*.php' ] )
 		.pipe( gulp.dest( 'dist/bundled/' ) );
 } );
 
-gulp.task( 'build:php:frontend', function() {
+gulp.task( 'build:php:frontend', function () {
 	return gulp
 		.src( [ 'src/php/frontend/**/*.php' ] )
 		.pipe( gulp.dest( 'dist/frontend/' ) );
@@ -365,13 +369,13 @@ gulp.task(
 	)
 );
 
-gulp.task( 'build:png', function() {
+gulp.task( 'build:png', function () {
 	return gulp
 		.src( [ 'src/png/icon.png' ] )
 		.pipe( gulp.dest( 'dist/admin/' ) );
 } );
 
-gulp.task( 'build:txt', function() {
+gulp.task( 'build:txt', function () {
 	return gulp.src( [ 'src/txt/*.txt' ] ).pipe( gulp.dest( 'dist/' ) );
 } );
 
@@ -380,7 +384,7 @@ gulp.task(
 	gulp.parallel(
 		'build:css',
 		'build:deps',
-		'build:ts',
+		'build:js',
 		'build:php',
 		'build:png',
 		'build:txt'
