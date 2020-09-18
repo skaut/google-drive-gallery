@@ -1,3 +1,5 @@
+/* exported JQuery */
+
 declare interface JQuery {
 	addToImageLightbox: ( elements: JQuery< Element > ) => void;
 	imageLightbox: ( opts: ILB.Options ) => JQuery;

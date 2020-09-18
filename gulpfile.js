@@ -3,17 +3,14 @@
 const gulp = require( 'gulp' );
 
 const cleanCSS = require( 'gulp-clean-css' );
-const composer = require( 'gulp-uglify/composer' );
 const concat = require( 'gulp-concat' );
 const inject = require( 'gulp-inject-string' );
 const merge = require( 'merge-stream' );
 const rename = require( 'gulp-rename' );
 const replace = require( 'gulp-replace' );
 const shell = require( 'gulp-shell' );
+const terser = require( 'gulp-terser' );
 const ts = require( 'gulp-typescript' );
-const uglify = require( 'uglify-js' );
-
-const minify = composer( uglify, console );
 
 gulp.task( 'build:css:admin', function () {
 	return gulp
@@ -64,6 +61,12 @@ gulp.task( 'build:deps:composer:apiclient', function () {
 				replace(
 					/class_exists\('(?!\\)/g,
 					"class_exists('\\\\Sgdg\\\\Vendor\\\\"
+				)
+			)
+			.pipe(
+				replace(
+					/defined\('\\?GuzzleHttp/g,
+					"defined('\\Sgdg\\Vendor\\GuzzleHttp"
 				)
 			)
 			.pipe( replace( / Iterator/g, ' \\Iterator' ) )
@@ -218,6 +221,12 @@ gulp.task( 'build:deps:composer:other', function () {
 		.pipe( replace( /\nnamespace /g, '\nnamespace Sgdg\\Vendor\\' ) )
 		.pipe( replace( /\nuse /g, '\nuse Sgdg\\Vendor\\' ) )
 		.pipe( replace( ' \\GuzzleHttp', ' \\Sgdg\\Vendor\\GuzzleHttp' ) )
+		.pipe(
+			replace(
+				/defined\('GuzzleHttp/g,
+				"defined('\\Sgdg\\Vendor\\GuzzleHttp"
+			)
+		)
 		.pipe( gulp.dest( 'dist/bundled/vendor/' ) );
 } );
 
@@ -270,7 +279,7 @@ gulp.task( 'build:js:admin', function () {
 			.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
 			.pipe( tsProject() )
 			.js.pipe( concat( name + '.min.js' ) )
-			.pipe( minify( { ie8: true } ) )
+			.pipe( terser( { ie8: true } ) )
 			.pipe( gulp.dest( 'dist/admin/js/' ) );
 	}
 
@@ -300,7 +309,7 @@ gulp.task( 'build:js:frontend', function () {
 				.pipe( inject.append( '} );\n' ) );
 		}
 		return ret
-			.pipe( minify( { ie8: true } ) )
+			.pipe( terser( { ie8: true } ) )
 			.pipe( gulp.dest( 'dist/frontend/js/' ) );
 	}
 

@@ -1,3 +1,5 @@
+/* exported PageResponse */
+
 declare interface PageSuccessResponse {
 	directories: Array< Directory >;
 	images: Array< Image >;

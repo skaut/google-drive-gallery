@@ -12,7 +12,7 @@
 	<arg name="extensions" value="php"/>
 	<arg name="parallel" value="8"/>
 
-	<config name="testVersion" value="5.6-"/>
+	<config name="testVersion" value="5.6-7.4"/>
 	<rule ref="PHPCompatibilityWP"/>
 
 	<config name="minimum_supported_wp_version" value="4.9"/>

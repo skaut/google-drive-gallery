@@ -6,7 +6,8 @@
  */
 
 return array(
-	'target_php_version'                        => '7.3',
+	'target_php_version'                        => '7.4',
+	'minimum_target_php_version'                => '5.6',
 	'backward_compatibility_checks'             => false, // Covered by PHPCS.
 	'warn_about_undocumented_throw_statements'  => true,
 	'strict_method_checking'                    => true,

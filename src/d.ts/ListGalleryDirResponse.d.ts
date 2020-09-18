@@ -1,3 +1,5 @@
+/* exported ListGalleryDirResponse */
+
 declare interface ListGalleryDirSuccessResponse {
 	directories: Array< string >;
 }
