@@ -3,7 +3,7 @@ Contributors: skaut, marekdedic, kalich5, genabitu
 Tags: skaut, google drive, google drive gallery, image and video gallery from google drive, team drive, shared drive, image gallery, video gallery, image and video gallery, gallery from google drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.5
-Stable tag: 2.8.0
+Stable tag: 2.9.0
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
@@ -81,6 +81,16 @@ See the [documentation](https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive
 6. Advanced options
 
 == Changelog ==
+
+= 2.9.0 =
+* Added support for Google Drive shortcuts to folders (image/video shortcuts coming in a future version)
+* Improved error handling in the plugin shortcode & block
+* Improved handling of corrupted videos
+
+= 2.8.1 =
+* Fixed missing space in gallery breadcrumbs
+* Fixed turning off JS events, breaking e.g. sticky headers
+* Fixed missing vendor files, causing errors for some users
 
 = 2.8.0 =
 * Partially fixed videos: Videos which have permissions set to "Anyone on the internet with this link can view" will now work again correctly. Fix for private videos coming in a later version

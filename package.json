@@ -1,6 +1,6 @@
 {
   "name": "skaut-google-drive-gallery",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "description": "A WordPress gallery using Google Drive as file storage",
   "keywords": [
     "wordpress",
@@ -67,7 +67,7 @@
     "stylelint": "^13.7.1",
     "stylelint-config-wordpress": "^17.0.0",
     "stylelint-no-unsupported-browser-features": "^4.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.3"
   },
   "browserslist": [
     "extends @wordpress/browserslist-config"

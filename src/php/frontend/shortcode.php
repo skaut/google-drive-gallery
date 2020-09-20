@@ -51,7 +51,11 @@ function render( $atts ) {
 	if ( isset( $atts['path'] ) && '' !== $atts['path'] ) {
 		$atts['path'] = explode( '/', trim( $atts['path'], " /\t\n\r\0\x0B" ) );
 	}
-	return html( $atts );
+	try {
+		return html( $atts );
+	} catch ( \Exception $e ) {
+		return $e->getMessage();
+	}
 }
 
 /**
@@ -137,21 +141,22 @@ function find_dir( $client, $root, array $path ) {
 	$page_token = null;
 	do {
 		$params   = array(
-			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name)',
+			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
 		);
 		$response = $client->files->listFiles( $params );
 		foreach ( $response->getFiles() as $file ) {
+			$file_id = $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId();
 			if ( $file->getName() === $path[0] ) {
 				if ( count( $path ) === 1 ) {
-					return $file->getId();
+					return $file_id;
 				}
 				array_shift( $path );
-				return find_dir( $client, $file->getId(), $path );
+				return find_dir( $client, $file_id, $path );
 			}
 		}
 		$page_token = $response->getNextPageToken();

@@ -86,5 +86,9 @@ function add() {
  * @return string The HTML code for the block.
  */
 function html( $attributes ) {
-	return \Sgdg\Frontend\Shortcode\html( $attributes );
+	try {
+		return \Sgdg\Frontend\Shortcode\html( $attributes );
+	} catch ( \Exception $e ) {
+		return $e->getMessage();
+	}
 }

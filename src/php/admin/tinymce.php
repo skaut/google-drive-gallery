@@ -119,12 +119,12 @@ function walk_path( $client, array $path, $root = null ) {
 	$page_token = null;
 	do {
 		$params   = array(
-			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name)',
+			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
 		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -133,7 +133,7 @@ function walk_path( $client, array $path, $root = null ) {
 		foreach ( $response->getFiles() as $file ) {
 			if ( $file->getName() === $path[0] ) {
 				array_shift( $path );
-				return walk_path( $client, $path, $file->getId() );
+				return walk_path( $client, $path, $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId() );
 			}
 		}
 		$page_token = $response->getNextPageToken();
@@ -156,12 +156,12 @@ function list_files( $client, $root ) {
 	$page_token = null;
 	do {
 		$params   = array(
-			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name)',
+			'fields'                    => 'nextPageToken, files(name)',
 		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {

@@ -218,12 +218,12 @@ function list_directories( $client, $root ) {
 	$page_token = null;
 	do {
 		$params   = array(
-			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name)',
+			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
 		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -232,7 +232,7 @@ function list_directories( $client, $root ) {
 		foreach ( $response->getFiles() as $file ) {
 			$ret[] = array(
 				'name' => $file->getName(),
-				'id'   => $file->getId(),
+				'id'   => $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId(),
 			);
 		}
 		$page_token = $response->getNextPageToken();

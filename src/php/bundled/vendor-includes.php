@@ -30,6 +30,8 @@ require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Cookie/CookieJar.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/GuzzleException.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/TransferException.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/RequestException.php';
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/BadResponseException.php';
+require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Exception/ClientException.php';
 
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Handler/StreamHandler.php';
 require_once __DIR__ . '/vendor/guzzlehttp/guzzle/src/Handler/CurlHandler.php';
@@ -82,9 +84,19 @@ require_once __DIR__ . '/vendor/google/auth/src/HttpHandler/HttpHandlerFactory.p
 
 require_once __DIR__ . '/vendor/google/auth/src/CacheTrait.php';
 require_once __DIR__ . '/vendor/google/auth/src/FetchAuthTokenInterface.php';
+require_once __DIR__ . '/vendor/google/auth/src/GetQuotaProjectInterface.php';
+require_once __DIR__ . '/vendor/google/auth/src/SignBlobInterface.php';
+require_once __DIR__ . '/vendor/google/auth/src/ProjectIdProviderInterface.php';
+require_once __DIR__ . '/vendor/google/auth/src/UpdateMetadataInterface.php';
+require_once __DIR__ . '/vendor/google/auth/src/FetchAuthTokenCache.php';
+require_once __DIR__ . '/vendor/google/auth/src/CredentialsLoader.php';
+
+require_once __DIR__ . '/vendor/google/auth/src/Middleware/AuthTokenMiddleware.php';
+require_once __DIR__ . '/vendor/google/auth/src/Middleware/ScopedAccessTokenMiddleware.php';
+
 require_once __DIR__ . '/vendor/google/auth/src/OAuth2.php';
 
-require_once __DIR__ . '/vendor/google/auth/src/Middleware/ScopedAccessTokenMiddleware.php';
+require_once __DIR__ . '/vendor/google/auth/src/Credentials/UserRefreshCredentials.php';
 
 require_once __DIR__ . '/vendor/google/apiclient/src/Google/Http/Batch.php';
 require_once __DIR__ . '/vendor/google/apiclient/src/Google/Http/REST.php';
@@ -109,6 +121,7 @@ require_once __DIR__ . '/vendor/google/apiclient/src/Google/Service.php';
 
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/Drive.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveList.php';
+require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileShortcutDetails.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileImageMediaMetadata.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFileVideoMediaMetadata.php';
 require_once __DIR__ . '/vendor/google/apiclient-services/src/Google/Service/Drive/DriveFile.php';

@@ -303,8 +303,8 @@ class Shortcode {
 	private postLoad(): void {
 		this.container
 			.find( 'a[data-sgdg-path]' )
-			.off( 'click' )
-			.click( ( e ) => {
+			.off( 'click.sgdg' )
+			.on( 'click.sgdg', ( e ) => {
 				history.pushState(
 					{},
 					'',
@@ -334,8 +334,8 @@ class Shortcode {
 		);
 		if ( 'true' === sgdgShortcodeLocalize.page_autoload ) {
 			$( window )
-				.off( 'scroll' )
-				.scroll( ( event ) => {
+				.off( 'scroll.sgdg' )
+				.on( 'scroll.sgdg', ( event ) => {
 					const el = $( '.sgdg-more-button' );
 					if ( undefined === el.offset() ) {
 						return;
@@ -363,7 +363,7 @@ class Shortcode {
 		$.each( path, ( _, crumb ) => {
 			field += crumb.id;
 			html +=
-				' >' +
+				' > ' +
 				'<a data-sgdg-path="' +
 				field +
 				'" href="' +

@@ -107,22 +107,23 @@ function verify_path( $client, $root, array $path ) {
 	$page_token = null;
 	do {
 		$params   = array(
-			'q'                         => '"' . $root . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'pageToken'                 => $page_token,
 			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id)',
+			'fields'                    => 'nextPageToken, files(id, mimeType, shortcutDetails(targetId))',
 		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
 			throw $response;
 		}
 		foreach ( $response->getFiles() as $file ) {
-			if ( $file->getId() === $path[0] ) {
+			$file_id = $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId();
+			if ( $file_id === $path[0] ) {
 				if ( count( $path ) > 1 ) {
 					array_shift( $path );
-					verify_path( $client, $file->getId(), $path );
+					verify_path( $client, $file_id, $path );
 				}
 				return;
 			}
@@ -188,13 +189,13 @@ function directories( $client, $dir, $options, $skip, $remaining ) {
 	$more       = false;
 	do {
 		$params   = array(
-			'q'                         => '"' . $dir . '" in parents and mimeType = "application/vnd.google-apps.folder" and trashed = false',
+			'q'                         => '"' . $dir . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
 			'supportsAllDrives'         => true,
 			'includeItemsFromAllDrives' => true,
 			'orderBy'                   => $options->get( 'dir_ordering' ),
 			'pageToken'                 => $page_token,
 			'pageSize'                  => min( 1000, $skip + $remaining + 1 ),
-			'fields'                    => 'nextPageToken, files(id, name)',
+			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
 		);
 		$response = $client->files->listFiles( $params );
 		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
@@ -261,7 +262,7 @@ function dir_ids_names( $files, $options, $skip, $remaining, $more ) {
 			$more = true;
 			break;
 		}
-		$ids[] = $file->getId();
+		$ids[] = $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId();
 		$name  = $file->getName();
 		if ( '' !== $options->get( 'dir_prefix' ) ) {
 			$pos     = mb_strpos( $name, $options->get( 'dir_prefix' ) );
@@ -319,7 +320,7 @@ function dir_counts_requests( $client, $batch, $dirs ) {
 	);
 
 	foreach ( $dirs as $dir ) {
-		$params['q'] = '"' . $dir . '" in parents and mimeType contains "application/vnd.google-apps.folder" and trashed = false';
+		$params['q'] = '"' . $dir . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false';
 		$request     = $client->files->listFiles( $params );
 		// @phan-suppress-next-line PhanTypeMismatchArgument
 		$batch->add( $request, 'dircount-' . $dir );
@@ -559,19 +560,41 @@ function videos( $client, $dir, $options, $skip, $remaining ) {
 				$more = true;
 				break;
 			}
-			$ret[] = array(
-				'id'        => $file->getId(),
-				'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
-				'mimeType'  => $file->getMimeType(),
-				'width'     => $file->getVideoMediaMetadata()->getWidth(),
-				'height'    => $file->getVideoMediaMetadata()->getHeight(),
-				'src'       => resolve_video_url( $file->getWebContentLink() ),
-			);
+			$ret[] = video_preprocess( $file, $options );
 			$remaining--;
 		}
 		$page_token = $response->getNextPageToken();
 	} while ( null !== $page_token && ( 0 < $remaining || ! $more ) );
 	return array( $ret, $more );
+}
+
+/**
+ * Processes an image response.
+ *
+ * @param \Sgdg\Vendor\Google_Service_Drive_DriveFile $file A Google Drive file response.
+ * @param \Sgdg\Frontend\Options_Proxy                $options The configuration of the gallery.
+ *
+ * @return array {
+ *     @type string $id The ID of the image.
+ *     @type string $thumbnail A URL of a thumbnail to be displayed in the image grid.
+ *     @type string $mimeType The MIME type of the video file.
+ *     @type int    $width The width of the video.
+ *     @type int    $height The height of the video.
+ *     @type src    $src The URL of the video file.
+ * }
+ */
+function video_preprocess( $file, $options ) {
+	$video_metadata = $file->getVideoMediaMetadata();
+	$width          = is_null( $video_metadata ) ? '0' : $video_metadata->getWidth();
+	$height         = is_null( $video_metadata ) ? '0' : $video_metadata->getHeight();
+	return array(
+		'id'        => $file->getId(),
+		'thumbnail' => substr( $file->getThumbnailLink(), 0, -4 ) . 'h' . floor( 1.25 * $options->get( 'grid_height' ) ),
+		'mimeType'  => $file->getMimeType(),
+		'width'     => $width,
+		'height'    => $height,
+		'src'       => resolve_video_url( $file->getWebContentLink() ),
+	);
 }
 
 /**
