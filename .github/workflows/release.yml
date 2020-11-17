@@ -1,0 +1,102 @@
+name: "Release"
+on:
+  push:
+    tags:
+      - "*"
+env:
+  php-version: 7.4
+  cache-version: 1
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+          coverage: none
+
+      - name: "Cache Composer dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "~/.composer/cache"
+          key: composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('composer.json') }}
+            composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+            composer-dependencies-${{ runner.os }}-
+
+      - name: "Install Composer dependencies"
+        run: |
+          composer install -n --prefer-dist
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "~/.npm"
+          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+            npm-dependencies-${{ runner.os }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Build"
+        run: |
+          npm run build
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: "build-artifact"
+          path: dist
+
+  package:
+    name: "Upload a package to GitHub release"
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: "Download artifact"
+        uses: actions/download-artifact@v2
+        with:
+          name: "build-artifact"
+          path: ${{ github.event.repository.name }}
+
+      - name: Get the version
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: "Create zip"
+        run: |
+          zip -r dist.zip ${{ github.event.repository.name }}
+
+      - name: "Extract changelog"
+        run: |
+          sed -n '/=\s\?${{ steps.version.outputs.VERSION }}\s\?=/{:a;n;/=.*/b;p;ba}' ${{ github.event.repository.name }}/readme.txt > body.md
+
+      - name: "Create a release"
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Version ${{ github.ref }}
+          body_path: ./body.md
+
+      - name: "Upload release asset"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist.zip
+          asset_name: ${{ github.event.repository.name }}.${{ steps.version.outputs.VERSION }}.zip
+          asset_content_type: application/zip

@@ -3,7 +3,7 @@ Contributors: skaut, marekdedic, kalich5, genabitu
 Tags: skaut, google drive, google drive gallery, image and video gallery from google drive, team drive, shared drive, image gallery, video gallery, image and video gallery, gallery from google drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
 Tested up to: 5.5
-Stable tag: 2.9.0
+Stable tag: 2.9.1
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
@@ -81,6 +81,10 @@ See the [documentation](https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive
 6. Advanced options
 
 == Changelog ==
+
+= 2.9.1 =
+* Fixed an issue where additional pages may not get loaded in an edge case
+* Upgraded a dependency to prevent a possible security issue.
 
 = 2.9.0 =
 * Added support for Google Drive shortcuts to folders (image/video shortcuts coming in a future version)

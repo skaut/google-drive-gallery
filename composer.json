@@ -35,10 +35,14 @@
     },
     "require": {
         "php": "^5.6 || ^7.0",
-        "google/apiclient": "^2.0",
+        "google/apiclient": "^2.7 <2.8",
         "monolog/monolog": "^1.25",
         "guzzlehttp/guzzle": "^6.5.4",
-        "paragonie/random_compat": "^2.0.18"
+        "paragonie/random_compat": "^2.0.18",
+        "symfony/polyfill-intl-idn": "^1.19.0 <1.20",
+        "symfony/polyfill-intl-normalizer": "^1.19.0 <1.20",
+        "symfony/polyfill-php70": "^1.19.0 <1.20",
+        "symfony/polyfill-php72": "^1.19.0 <1.20"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0",

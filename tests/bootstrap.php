@@ -5,7 +5,7 @@
  * @package Skaut_Google_Drive_Gallery
  */
 
-// phpcs:disableWordPress.NamingConventions.PrefixAllGlobals
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 

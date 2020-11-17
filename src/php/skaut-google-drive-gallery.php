@@ -11,7 +11,7 @@
 Plugin Name:	Image and video gallery from Google Drive
 Plugin URI:		https://github.com/skaut/skaut-google-drive-gallery/
 Description:	A WordPress gallery using Google Drive as file storage
-Version:		2.9.0
+Version:		2.9.1
 Author:			Junák - český skaut
 Author URI:		https://github.com/skaut
 License:		MIT
@@ -51,6 +51,7 @@ require_once __DIR__ . '/bundled/vendor-includes.php';
 
 require_once __DIR__ . '/class-options.php';
 
+require_once __DIR__ . '/frontend/class-pagination-helper.php';
 require_once __DIR__ . '/frontend/class-options-proxy.php';
 require_once __DIR__ . '/frontend/google-api-lib.php';
 require_once __DIR__ . '/frontend/block.php';

@@ -50,10 +50,8 @@ function ajax_handler_body() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$ret['path'] = path_names( $client, explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) ), $options );
 	}
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$page      = isset( $_GET['page'] ) ? max( 1, intval( $_GET['page'] ) ) : 1;
-	$remaining = $options->get( 'page_size' ) * $page;
-	$ret       = array_merge( $ret, \Sgdg\Frontend\Page\get_page( $client, $dir, 0, $remaining, $options ) );
+	$pagination_helper = new \Sgdg\Frontend\Pagination_Helper( $options, true );
+	$ret               = array_merge( $ret, \Sgdg\Frontend\Page\get_page( $client, $dir, $pagination_helper, $options ) );
 	wp_send_json( $ret );
 }
 
