@@ -30,7 +30,9 @@
     "lint:ts:eslint": "eslint src/**/*.ts gulpfile.js",
     "lint:ts": "run-s -c lint:ts:*",
     "lint": "run-s -c lint:*",
+    "preunit:php:phpunit": "[ -e vendor/google ] && rm -r vendor/google; composer dump-autoload",
     "unit:php:phpunit": "vendor/bin/phpunit",
+    "postunit:php:phpunit": "composer install",
     "unit:php": "run-s -c unit:php:*",
     "unit": "run-s -c unit:*"
   },
@@ -46,12 +48,12 @@
     "@types/wordpress__blocks": "^6.4.12",
     "@types/wordpress__components": "^9.8.5",
     "@types/wordpress__editor": "^9.4.5",
-    "@typescript-eslint/eslint-plugin": "^4.8.0",
-    "@typescript-eslint/parser": "^4.8.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
     "@wordpress/browserslist-config": "^2.7.0",
     "@wordpress/element": "^2.18.0",
     "@wordpress/eslint-plugin": "^7.3.0",
-    "eslint": "^7.13.0",
+    "eslint": "^7.14.0",
     "eslint-plugin-compat": "^3.8.0",
     "gulp": "^4.0.2",
     "gulp-clean-css": "^4.3.0",
@@ -60,14 +62,14 @@
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.8.0",
-    "gulp-terser": "^1.4.1",
+    "gulp-terser": "^2.0.0",
     "gulp-typescript": "^5.0.1",
     "merge-stream": "^2.0.0",
     "npm-run-all": "^4.1.5",
-    "stylelint": "^13.7.2",
+    "stylelint": "^13.8.0",
     "stylelint-config-wordpress": "^17.0.0",
     "stylelint-no-unsupported-browser-features": "^4.1.4",
-    "typescript": "^4.0.5"
+    "typescript": "^4.1.2"
   },
   "browserslist": [
     "extends @wordpress/browserslist-config"

@@ -25,14 +25,10 @@ function register() {
 function handle_ajax() {
 	try {
 		ajax_handler_body();
-	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
-		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
-		} else {
-			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
-		}
-	} catch ( \Exception $e ) {
+	} catch ( \Sgdg\Exceptions\Exception $e ) {
 		wp_send_json( array( 'error' => $e->getMessage() ) );
+	} catch ( \Exception $_ ) {
+		wp_send_json( array( 'error' => esc_html__( 'Unknown error.', 'skaut-google-drive-gallery' ) ) );
 	}
 }
 
@@ -42,61 +38,52 @@ function handle_ajax() {
  * Returns the names of the directories along the user-selected path and the first page of the gallery.
  */
 function ajax_handler_body() {
-	list( $client, $dir, $options ) = \Sgdg\Frontend\Page\get_context();
-
-	$ret = array();
+	list( $parent_id, $options, $path_verification ) = \Sgdg\Frontend\Page\get_context();
+	$pagination_helper                               = ( new \Sgdg\Frontend\Pagination_Helper() )->withOptions( $options, true );
+	$path_names                                      = null;
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['path'] ) && '' !== $_GET['path'] ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$ret['path'] = path_names( $client, explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) ), $options );
+		$path_names = path_names( explode( '/', sanitize_text_field( wp_unslash( $_GET['path'] ) ) ), $options );
 	}
-	$pagination_helper = new \Sgdg\Frontend\Pagination_Helper( $options, true );
-	$ret               = array_merge( $ret, \Sgdg\Frontend\Page\get_page( $client, $dir, $pagination_helper, $options ) );
-	wp_send_json( $ret );
+	$page_promise = \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all( array( \Sgdg\Frontend\Page\get_page( $parent_id, $pagination_helper, $options ), $path_names ) )->then(
+		static function( $wrapper ) {
+			list( $page, $path_names ) = $wrapper;
+			if ( ! is_null( $path_names ) ) {
+				$page['path'] = $path_names;
+			}
+			wp_send_json( $page );
+		}
+	);
+	\Sgdg\API_Client::execute( array( $path_verification, $page_promise ) );
 }
 
 /**
  * Adds names to a path represented as a list of directory IDs
  *
- * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
- * @param array                             $path A list of directory IDs.
- * @param \Sgdg\Frontend\Options_Proxy      $options Gallery options.
+ * @param array                        $path A list of directory IDs.
+ * @param \Sgdg\Frontend\Options_Proxy $options Gallery options.
  *
- * @throws \Sgdg\Vendor\Google_Service_Exception A Google Drive API exception.
- *
- * @return array A list of records in the format `['id' => 'id', 'name' => 'name']`.
+ * @return \Sgdg\Vendor\GuzzleHttp\Promise\PromiseInterface A promise resolving to a list of records in the format `['id' => 'id', 'name' => 'name']`.
  */
-function path_names( $client, array $path, $options ) {
-	$client->getClient()->setUseBatch( true );
-	$batch = $client->createBatch();
-	foreach ( $path as $segment ) {
-		$request = $client->files->get(
-			$segment,
-			array(
-				'supportsAllDrives' => true,
-				'fields'            => 'name',
-			)
-		);
-		// @phan-suppress-next-line PhanTypeMismatchArgument
-		$batch->add( $request, $segment );
-	}
-	$responses = $batch->execute();
-	$client->getClient()->setUseBatch( false );
-	$ret = array();
-	foreach ( $path as $segment ) {
-		$response = $responses[ 'response-' . $segment ];
-		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
-			throw $response;
-		}
-		$name = $response->getName();
-		$pos  = false;
-		if ( '' !== $options->get( 'dir_prefix' ) ) {
-			$pos = mb_strpos( $name, $options->get( 'dir_prefix' ) );
-		}
-		$ret[] = array(
-			'id'   => $segment,
-			'name' => mb_substr( $name, false !== $pos ? $pos + 1 : 0 ),
-		);
-	}
-	return $ret;
+function path_names( $path, $options ) {
+	return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all(
+		array_map(
+			static function( $segment ) use ( &$options ) {
+				return \Sgdg\API_Client::get_file_name( $segment )->then(
+					static function( $name ) use ( $segment, &$options ) {
+						$pos = false;
+						if ( '' !== $options->get( 'dir_prefix' ) ) {
+							$pos = mb_strpos( $name, $options->get( 'dir_prefix' ) );
+						}
+						return array(
+							'id'   => $segment,
+							'name' => mb_substr( $name, false !== $pos ? $pos + 1 : 0 ),
+						);
+					}
+				);
+			},
+			$path
+		)
+	);
 }

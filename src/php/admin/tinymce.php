@@ -61,14 +61,10 @@ function register_scripts_styles() {
 function handle_ajax() {
 	try {
 		ajax_handler_body();
-	} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
-		if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-			wp_send_json( array( 'error' => esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) ) );
-		} else {
-			wp_send_json( array( 'error' => $e->getErrors()[0]['message'] ) );
-		}
-	} catch ( \Exception $e ) {
+	} catch ( \Sgdg\Exceptions\Exception $e ) {
 		wp_send_json( array( 'error' => $e->getMessage() ) );
+	} catch ( \Exception $_ ) {
+		wp_send_json( array( 'error' => esc_html__( 'Unknown error.', 'skaut-google-drive-gallery' ) ) );
 	}
 }
 
@@ -77,100 +73,46 @@ function handle_ajax() {
  *
  * Returns a list of all directories inside the last directory of a path.
  *
- * @throws \Exception An invalid path or a Google Drive API exception or the plugin isn't configured properly.
+ * @throws \Sgdg\Exceptions\Cant_Edit_Exception Insufficient role.
+ * @throws \Sgdg\Exceptions\No_Access_Token_Exception Plugin not authorized.
  */
 function ajax_handler_body() {
 	check_ajax_referer( 'sgdg_editor_plugin' );
 	if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
-		throw new \Exception( esc_html__( 'Insufficient role for this action.', 'skaut-google-drive-gallery' ) );
+		throw new \Sgdg\Exceptions\Cant_Edit_Exception();
 	}
 	if ( false === get_option( 'sgdg_access_token', false ) ) {
-		/* translators: 1: Start of link to the settings 2: End of link to the settings */
-		throw new \Exception( sprintf( esc_html__( 'Google Drive gallery hasn\'t been granted permissions yet. Please %1$sconfigure%2$s the plugin and try again.', 'skaut-google-drive-gallery' ), '<a href="' . esc_url( admin_url( 'admin.php?page=sgdg_basic' ) ) . '">', '</a>' ) );
+		throw new \Sgdg\Exceptions\No_Access_Token_Exception();
 	}
 
-	$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
+	$path      = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
+	$root_path = \Sgdg\Options::$root_path->get();
+	$root      = end( $root_path );
 
-	$path = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
-	$ret  = walk_path( $client, $path );
-
-	wp_send_json( array( 'directories' => $ret ) );
+	$directory_promise = list_directories_in_path( $path, $root );
+	wp_send_json( \Sgdg\API_Client::execute( array( 'directories' => $directory_promise ) ) );
 }
 
 /**
  * Returns a list of all directories inside the last directory of a path
  *
- * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
- * @param array                             $path a path represented as an array of directory names.
- * @param string|null                       $root The root directory relative to which the path is taken. If null, the root directory of the plugin is used. Default null.
+ * @param array  $path A path represented as an array of directory names.
+ * @param string $root The root directory relative to which the path is taken.
  *
- * @throws \Exception An invalid path or a Google Drive API exception.
- *
- * @return array A list of directory names.
+ * @return \Sgdg\Vendor\GuzzleHttp\Promise\PromiseInterface A list of directory names.
  */
-function walk_path( $client, array $path, $root = null ) {
-	if ( ! isset( $root ) ) {
-		$root_path = \Sgdg\Options::$root_path->get();
-		$root      = end( $root_path );
-	}
+function list_directories_in_path( array $path, $root ) {
 	if ( 0 === count( $path ) ) {
-		return list_files( $client, $root );
-	}
-	$page_token = null;
-	do {
-		$params   = array(
-			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
-			'supportsAllDrives'         => true,
-			'includeItemsFromAllDrives' => true,
-			'pageToken'                 => $page_token,
-			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
-		);
-		$response = $client->files->listFiles( $params );
-		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
-			throw $response;
-		}
-		foreach ( $response->getFiles() as $file ) {
-			if ( $file->getName() === $path[0] ) {
-				array_shift( $path );
-				return walk_path( $client, $path, $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId() );
+		return \Sgdg\API_Client::list_directories( $root, new \Sgdg\Frontend\API_Fields( array( 'name' ) ) )->then(
+			static function( $directories ) {
+				return array_column( $directories, 'name' );
 			}
-		}
-		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token );
-	throw new \Exception( esc_html__( 'No such directory found - it may have been deleted or renamed. ', 'skaut-google-drive-gallery' ) );
-}
-
-/**
- * Lists all directories inside a directory
- *
- * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
- * @param string                            $root A directory to list the subdirectories of.
- *
- * @throws \Sgdg\Vendor\Google_Service_Exception A Google Drive API exception.
- *
- * @return array A list of directory names.
- */
-function list_files( $client, $root ) {
-	$ret        = array();
-	$page_token = null;
-	do {
-		$params   = array(
-			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
-			'supportsAllDrives'         => true,
-			'includeItemsFromAllDrives' => true,
-			'pageToken'                 => $page_token,
-			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(name)',
 		);
-		$response = $client->files->listFiles( $params );
-		if ( $response instanceof \Sgdg\Vendor\Google_Service_Exception ) {
-			throw $response;
+	}
+	return \Sgdg\API_Client::get_directory_id( $root, $path[0] )->then(
+		static function( $next_dir_id ) use ( $path ) {
+			array_shift( $path );
+			return list_directories_in_path( $path, $next_dir_id );
 		}
-		foreach ( $response->getFiles() as $file ) {
-			$ret[] = $file->getName();
-		}
-		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token );
-	return $ret;
+	);
 }

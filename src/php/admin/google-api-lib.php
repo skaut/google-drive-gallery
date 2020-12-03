@@ -17,7 +17,7 @@ if ( ! is_admin() ) {
  * Redirects to the OAuth granting URL
  */
 function oauth_grant() {
-	$client   = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
+	$client   = \Sgdg\API_Client::get_raw_client();
 	$auth_url = $client->createAuthUrl();
 	header( 'Location: ' . esc_url_raw( $auth_url ) );
 }
@@ -31,16 +31,22 @@ function oauth_redirect() {
 		add_settings_error( 'general', 'oauth_failed', esc_html__( 'Google API hasn\'t returned an authentication code. Please try again.', 'skaut-google-drive-gallery' ), 'error' );
 	}
 	if ( count( get_settings_errors() ) === 0 && false === get_option( 'sgdg_access_token', false ) ) {
-		$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
+		$client = \Sgdg\API_Client::get_raw_client();
 		try {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$client->fetchAccessTokenWithAuthCode( sanitize_text_field( wp_unslash( $_GET['code'] ) ) );
 			$access_token = $client->getAccessToken();
 
+			// @phan-suppress-next-line PhanTypeMismatchArgument
 			$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
-			\Sgdg\Admin\AdminPages\Basic\RootSelection\list_drives( $drive_client );
+			$drive_client->drives->listDrives(
+				array(
+					'pageSize' => 1,
+					'fields'   => 'drives(id)',
+				)
+			);
 			update_option( 'sgdg_access_token', $access_token );
-		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
+		} catch ( \Sgdg\Vendor\Google\Service\Exception $e ) {
 			if ( 'accessNotConfigured' === $e->getErrors()[0]['reason'] ) {
 				/* translators: %s: Link to the Google developers console */
 				add_settings_error( 'general', 'oauth_failed', sprintf( esc_html__( 'Google Drive API is not enabled. Please enable it at %s and try again after a while.', 'skaut-google-drive-gallery' ), '<a href="https://console.developers.google.com/apis/library/drive.googleapis.com" target="_blank">https://console.developers.google.com/apis/library/drive.googleapis.com</a>' ), 'error' );
@@ -62,7 +68,7 @@ function oauth_redirect() {
  * Revokes and deletes the OAuth token and redirects back to basic settings
  */
 function oauth_revoke() {
-	$client = \Sgdg\Frontend\GoogleAPILib\get_raw_client();
+	$client = \Sgdg\API_Client::get_raw_client();
 	try {
 		$client->revokeToken();
 		delete_option( 'sgdg_access_token' );

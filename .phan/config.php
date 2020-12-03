@@ -31,6 +31,7 @@ return array(
 	),
 	'suppress_issue_types'                      => array(
 		'PhanPluginDuplicateConditionalNullCoalescing',
+		'PhanPluginMixedKeyNoKey',
 	),
 	'plugins'                                   => array(
 		'AlwaysReturnPlugin',

@@ -50,10 +50,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/bundled/vendor-includes.php';
 
 require_once __DIR__ . '/class-options.php';
+require_once __DIR__ . '/class-api-client.php';
 
+require_once __DIR__ . '/exceptions/class-exception.php';
+require_once __DIR__ . '/exceptions/class-api-exception.php';
+require_once __DIR__ . '/exceptions/class-api-rate-limit-exception.php';
+require_once __DIR__ . '/exceptions/class-cant-edit-exception.php';
+require_once __DIR__ . '/exceptions/class-cant-manage-exception.php';
+require_once __DIR__ . '/exceptions/class-directory-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-drive-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-file-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-gallery-expired-exception.php';
+require_once __DIR__ . '/exceptions/class-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-no-access-token-exception.php';
+require_once __DIR__ . '/exceptions/class-path-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-plugin-not-authorized-exception.php';
+require_once __DIR__ . '/exceptions/class-root-not-found-exception.php';
+require_once __DIR__ . '/exceptions/class-unsupported-value-exception.php';
+
+require_once __DIR__ . '/frontend/interface-pagination-helper-interface.php';
+require_once __DIR__ . '/frontend/class-api-fields.php';
+require_once __DIR__ . '/frontend/class-infinite-pagination-helper.php';
 require_once __DIR__ . '/frontend/class-pagination-helper.php';
 require_once __DIR__ . '/frontend/class-options-proxy.php';
-require_once __DIR__ . '/frontend/google-api-lib.php';
+require_once __DIR__ . '/frontend/class-single-page-pagination-helper.php';
 require_once __DIR__ . '/frontend/block.php';
 require_once __DIR__ . '/frontend/shortcode.php';
 require_once __DIR__ . '/frontend/page.php';

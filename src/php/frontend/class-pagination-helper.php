@@ -10,7 +10,7 @@ namespace Sgdg\Frontend;
 /**
  * Stores pagination info and provides methods to access and use it easily.
  */
-class Pagination_Helper {
+class Pagination_Helper implements Pagination_Helper_Interface {
 	/**
 	 * How many items remain to be skipped (to get to the desired page).
 	 *
@@ -34,17 +34,46 @@ class Pagination_Helper {
 
 	/**
 	 * Pagination_Helper class constructor
+	 */
+	public function __construct() {
+		$this->to_skip  = 0;
+		$this->to_show  = 0;
+		$this->has_more = null;
+	}
+
+	/**
+	 * Pagination_Helper class populator
+	 *
+	 * Call as `new Pagination_Helper()->withOptions()`
 	 *
 	 * @param \Sgdg\Frontend\Options_Proxy $options Gallery options.
 	 * @param bool                         $show_previous Whether to also show all previous pages.
+	 *
+	 * @return $this The instance.
 	 */
-	public function __construct( $options, $show_previous ) {
+	public function withOptions( $options, $show_previous ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$page           = isset( $_GET['page'] ) ? intval( max( 1, intval( $_GET['page'] ) ) ) : 1;
-		$page_size      = intval( $options->get( 'page_size' ) );
-		$this->to_skip  = $show_previous ? 0 : $page_size * ( $page - 1 );
-		$this->to_show  = $show_previous ? $page_size * $page : $page_size;
-		$this->has_more = null;
+		$page          = isset( $_GET['page'] ) ? intval( max( 1, intval( $_GET['page'] ) ) ) : 1;
+		$page_size     = intval( $options->get( 'page_size' ) );
+		$this->to_skip = $show_previous ? 0 : $page_size * ( $page - 1 );
+		$this->to_show = $show_previous ? $page_size * $page : $page_size;
+		return $this;
+	}
+
+	/**
+	 * Pagination_Helper class populator
+	 *
+	 * Call as `new Pagination_Helper()->withOptions()`
+	 *
+	 * @param int $to_skip The number of items to skip before showing any.
+	 * @param int $to_show The number of items to show.
+	 *
+	 * @return $this The instance.
+	 */
+	public function withValues( $to_skip, $to_show ) {
+		$this->to_skip = $to_skip;
+		$this->to_show = $to_show;
+		return $this;
 	}
 
 	/**

@@ -88,7 +88,9 @@ function add() {
 function html( $attributes ) {
 	try {
 		return \Sgdg\Frontend\Shortcode\html( $attributes );
-	} catch ( \Exception $e ) {
-		return $e->getMessage();
+	} catch ( \Sgdg\Exceptions\Exception $e ) {
+		return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
+	} catch ( \Exception $_ ) {
+		return '<div class="sgdg-gallery-container">' . esc_html__( 'Unknown error.', 'skaut-google-drive-gallery' ) . '</div>';
 	}
 }

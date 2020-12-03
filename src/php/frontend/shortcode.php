@@ -53,8 +53,10 @@ function render( $atts ) {
 	}
 	try {
 		return html( $atts );
-	} catch ( \Exception $e ) {
-		return $e->getMessage();
+	} catch ( \Sgdg\Exceptions\Exception $e ) {
+		return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
+	} catch ( \Exception $_ ) {
+		return '<div class="sgdg-gallery-container">' . esc_html__( 'Unknown error.', 'skaut-google-drive-gallery' ) . '</div>';
 	}
 }
 
@@ -101,17 +103,8 @@ function html( $atts ) {
 	$root_path = \Sgdg\Options::$root_path->get();
 	$root      = end( $root_path );
 	if ( isset( $atts['path'] ) && '' !== $atts['path'] && ! empty( $atts['path'] ) ) {
-		$client = \Sgdg\Frontend\GoogleAPILib\get_drive_client();
-		try {
-			$root = find_dir( $client, $root, $atts['path'] );
-		} catch ( \Sgdg\Vendor\Google_Service_Exception $e ) {
-			if ( 'userRateLimitExceeded' === $e->getErrors()[0]['reason'] ) {
-				return '<div class="sgdg-gallery-container">' . esc_html__( 'The maximum number of requests has been exceeded. Please try again in a minute.', 'skaut-google-drive-gallery' ) . '</div>';
-			}
-			return '<div class="sgdg-gallery-container">' . $e->getErrors()[0]['message'] . '</div>';
-		} catch ( \Exception $e ) {
-			return '<div class="sgdg-gallery-container">' . $e->getMessage() . '</div>';
-		}
+		$root_promise = find_dir( $root, $atts['path'] );
+		$root         = \Sgdg\API_Client::execute( array( $root_promise ) )[0];
 	}
 	$hash = hash( 'sha256', $root );
 	set_transient(
@@ -127,39 +120,27 @@ function html( $atts ) {
 }
 
 /**
- * Finds the ID of a directory
+ * Finds the ID of a the last directory in `$path` starting from `$root`.
  *
- * @param \Sgdg\Vendor\Google_Service_Drive $client A Google Drive API client.
- * @param string                            $root The ID of the root directory of the path.
- * @param array                             $path An array of directory names forming a path starting from $root and ending with the directory whose ID is to be returned.
+ * @param string $root The ID of the root directory of the path.
+ * @param array  $path An array of directory names forming a path starting from $root and ending with the directory whose ID is to be returned.
  *
- * @throws \Exception The path was invalid.
- *
- * @return string The ID of the directory.
+ * @return \Sgdg\Vendor\GuzzleHttp\Promise\Promise The ID of the directory.
  */
-function find_dir( $client, $root, array $path ) {
-	$page_token = null;
-	do {
-		$params   = array(
-			'q'                         => '"' . $root . '" in parents and (mimeType = "application/vnd.google-apps.folder" or (mimeType = "application/vnd.google-apps.shortcut" and shortcutDetails.targetMimeType = "application/vnd.google-apps.folder")) and trashed = false',
-			'supportsAllDrives'         => true,
-			'includeItemsFromAllDrives' => true,
-			'pageToken'                 => $page_token,
-			'pageSize'                  => 1000,
-			'fields'                    => 'nextPageToken, files(id, name, mimeType, shortcutDetails(targetId))',
-		);
-		$response = $client->files->listFiles( $params );
-		foreach ( $response->getFiles() as $file ) {
-			$file_id = $file->getMimeType() === 'application/vnd.google-apps.shortcut' ? $file->getShortcutDetails()->getTargetId() : $file->getId();
-			if ( $file->getName() === $path[0] ) {
-				if ( count( $path ) === 1 ) {
-					return $file_id;
-				}
-				array_shift( $path );
-				return find_dir( $client, $file_id, $path );
+function find_dir( $root, array $path ) {
+	return \Sgdg\API_Client::get_directory_id( $root, $path[0] )->then(
+		static function( $next_dir_id ) use ( $path ) {
+			if ( count( $path ) === 1 ) {
+				return $next_dir_id;
 			}
+			array_shift( $path );
+			return find_dir( $next_dir_id, $path );
+		},
+		static function( $exception ) {
+			if ( $exception instanceof \Sgdg\Exceptions\Directory_Not_Found_Exception ) {
+				return new \Sgdg\Vendor\GuzzleHttp\Promise\RejectedPromise( new \Sgdg\Exceptions\Root_Not_Found_Exception() );
+			}
+			return new \Sgdg\Vendor\GuzzleHttp\Promise\RejectedPromise( $exception );
 		}
-		$page_token = $response->getNextPageToken();
-	} while ( null !== $page_token );
-	throw new \Exception( esc_html__( 'The root directory of the gallery doesn\'t exist - it may have been deleted or renamed.', 'skaut-google-drive-gallery' ) );
+	);
 }
