@@ -106,7 +106,7 @@ function ajax_handler_body() {
 	$path_ids = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
 
 	$path_id_promise   = path_ids_to_names( $path_ids );
-	$directory_promise = count( $path_ids ) === 0 ? list_drives() : \Sgdg\API_Client::list_directories( end( $path_ids ), new \Sgdg\Frontend\API_Fields( array( 'id', 'name' ) ) );
+	$directory_promise = count( $path_ids ) === 0 ? list_drives() : \Sgdg\API_Facade::list_directories( end( $path_ids ), new \Sgdg\Frontend\API_Fields( array( 'id', 'name' ) ) );
 
 	wp_send_json(
 		\Sgdg\API_Client::execute(
@@ -131,11 +131,11 @@ function path_ids_to_names( $path ) {
 		if ( 'root' === $path[0] ) {
 			$promises[] = new \Sgdg\Vendor\GuzzleHttp\Promise\FulfilledPromise( esc_html__( 'My Drive', 'skaut-google-drive-gallery' ) );
 		} else {
-			$promises[] = \Sgdg\API_Client::get_drive_name( $path[0] );
+			$promises[] = \Sgdg\API_Facade::get_drive_name( $path[0] );
 		}
 	}
 	foreach ( array_slice( $path, 1 ) as $path_element ) {
-		$promises[] = \Sgdg\API_Client::get_file_name( $path_element );
+		$promises[] = \Sgdg\API_Facade::get_file_name( $path_element );
 	}
 	return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all( $promises );
 }
@@ -148,7 +148,7 @@ function path_ids_to_names( $path ) {
  * @return \Sgdg\Vendor\GuzzleHttp\Promise\PromiseInterface An array of drive records in the format `['name' => '', 'id' => '']`
  */
 function list_drives() {
-	return \Sgdg\API_Client::list_drives()->then(
+	return \Sgdg\API_Facade::list_drives()->then(
 		static function( $drives ) {
 			return array_merge(
 				array(

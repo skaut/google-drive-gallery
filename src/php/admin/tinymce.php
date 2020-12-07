@@ -74,7 +74,7 @@ function handle_ajax() {
  * Returns a list of all directories inside the last directory of a path.
  *
  * @throws \Sgdg\Exceptions\Cant_Edit_Exception Insufficient role.
- * @throws \Sgdg\Exceptions\No_Access_Token_Exception Plugin not authorized.
+ * @throws \Sgdg\Exceptions\Plugin_Not_Authorized_Exception Plugin not authorized.
  */
 function ajax_handler_body() {
 	check_ajax_referer( 'sgdg_editor_plugin' );
@@ -82,7 +82,7 @@ function ajax_handler_body() {
 		throw new \Sgdg\Exceptions\Cant_Edit_Exception();
 	}
 	if ( false === get_option( 'sgdg_access_token', false ) ) {
-		throw new \Sgdg\Exceptions\No_Access_Token_Exception();
+		throw new \Sgdg\Exceptions\Plugin_Not_Authorized_Exception();
 	}
 
 	$path      = isset( $_GET['path'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['path'] ) ) : array();
@@ -103,13 +103,13 @@ function ajax_handler_body() {
  */
 function list_directories_in_path( array $path, $root ) {
 	if ( 0 === count( $path ) ) {
-		return \Sgdg\API_Client::list_directories( $root, new \Sgdg\Frontend\API_Fields( array( 'name' ) ) )->then(
+		return \Sgdg\API_Facade::list_directories( $root, new \Sgdg\Frontend\API_Fields( array( 'name' ) ) )->then(
 			static function( $directories ) {
 				return array_column( $directories, 'name' );
 			}
 		);
 	}
-	return \Sgdg\API_Client::get_directory_id( $root, $path[0] )->then(
+	return \Sgdg\API_Facade::get_directory_id( $root, $path[0] )->then(
 		static function( $next_dir_id ) use ( $path ) {
 			array_shift( $path );
 			return list_directories_in_path( $path, $next_dir_id );

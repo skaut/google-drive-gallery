@@ -128,7 +128,7 @@ function html( $atts ) {
  * @return \Sgdg\Vendor\GuzzleHttp\Promise\Promise The ID of the directory.
  */
 function find_dir( $root, array $path ) {
-	return \Sgdg\API_Client::get_directory_id( $root, $path[0] )->then(
+	return \Sgdg\API_Facade::get_directory_id( $root, $path[0] )->then(
 		static function( $next_dir_id ) use ( $path ) {
 			if ( count( $path ) === 1 ) {
 				return $next_dir_id;

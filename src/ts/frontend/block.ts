@@ -17,7 +17,7 @@ function extractFromShortcode(
 wp.blocks.registerBlockType( 'skaut-google-drive-gallery/gallery', {
 	title: sgdgBlockLocalize.block_name,
 	description: sgdgBlockLocalize.block_description,
-	category: 'common',
+	category: 'media',
 	icon: SgdgBlockIconComponent,
 	attributes: {
 		path: {

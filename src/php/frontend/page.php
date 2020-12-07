@@ -102,7 +102,7 @@ function verify_path( array $path ) {
 	if ( count( $path ) === 1 ) {
 		return null;
 	}
-	return \Sgdg\API_Client::check_directory_in_directory( $path[1], $path[0] )->then(
+	return \Sgdg\API_Facade::check_directory_in_directory( $path[1], $path[0] )->then(
 		static function() use ( $path ) {
 			array_shift( $path );
 			return verify_path( $path );
@@ -163,7 +163,7 @@ function get_page( $parent_id, $pagination_helper, $options ) {
  * @return \Sgdg\Vendor\GuzzleHttp\Promise\Promise A promise resolving to a list of directories in the format `['id' =>, 'id', 'name' => 'name', 'thumbnail' => 'thumbnail', 'dircount' => 1, 'imagecount' => 1]`.
  */
 function directories( $parent_id, $pagination_helper, $options ) {
-	return ( \Sgdg\API_Client::list_directories( $parent_id, new \Sgdg\Frontend\API_Fields( array( 'id', 'name' ) ), $options->get( 'dir_ordering' ), $pagination_helper )->then(
+	return ( \Sgdg\API_Facade::list_directories( $parent_id, new \Sgdg\Frontend\API_Fields( array( 'id', 'name' ) ), $options->get( 'dir_ordering' ), $pagination_helper )->then(
 		static function( $files ) use ( &$options ) {
 			$files = array_map(
 				static function( $file ) use ( &$options ) {
@@ -211,7 +211,7 @@ function dir_images( $dirs, $options ) {
 	return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all(
 		array_map(
 			static function( $directory ) use ( &$options ) {
-				return \Sgdg\API_Client::list_images(
+				return \Sgdg\API_Facade::list_images(
 					$directory,
 					new \Sgdg\Frontend\API_Fields(
 						array(
@@ -250,19 +250,19 @@ function dir_counts( $dirs ) {
 			static function( $dir ) {
 				return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all(
 					array(
-						\Sgdg\API_Client::list_directories(
+						\Sgdg\API_Facade::list_directories(
 							$dir,
 							new \Sgdg\Frontend\API_Fields( array( 'createdTime' ) ),
 							'name',
 							new \Sgdg\Frontend\Single_Page_Pagination_Helper()
 						),
-						\Sgdg\API_Client::list_images(
+						\Sgdg\API_Facade::list_images(
 							$dir,
 							new \Sgdg\Frontend\API_Fields( array( 'createdTime' ) ),
 							'name',
 							new \Sgdg\Frontend\Single_Page_Pagination_Helper()
 						),
-						\Sgdg\API_Client::list_videos(
+						\Sgdg\API_Facade::list_videos(
 							$dir,
 							new \Sgdg\Frontend\API_Fields( array( 'createdTime' ) ),
 							'name',
@@ -309,7 +309,7 @@ function images( $parent_id, $pagination_helper, $options ) {
 		$order_by = $options->get( 'image_ordering' );
 		$fields   = new \Sgdg\Frontend\API_Fields( array( 'id', 'thumbnailLink', 'description' ) );
 	}
-	return \Sgdg\API_Client::list_images( $parent_id, $fields, $order_by, $pagination_helper )->then(
+	return \Sgdg\API_Facade::list_images( $parent_id, $fields, $order_by, $pagination_helper )->then(
 		static function( $images ) use ( &$options ) {
 			$images = array_map(
 				static function( $image ) use ( &$options ) {
@@ -393,7 +393,7 @@ function images_order( $images, $options ) {
  * @return \Sgdg\Vendor\GuzzleHttp\Promise\Promise A promise resolving to a list of videos in the format `['id' =>, 'id', 'thumbnail' => 'thumbnail', 'mimeType' => 'mimeType', 'src' => 'src']`.
  */
 function videos( $parent_id, $pagination_helper, $options ) {
-	return \Sgdg\API_Client::list_videos(
+	return \Sgdg\API_Facade::list_videos(
 		$parent_id,
 		new \Sgdg\Frontend\API_Fields(
 			array(

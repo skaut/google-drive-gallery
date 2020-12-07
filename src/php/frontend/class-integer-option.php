@@ -41,7 +41,7 @@ class Integer_Option extends Option {
 	 * @return int The sanitized value to be written to the database.
 	 */
 	public function sanitize( $value ) {
-		if ( is_numeric( $value ) ) {
+		if ( ctype_digit( $value ) ) {
 			return intval( $value );
 		}
 		return $this->default_value;
