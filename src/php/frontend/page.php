@@ -402,6 +402,7 @@ function videos( $parent_id, $pagination_helper, $options ) {
 				'webContentLink',
 				'thumbnailLink',
 				'videoMediaMetadata' => array( 'width', 'height' ),
+				'size',
 			)
 		),
 		$options->get( 'image_ordering' ),
@@ -416,7 +417,7 @@ function videos( $parent_id, $pagination_helper, $options ) {
 						'mimeType'  => $video['mimeType'],
 						'width'     => array_key_exists( 'videoMediaMetadata', $video ) ? $video['videoMediaMetadata']['width'] : '0',
 						'height'    => array_key_exists( 'videoMediaMetadata', $video ) ? $video['videoMediaMetadata']['height'] : '0',
-						'src'       => resolve_video_url( $video['webContentLink'] ),
+						'src'       => resolve_video_url( $video['webContentLink'], $video['size'] ),
 					);
 				},
 				$videos
@@ -434,8 +435,36 @@ function videos( $parent_id, $pagination_helper, $options ) {
  *
  * @return string The resolved video URL.
  */
-function resolve_video_url( $web_content_url ) {
-	$http_client = new \Sgdg\Vendor\GuzzleHttp\Client();
+function resolve_video_url( $web_content_url, $size ) {
+	if ( $size <= 25165824 ) {
+		return $web_content_url;
+	}
+
+	$client = new \Sgdg\Vendor\Google\Client();
+	$client->setAuthConfig(
+		array(
+			'client_id'     => \Sgdg\Options::$client_id->get(),
+			'client_secret' => \Sgdg\Options::$client_secret->get(),
+			'redirect_uris' => array( esc_url_raw( admin_url( 'admin.php?page=sgdg_basic&action=oauth_redirect' ) ) ),
+		)
+	);
+	$client->setAccessType( 'offline' );
+	$client->setApprovalPrompt( 'force' );
+	$client->addScope( \Sgdg\Vendor\Google_Service_Drive::DRIVE_READONLY );
+	$access_token = get_option( 'sgdg_access_token', false );
+	if ( false === $access_token ) {
+		throw new \Exception( esc_html__( 'Not authorized.', 'skaut-google-drive-gallery' ) );
+	}
+	$client->setAccessToken( $access_token );
+
+	if ( $client->isAccessTokenExpired() ) {
+		$client->fetchAccessTokenWithRefreshToken( $client->getRefreshToken() );
+		$new_access_token    = $client->getAccessToken();
+		$merged_access_token = array_merge( $access_token, $new_access_token );
+		update_option( 'sgdg_access_token', $merged_access_token );
+	}
+
+	$http_client = $client->authorize();
 	$url         = $web_content_url;
 	$response    = $http_client->get( $url, array( 'allow_redirects' => false ) );
 
