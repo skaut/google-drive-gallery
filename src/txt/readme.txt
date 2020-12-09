@@ -2,8 +2,8 @@
 Contributors: skaut, marekdedic, kalich5, genabitu
 Tags: skaut, google drive, google drive gallery, image and video gallery from google drive, team drive, shared drive, image gallery, video gallery, image and video gallery, gallery from google drive, gallery, multisite, shortcode
 Requires at least: 4.9.6
-Tested up to: 5.5
-Stable tag: 2.10.0
+Tested up to: 5.6
+Stable tag: 2.10.1
 Requires PHP: 5.6
 License: MIT
 License URI: https://github.com/skaut/skaut-google-drive-gallery/blob/master/LICENSE
@@ -14,9 +14,9 @@ A WordPress gallery using Google Drive as file storage
 
 *Image and video gallery from Google Drive* is a plugin for WordPress that connects your site to your Google Drive. With this plugin, you can select any folder in your Drive or a Shared drive and the plugin will convert it into a gallery, displaying any photos or videos in a page or a post on your website. Any folders and their subfolders will also be displayed in the gallery as nested galleries.
 
-All the data is sourced from Google Drive with nothing but the plugin configuration being a part of your website. This enables your site to load faster as the images are loaded from Google and not from your hosting. It may also save you costs for your site hosting, as the big files of the gallery are not stored as part of your site. On top of that, if you ever decide to move or reinstall your site, simply install this plugin again on the new site and your old galleries will still be there and working.
+All the data is sourced from Google Drive with nothing but the plugin configuration being a part of your website. This enables your site to load faster as the images are loaded from Google and not from your hosting provider. It may also save you costs for your site hosting, as the big files of the gallery are not stored as part of your site. On top of that, if you ever decide to move or reinstall your site, simply install this plugin again on the new site and your old galleries will still be there and working.
 
-Having the photos in Google Drive also gives you a familiar and easy-to-navigate UI for gallery management. You can give individual people or groups granular permissions to the Drive folder, making them able to add photos to a particular gallery without giving them full access to your site. They will then be able to manage the content of the gallery through Google Drive, without having to learn how to work with WordPress. You can also manage all content in your organization with Shared drives owned by your organization's G Suite.
+Having the photos in Google Drive also gives you a familiar and easy-to-navigate UI for gallery management. You can give individual people or groups granular permissions to the Drive folder, making them able to add photos to a particular gallery without giving them full access to your site. They will then be able to manage the content of the gallery through Google Drive, without having to learn how to work with WordPress. You can also manage all content in your organization with Shared drives owned by your organization's Google Workspace (formerly known as G Suite).
 
 Using this plugin is very straightforward. Once the plugin is installed and configured, you can add a Google Drive gallery to any page or post. If you are using WordPress 5 or newer with the block editor (i. e. Gutenberg), there is a block that you can add that will allow you to choose a folder with a graphical user interface. It also makes it possible to configure each individual gallery very easily, should you want to do that. If you are using an older WordPress version or are still using the classic editor, there is a shortcode you can use instead of the block.
 
@@ -82,14 +82,18 @@ See the [documentation](https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive
 
 == Changelog ==
 
-= 2.10.0 =
-* Substantially reduced occurence of rate limit errors.
+= 2.10.1 =
+* PHP 8 and WordPress 5.6 support
 * Better error handling
-* Moved the plugin block under the "media" category.
+
+= 2.10.0 =
+* Substantially reduced occurence of rate limit errors
+* Better error handling
+* Moved the plugin block under the "media" category
 
 = 2.9.1 =
 * Fixed an issue where additional pages may not get loaded in an edge case
-* Upgraded a dependency to prevent a possible security issue.
+* Upgraded a dependency to prevent a possible security issue
 
 = 2.9.0 =
 * Added support for Google Drive shortcuts to folders (image/video shortcuts coming in a future version)
