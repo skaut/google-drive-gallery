@@ -36,13 +36,13 @@ function html() {
 	echo( '<table class="widefat sgdg_root_selection">' );
 	echo( '<thead>' );
 	echo( '<tr>' );
-	echo( '<th class="sgdg_root_selection_path"></th>' );
+	echo( '<th class="sgdg-root-selection-path"></th>' );
 	echo( '</tr>' );
 	echo( '</thead>' );
 	echo( '<tbody id="sgdg_root_selection_body"></tbody>' );
 	echo( '<tfoot>' );
 	echo( '<tr>' );
-	echo( '<td class="sgdg_root_selection_path"></td>' );
+	echo( '<td class="sgdg-root-selection-path"></td>' );
 	echo( '</tr>' );
 	echo( '</tfoot>' );
 	echo( '</table>' );
