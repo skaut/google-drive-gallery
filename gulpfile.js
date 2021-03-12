@@ -8,7 +8,6 @@ const inject = require( 'gulp-inject-string' );
 const merge = require( 'merge-stream' );
 const rename = require( 'gulp-rename' );
 const replace = require( 'gulp-replace' );
-const shell = require( 'gulp-shell' );
 const terser = require( 'gulp-terser' );
 const ts = require( 'gulp-typescript' );
 
@@ -322,7 +321,7 @@ gulp.task( 'build:deps:npm:imagesloaded', function () {
 		.pipe( gulp.dest( 'dist/bundled/' ) );
 } );
 
-gulp.task( 'build:deps:npm:justified-layout', function() {
+gulp.task( 'build:deps:npm:justified-layout', function () {
 	return gulp
 		.src( 'node_modules/justified-layout/dist/justified-layout.min.*' )
 		.pipe( gulp.dest( 'dist/bundled/' ) );
