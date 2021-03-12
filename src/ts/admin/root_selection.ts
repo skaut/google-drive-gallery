@@ -72,8 +72,8 @@ jQuery( document ).ready( function( $ ) {
 			}
 			html += '<a data-id="' + path[ i ] + '">' + data.path[ i ] + '</a>';
 		}
-		$( '.sgdg_root_selection_path' ).html( html );
-		$( '.sgdg_root_selection_path a' ).click( function() {
+		$( '.sgdg-root-selection-path' ).html( html );
+		$( '.sgdg-root-selection-path a' ).click( function() {
 			pathClick( this );
 		} );
 		$( '#sgdg_root_selection_body label' ).click( function() {

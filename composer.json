@@ -38,6 +38,7 @@
         "google/apiclient": "^2.8.3",
         "monolog/monolog": "^1.25",
         "guzzlehttp/guzzle": "^6.5.4",
+        "paragonie/constant_time_encoding": "^1.0.4",
         "paragonie/random_compat": "^2.0.18",
         "guzzlehttp/promises": "^1.4",
         "symfony/polyfill-intl-idn": "^1.19.0 <1.20",
@@ -50,8 +51,9 @@
         "wp-coding-standards/wpcs": "^2.1",
         "phpcompatibility/phpcompatibility-wp": "^2.0",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": "^3.0",
+        "phan/phan": "^4.0",
         "phpunit/phpunit": "^7.5",
-        "skaut/phan-wordpress-stubs": "^1.0.0"
+        "skaut/phan-wordpress-stubs": "^1.0.0",
+        "symfony/polyfill-mbstring": "^1.20.0 <1.22"
     }
 }

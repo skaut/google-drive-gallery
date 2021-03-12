@@ -43,19 +43,19 @@
 		}
 	],
 	"globals": {
-		"SgdgBlockIconComponent": false,
-		"SgdgBooleanSettingsComponent": false,
-		"SgdgEditorComponent": false,
-		"SgdgIntegerSettingsComponent": false,
-		"SgdgOrderingSettingsComponent": false,
-		"SgdgSettingsComponent": false,
-		"SgdgSettingsOverrideComponent": false,
-		"jQuery": false,
-		"sgdgBlockLocalize": false,
-		"sgdgRootpathLocalize": false,
-		"sgdgShortcodeLocalize": false,
-		"sgdgTinymceLocalize": false,
-		"tb_remove": false,
-		"tb_show": false
+		"SgdgBlockIconComponent": "readonly",
+		"SgdgBooleanSettingsComponent": "readonly",
+		"SgdgEditorComponent": "readonly",
+		"SgdgIntegerSettingsComponent": "readonly",
+		"SgdgOrderingSettingsComponent": "readonly",
+		"SgdgSettingsComponent": "readonly",
+		"SgdgSettingsOverrideComponent": "readonly",
+		"jQuery": "readonly",
+		"sgdgBlockLocalize": "readonly",
+		"sgdgRootpathLocalize": "readonly",
+		"sgdgShortcodeLocalize": "readonly",
+		"sgdgTinymceLocalize": "readonly",
+		"tb_remove": "readonly",
+		"tb_show": "readonly"
 	}
 }

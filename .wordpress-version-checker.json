@@ -1,3 +1,4 @@
 {
-    "readme": "src/txt/readme.txt"
+    "readme": "src/txt/readme.txt",
+    "assignees": ["marekdedic"]
 }

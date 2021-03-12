@@ -38,7 +38,7 @@ jobs:
           coverage: none
 
       - name: "Cache Composer dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.composer/cache"
           key: composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('composer.json') }}
@@ -52,7 +52,7 @@ jobs:
           composer install -n --prefer-dist
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
@@ -94,7 +94,7 @@ jobs:
           key: php-extensions-${{ runner.os }}-${{ env.cache-version }}
 
       - name: "Cache extensions"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}
@@ -108,7 +108,7 @@ jobs:
           coverage: none
 
       - name: "Cache Composer dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.composer/cache"
           key: composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('composer.json') }}
@@ -122,7 +122,7 @@ jobs:
           composer install -n --prefer-dist
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
@@ -167,7 +167,7 @@ jobs:
           coverage: xdebug
 
       - name: "Cache Composer dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.composer/cache"
           key: composer-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('composer.json') }}
@@ -181,7 +181,7 @@ jobs:
           composer install -n --prefer-dist
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
