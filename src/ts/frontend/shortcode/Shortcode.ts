@@ -1,5 +1,5 @@
 /* exported Shortcode */
-const justifiedLayout = require( 'justified-layout' );
+const justifiedLayout = require( 'justified-layout' ) as JustifiedLayout;
 
 class Shortcode {
 	private readonly container: JQuery;
@@ -28,10 +28,8 @@ class Shortcode {
 	}
 
 	public onLightboxNavigation( e: JQuery ): void {
-		const page = $( e ).data( 'sgdg-page' );
-		const children = $( e )
-			.parent()
-			.children().length;
+		const page = $( e ).data( 'sgdg-page' ) as string;
+		const children = $( e ).parent().children().length;
 		history.replaceState(
 			history.state,
 			'',
@@ -154,7 +152,7 @@ class Shortcode {
 			.replaceWith( '<div class="sgdg-loading"><div></div></div>' );
 		this.container.find( '.sgdg-more-button' ).remove();
 		ShortcodeRegistry.reflowAll();
-		$.get(
+		void $.get(
 			sgdgShortcodeLocalize.ajax_url,
 			{
 				action: 'gallery',
@@ -259,7 +257,7 @@ class Shortcode {
 				'<div class="sgdg-loading">' + '<div>' + '</div>' + '</div>'
 			);
 		this.container.find( '.sgdg-more-button' ).remove();
-		$.get(
+		void $.get(
 			sgdgShortcodeLocalize.ajax_url,
 			{
 				action: 'page',
@@ -321,7 +319,7 @@ class Shortcode {
 		} );
 
 		this.loading = true;
-		this.container
+		void this.container
 			.find( '.sgdg-gallery' )
 			.imagesLoaded( { background: true }, () => {
 				this.loading = false;
@@ -408,7 +406,7 @@ class Shortcode {
 			html +=
 				'<span class="sgdg-count-icon dashicons dashicons-category">' +
 				'</span> ' +
-				directory.dircount +
+				directory.dircount.toString() +
 				( 1000 === directory.dircount ? '+' : '' );
 		}
 		if ( directory.imagecount ) {
@@ -421,7 +419,7 @@ class Shortcode {
 				iconClass +
 				'">' +
 				'</span> ' +
-				directory.imagecount +
+				directory.imagecount.toString() +
 				( 1000 === directory.imagecount ? '+' : '' );
 		}
 		if ( directory.videocount ) {
@@ -434,7 +432,7 @@ class Shortcode {
 				iconClass +
 				'">' +
 				'</span> ' +
-				directory.videocount +
+				directory.videocount.toString() +
 				( 1000 === directory.videocount ? '+' : '' );
 		}
 		html += '</div></a>';
@@ -453,7 +451,7 @@ class Shortcode {
 			image.description +
 			'" ' +
 			'data-sgdg-page="' +
-			page +
+			page.toString() +
 			'" ' +
 			'href="' +
 			image.image +
@@ -474,12 +472,12 @@ class Shortcode {
 			video.id +
 			'" ' +
 			'data-sgdg-page="' +
-			page +
+			page.toString() +
 			'" ' +
 			'data-ilb2-video=\'{ "controls": "controls", "autoplay": "autoplay", "height": ' +
-			video.height +
+			video.height.toString() +
 			', "width": ' +
-			video.width +
+			video.width.toString() +
 			', "sources": [ { "src": "' +
 			video.src +
 			'", "type": "' +

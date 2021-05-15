@@ -1,4 +1,4 @@
-jQuery( document ).ready( function( $ ) {
+jQuery( document ).ready( function ( $ ) {
 	let path: Array< string > = [];
 
 	function tinymceSubmit(): void {
@@ -39,7 +39,7 @@ jQuery( document ).ready( function( $ ) {
 			'</a>' +
 			'</div>';
 		$( '#sgdg-tinymce-modal' ).html( html );
-		$( '#sgdg-tinymce-insert' ).click( function() {
+		$( '#sgdg-tinymce-insert' ).click( function () {
 			tinymceSubmit();
 		} );
 	}
@@ -113,14 +113,14 @@ jQuery( document ).ready( function( $ ) {
 	function ajaxQuery(): void {
 		$( '#sgdg-tinymce-list' ).html( '' );
 		$( '#sgdg-tinymce-insert' ).attr( 'disabled', 'disabled' );
-		$.get(
+		void $.get(
 			sgdgTinymceLocalize.ajax_url,
 			{
-				_ajax_nonce: sgdgTinymceLocalize.nonce, // eslint-disable-line @typescript-eslint/camelcase
+				_ajax_nonce: sgdgTinymceLocalize.nonce,
 				action: 'list_gallery_dir',
 				path,
 			},
-			function( data: ListGalleryDirResponse ) {
+			function ( data: ListGalleryDirResponse ) {
 				if ( isError( data ) ) {
 					error( data.error );
 				} else {

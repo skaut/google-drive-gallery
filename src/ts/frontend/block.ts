@@ -24,47 +24,36 @@ wp.blocks.registerBlockType( 'skaut-google-drive-gallery/gallery', {
 			type: 'array',
 			default: [],
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		grid_height: {
 			type: 'number',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		grid_spacing: {
 			type: 'number',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		dir_counts: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		page_size: {
 			type: 'number',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		page_autoload: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		image_ordering_order: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		image_ordering_by: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		dir_ordering_order: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		dir_ordering_by: {
 			type: 'string',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		preview_size: {
 			type: 'number',
 		},
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		preview_loop: {
 			type: 'string',
 		},

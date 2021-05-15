@@ -1,8 +1,6 @@
 /* exported SgdgEditorComponent */
 
-type SgdgEditorComponentProps = import('wordpress__blocks').BlockEditProps<
-	Attributes
->;
+type SgdgEditorComponentProps = import('wordpress__blocks').BlockEditProps< Attributes >;
 
 interface SgdgEditorComponentState {
 	error?: string;
@@ -162,10 +160,10 @@ class SgdgEditorComponent extends wp.element.Component<
 	}
 
 	private ajax(): void {
-		$.get(
+		void $.get(
 			sgdgBlockLocalize.ajax_url,
 			{
-				_ajax_nonce: sgdgBlockLocalize.nonce, // eslint-disable-line @typescript-eslint/camelcase
+				_ajax_nonce: sgdgBlockLocalize.nonce,
 				action: 'list_gallery_dir',
 				path: this.getAttribute( 'path' ),
 			},
