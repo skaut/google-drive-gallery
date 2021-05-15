@@ -72,6 +72,12 @@ gulp.task( 'build:deps:composer:apiclient', function () {
 			)
 			.pipe(
 				replace(
+					/\* @return \\Google\\Client/,
+					'* @return \\Sgdg\\Vendor\\Google\\Client'
+				)
+			)
+			.pipe(
+				replace(
 					/\nuse BadMethodCallException/g,
 					'\nuse \\BadMethodCallException'
 				)
@@ -129,6 +135,7 @@ gulp.task( 'build:deps:composer:apiclient', function () {
 			.src( [ 'vendor/google/apiclient/src/aliases.php' ], {
 				base: 'vendor/',
 			} )
+			.pipe( replace( /^<\?php/, '<?php\nnamespace Sgdg\\Vendor;' ) )
 			.pipe(
 				replace(
 					"class_exists('Google_Client'",
@@ -143,14 +150,8 @@ gulp.task( 'build:deps:composer:apiclient', function () {
 			)
 			.pipe(
 				replace(
-					/\nclass Google_Task_Composer extends \\Google\\Task\\Composer\n{\n}/g,
-					'\n//class Google_Task_Composer extends \\Google\\Task\\Composer\n//{\n//}'
-				)
-			)
-			.pipe(
-				replace(
-					/\nclass Google_([^ ]*) extends \\Google\\([^ ]*)/g,
-					'\nclass Google_$1 extends \\Sgdg\\Vendor\\Google\\$2'
+					/class Google_([^ ]*) extends \\Google\\([^ ]*)/g,
+					'class Google_$1 extends Google\\$2'
 				)
 			)
 	).pipe( gulp.dest( 'dist/bundled/vendor/' ) );

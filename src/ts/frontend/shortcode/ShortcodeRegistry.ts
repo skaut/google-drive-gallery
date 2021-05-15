@@ -11,7 +11,9 @@ const ShortcodeRegistry: ShortcodeRegistry = {
 
 	init(): void {
 		$( '.sgdg-gallery-container' ).each( ( _, container ) => {
-			const hash = $( container ).data( 'sgdgHash' );
+			const hash = $( container ).data( 'sgdgHash' ) as
+				| string
+				| undefined;
 			if ( hash ) {
 				this.shortcodes[ hash.substr( 0, 8 ) ] = new Shortcode(
 					container,
@@ -27,18 +29,18 @@ const ShortcodeRegistry: ShortcodeRegistry = {
 	},
 
 	reflowAll(): void {
-		$.each( this.shortcodes, function( _, shortcode ) {
+		$.each( this.shortcodes, function ( _, shortcode ) {
 			shortcode.reflow();
 		} );
 	},
 
 	onLightboxNavigation( e: JQuery ): void {
-		const hash = $( e ).data( 'imagelightbox' );
+		const hash = $( e ).data( 'imagelightbox' ) as string;
 		this.shortcodes[ hash ].onLightboxNavigation( e );
 	},
 
 	onLightboxQuit(): void {
-		$.each( this.shortcodes, function( _, shortcode ) {
+		$.each( this.shortcodes, function ( _, shortcode ) {
 			shortcode.onLightboxQuit();
 		} );
 	},

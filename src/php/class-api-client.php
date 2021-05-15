@@ -98,9 +98,7 @@ class API_Client {
 		if ( ! is_null( self::$current_batch ) ) {
 			return;
 		}
-		// @phan-suppress-next-line PhanUndeclaredMethod
 		self::get_drive_client()->getClient()->setUseBatch( true );
-		// @phan-suppress-next-line PhanUndeclaredMethod
 		self::$current_batch    = self::get_drive_client()->createBatch();
 		self::$pending_requests = array();
 	}
@@ -181,8 +179,7 @@ class API_Client {
 			\Sgdg\Vendor\GuzzleHttp\Promise\Utils::queue()->run();
 			return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all( $promises )->wait();
 		}
-		$batch = self::$current_batch;
-		// @phan-suppress-next-line PhanUndeclaredMethod
+		$batch               = self::$current_batch;
 		self::$current_batch = self::get_drive_client()->createBatch();
 		/**
 		 * The closure executes the batch and throws the exception if it is a rate limit exceeded exception (this is needed by the task runner).
@@ -218,7 +215,6 @@ class API_Client {
 			self::execute();
 		}
 		self::$current_batch = null;
-		// @phan-suppress-next-line PhanUndeclaredMethod
 		self::get_drive_client()->getClient()->setUseBatch( false );
 		return \Sgdg\Vendor\GuzzleHttp\Promise\Utils::all( $promises )->wait();
 	}

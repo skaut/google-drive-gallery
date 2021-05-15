@@ -1,4 +1,4 @@
-jQuery( document ).ready( function( $ ) {
+jQuery( document ).ready( function ( $ ) {
 	let path: Array< string > = sgdgRootpathLocalize.root_dir;
 
 	function resetWarn( message: string ): void {
@@ -12,13 +12,13 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function pathClick( el: HTMLElement ): void {
-		const stop = $( el ).data( 'id' );
+		const stop = $( el ).data( 'id' ) as string;
 		path = path.slice( 0, path.indexOf( stop ) + 1 );
 		listGdriveDir(); // eslint-disable-line @typescript-eslint/no-use-before-define
 	}
 
 	function click( el: HTMLElement ): void {
-		const newId = $( el ).data( 'id' );
+		const newId = $( el ).data( 'id' ) as string;
 		if ( newId ) {
 			path.push( newId );
 		} else {
@@ -73,10 +73,10 @@ jQuery( document ).ready( function( $ ) {
 			html += '<a data-id="' + path[ i ] + '">' + data.path[ i ] + '</a>';
 		}
 		$( '.sgdg-root-selection-path' ).html( html );
-		$( '.sgdg-root-selection-path a' ).click( function() {
+		$( '.sgdg-root-selection-path a' ).click( function () {
 			pathClick( this );
 		} );
-		$( '#sgdg_root_selection_body label' ).click( function() {
+		$( '#sgdg_root_selection_body label' ).click( function () {
 			click( this );
 		} );
 		$( '#sgdg_root_path' ).val( JSON.stringify( path ) );
@@ -95,14 +95,14 @@ jQuery( document ).ready( function( $ ) {
 	function listGdriveDir(): void {
 		$( '#sgdg_root_selection_body' ).html( '' );
 		$( '#submit' ).attr( 'disabled', 'disabled' );
-		$.get(
+		void $.get(
 			sgdgRootpathLocalize.ajax_url,
 			{
-				_ajax_nonce: sgdgRootpathLocalize.nonce, // eslint-disable-line @typescript-eslint/camelcase
+				_ajax_nonce: sgdgRootpathLocalize.nonce,
 				action: 'list_gdrive_dir',
 				path,
 			},
-			function( data: ListGdriveDirResponse ) {
+			function ( data: ListGdriveDirResponse ) {
 				if ( isError( data ) ) {
 					error( data.error );
 					return;

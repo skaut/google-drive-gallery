@@ -4,10 +4,8 @@ interface SgdgSettingsOverrideComponentProps {
 	editor: SgdgEditorComponent;
 }
 
-class SgdgSettingsOverrideComponent extends wp.element.Component<
-	SgdgSettingsOverrideComponentProps,
-	{}
-> {
+class SgdgSettingsOverrideComponent extends wp.element
+	.Component< SgdgSettingsOverrideComponentProps > {
 	public render(): React.ReactNode {
 		const el = wp.element.createElement;
 		return el( wp.components.PanelBody, {
