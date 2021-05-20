@@ -3,6 +3,7 @@
 	<file>src</file>
 	<file>tests</file>
 	<file>.phan</file>
+	<file>scoper.inc.php</file>
 
 	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/phpcompatibility-wp/PHPCompatibilityWP"/>
 
