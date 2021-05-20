@@ -1,5 +1,5 @@
 /* exported Shortcode */
-const justifiedLayout = require( 'justified-layout' ) as JustifiedLayout;
+const justifiedLayout = require( 'justified-layout' );
 
 class Shortcode {
 	private readonly container: JQuery;

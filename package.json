@@ -39,7 +39,7 @@
   "dependencies": {
     "imagelightbox": "^1.1.0",
     "imagesloaded": "^4.1.4",
-    "justified-layout": "github:skaut/justified-layout"
+    "justified-layout": "github:skaut/justified-layout#typings"
   },
   "devDependencies": {
     "@types/imagesloaded": "^4.1.2",
