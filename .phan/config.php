@@ -25,6 +25,9 @@ return array(
 		'dist/bundled/vendor',
 		'vendor/skaut/phan-wordpress-stubs/stubs',
 	),
+	'file_list'                                 => array(
+		'scoper.inc.php',
+	),
 	'exclude_analysis_directory_list'           => array(
 		'dist/bundled/vendor/',
 		'vendor/skaut/phan-wordpress-stubs/stubs',

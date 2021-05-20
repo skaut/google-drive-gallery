@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Die, die, die!' );
 }
 
-require_once __DIR__ . '/bundled/vendor-includes.php';
+require_once __DIR__ . '/bundled/vendor/scoper-autoload.php';
 
 require_once __DIR__ . '/class-options.php';
 require_once __DIR__ . '/class-api-client.php';
