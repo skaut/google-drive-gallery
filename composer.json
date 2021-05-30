@@ -34,7 +34,7 @@
         "docs": "https://napoveda.skaut.cz/dobryweb/en-skaut-google-drive-gallery"
     },
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^5.6 || ^7.0 || ^8.0",
         "google/apiclient": "^2.8.3",
         "monolog/monolog": "^1.25",
         "guzzlehttp/guzzle": "^6.5.4",
