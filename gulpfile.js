@@ -12,21 +12,21 @@ const shell = require( 'gulp-shell' );
 const terser = require( 'gulp-terser' );
 const ts = require( 'gulp-typescript' );
 
-gulp.task( 'build:css:admin', function () {
-	return gulp
+gulp.task( 'build:css:admin', () =>
+	gulp
 		.src( [ 'src/css/admin/*.css' ] )
 		.pipe( cleanCSS( { compatibility: 'ie8' } ) )
 		.pipe( rename( { suffix: '.min' } ) )
-		.pipe( gulp.dest( 'dist/admin/css/' ) );
-} );
+		.pipe( gulp.dest( 'dist/admin/css/' ) )
+);
 
-gulp.task( 'build:css:frontend', function () {
-	return gulp
+gulp.task( 'build:css:frontend', () =>
+	gulp
 		.src( [ 'src/css/frontend/*.css' ] )
 		.pipe( cleanCSS( { compatibility: 'ie8' } ) )
 		.pipe( rename( { suffix: '.min' } ) )
-		.pipe( gulp.dest( 'dist/frontend/css/' ) );
-} );
+		.pipe( gulp.dest( 'dist/frontend/css/' ) )
+);
 
 gulp.task(
 	'build:css',
@@ -44,8 +44,8 @@ gulp.task(
 	'build:deps:composer:autoloader',
 	gulp.series(
 		shell.task( 'composer dump-autoload --no-dev' ),
-		function () {
-			return merge(
+		() =>
+			merge(
 				gulp.src( [
 					'vendor/composer/autoload_classmap.php',
 					'vendor/composer/autoload_files.php',
@@ -66,8 +66,7 @@ gulp.task(
 							"'Sgdg\\\\Vendor\\\\$1\\\\' => \n"
 						)
 					)
-			).pipe( gulp.dest( 'dist/bundled/vendor/composer/' ) );
-		},
+			).pipe( gulp.dest( 'dist/bundled/vendor/composer/' ) ),
 		shell.task( 'composer dump-autoload' )
 	)
 );
@@ -80,17 +79,17 @@ gulp.task(
 	)
 );
 
-gulp.task( 'build:deps:npm:imagelightbox', function () {
-	return gulp
+gulp.task( 'build:deps:npm:imagelightbox', () =>
+	gulp
 		.src( 'node_modules/imagelightbox/dist/imagelightbox.min.*' )
-		.pipe( gulp.dest( 'dist/bundled/' ) );
-} );
+		.pipe( gulp.dest( 'dist/bundled/' ) )
+);
 
-gulp.task( 'build:deps:npm:imagesloaded', function () {
-	return gulp
+gulp.task( 'build:deps:npm:imagesloaded', () =>
+	gulp
 		.src( 'node_modules/imagesloaded/imagesloaded.pkgd.min.js' )
-		.pipe( gulp.dest( 'dist/bundled/' ) );
-} );
+		.pipe( gulp.dest( 'dist/bundled/' ) )
+);
 
 gulp.task(
 	'build:deps:npm:justified-layout',
@@ -98,13 +97,12 @@ gulp.task(
 		shell.task( [ 'npm install' ], {
 			cwd: 'node_modules/justified-layout',
 		} ),
-		function () {
-			return gulp
+		() =>
+			gulp
 				.src(
 					'node_modules/justified-layout/dist/justified-layout.min.*'
 				)
-				.pipe( gulp.dest( 'dist/bundled/' ) );
-		}
+				.pipe( gulp.dest( 'dist/bundled/' ) )
 	)
 );
 
@@ -122,51 +120,33 @@ gulp.task(
 	gulp.parallel( 'build:deps:composer', 'build:deps:npm' )
 );
 
-gulp.task( 'build:js:admin', function () {
-	function bundle( name, sources ) {
-		const tsProject = ts.createProject( 'tsconfig.json' );
-		return gulp
-			.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
-			.pipe( tsProject() )
-			.js.pipe( concat( name + '.min.js' ) )
-			.pipe( terser( { ie8: true } ) )
-			.pipe( gulp.dest( 'dist/admin/js/' ) );
-	}
+function jsBundle( name, type, sources ) {
+	const tsProject = ts.createProject( 'tsconfig.json' );
+	return gulp
+		.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
+		.pipe( tsProject() )
+		.js.pipe( concat( name + '.min.js' ) )
+		.pipe( inject.prepend( 'jQuery( document ).ready( function( $ ) {\n' ) )
+		.pipe( inject.append( '} );\n' ) )
+		.pipe( terser( { ie8: true } ) )
+		.pipe( gulp.dest( 'dist/' + type + '/js/' ) );
+}
 
-	return merge(
-		bundle( 'root_selection', [
-			'src/ts/isError.ts',
-			'src/ts/admin/root_selection.ts',
-		] ),
-		bundle( 'tinymce', [ 'src/ts/isError.ts', 'src/ts/admin/tinymce.ts' ] )
-	);
-} );
-
-gulp.task( 'build:js:frontend', function () {
-	function bundle( name, sources, jQuery = false ) {
-		const tsProject = ts.createProject( 'tsconfig.json' );
-		let ret = gulp
-			.src( sources.concat( [ 'src/d.ts/*.d.ts' ] ) )
-			.pipe( tsProject() )
-			.js.pipe( concat( name + '.min.js' ) );
-		if ( jQuery ) {
-			ret = ret
-				.pipe(
-					inject.prepend(
-						'jQuery( document ).ready( function( $ ) {\n'
-					)
-				)
-				.pipe( inject.append( '} );\n' ) );
-		}
-		return ret
-			.pipe( terser( { ie8: true } ) )
-			.pipe( gulp.dest( 'dist/frontend/js/' ) );
-	}
-
-	return merge(
-		bundle(
-			'block',
-			[
+gulp.task(
+	'build:js',
+	gulp.parallel(
+		() =>
+			jsBundle( 'root_selection', 'admin', [
+				'src/ts/isError.ts',
+				'src/ts/admin/root_selection.ts',
+			] ),
+		() =>
+			jsBundle( 'tinymce', 'admin', [
+				'src/ts/isError.ts',
+				'src/ts/admin/tinymce.ts',
+			] ),
+		() =>
+			jsBundle( 'block', 'frontend', [
 				'src/ts/isError.ts',
 				'src/ts/frontend/block/SgdgEditorComponent.ts',
 				'src/ts/frontend/block/SgdgBlockIconComponent.ts',
@@ -177,52 +157,41 @@ gulp.task( 'build:js:frontend', function () {
 				'src/ts/frontend/block/SgdgOrderingSettingsComponent.ts',
 				'src/ts/frontend/block/SgdgSettingsOverrideComponent.ts',
 				'src/ts/frontend/interfaces/Attributes.ts',
-			],
-			true
-		),
-		bundle(
-			'shortcode',
-			[
+			] ),
+		() =>
+			jsBundle( 'shortcode', 'frontend', [
 				'src/ts/isError.ts',
 				'src/ts/frontend/shortcode/QueryParameter.ts',
 				'src/ts/frontend/shortcode/Shortcode.ts',
 				'src/ts/frontend/shortcode/ShortcodeRegistry.ts',
 				'src/ts/frontend/shortcode.ts',
-			],
-			true
-		)
-	);
-} );
+			] )
+	)
+);
 
-gulp.task( 'build:js', gulp.parallel( 'build:js:admin', 'build:js:frontend' ) );
+gulp.task( 'build:php:admin', () =>
+	gulp.src( [ 'src/php/admin/**/*.php' ] ).pipe( gulp.dest( 'dist/admin/' ) )
+);
 
-gulp.task( 'build:php:admin', function () {
-	return gulp
-		.src( [ 'src/php/admin/**/*.php' ] )
-		.pipe( gulp.dest( 'dist/admin/' ) );
-} );
+gulp.task( 'build:php:base', () =>
+	gulp.src( [ 'src/php/*.php' ] ).pipe( gulp.dest( 'dist/' ) )
+);
 
-gulp.task( 'build:php:base', function () {
-	return gulp.src( [ 'src/php/*.php' ] ).pipe( gulp.dest( 'dist/' ) );
-} );
+gulp.task( 'build:php:bundled', () =>
+	gulp.src( [ 'src/php/bundled/*.php' ] ).pipe( gulp.dest( 'dist/bundled/' ) )
+);
 
-gulp.task( 'build:php:bundled', function () {
-	return gulp
-		.src( [ 'src/php/bundled/*.php' ] )
-		.pipe( gulp.dest( 'dist/bundled/' ) );
-} );
-
-gulp.task( 'build:php:exceptions', function () {
-	return gulp
+gulp.task( 'build:php:exceptions', () =>
+	gulp
 		.src( [ 'src/php/exceptions/**/*.php' ] )
-		.pipe( gulp.dest( 'dist/exceptions/' ) );
-} );
+		.pipe( gulp.dest( 'dist/exceptions/' ) )
+);
 
-gulp.task( 'build:php:frontend', function () {
-	return gulp
+gulp.task( 'build:php:frontend', () =>
+	gulp
 		.src( [ 'src/php/frontend/**/*.php' ] )
-		.pipe( gulp.dest( 'dist/frontend/' ) );
-} );
+		.pipe( gulp.dest( 'dist/frontend/' ) )
+);
 
 gulp.task(
 	'build:php',
@@ -235,15 +204,13 @@ gulp.task(
 	)
 );
 
-gulp.task( 'build:png', function () {
-	return gulp
-		.src( [ 'src/png/icon.png' ] )
-		.pipe( gulp.dest( 'dist/admin/' ) );
-} );
+gulp.task( 'build:png', () =>
+	gulp.src( [ 'src/png/icon.png' ] ).pipe( gulp.dest( 'dist/admin/' ) )
+);
 
-gulp.task( 'build:txt', function () {
-	return gulp.src( [ 'src/txt/*.txt' ] ).pipe( gulp.dest( 'dist/' ) );
-} );
+gulp.task( 'build:txt', () =>
+	gulp.src( [ 'src/txt/*.txt' ] ).pipe( gulp.dest( 'dist/' ) )
+);
 
 gulp.task(
 	'build',
