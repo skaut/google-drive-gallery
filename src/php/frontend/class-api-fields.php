@@ -97,7 +97,7 @@ class API_Fields {
 	/**
 	 * Parses a Google API response according to the fields.
 	 *
-	 * @param \Sgdg\Vendor\Google_Service_Drive_DriveFile $response The API response.
+	 * @param \Sgdg\Vendor\Google\Service\Drive\DriveFile $response The API response.
 	 *
 	 * @return array The parsed response
 	 */

@@ -37,8 +37,7 @@ function oauth_redirect() {
 			$client->fetchAccessTokenWithAuthCode( sanitize_text_field( wp_unslash( $_GET['code'] ) ) );
 			$access_token = $client->getAccessToken();
 
-			// @phan-suppress-next-line PhanTypeMismatchArgument
-			$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $client );
+			$drive_client = new \Sgdg\Vendor\Google\Service\Drive( $client );
 			$drive_client->drives->listDrives(
 				array(
 					'pageSize' => 1,

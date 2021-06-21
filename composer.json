@@ -54,7 +54,7 @@
         "phan/phan": "^4.0",
         "phpunit/phpunit": "^7.5",
         "skaut/phan-wordpress-stubs": "^1.0.0",
-        "symfony/polyfill-mbstring": "^1.20.0 <1.22",
+        "symfony/polyfill-mbstring": "^1.23.0",
         "humbug/php-scoper": "^0.15.0"
     }
 }

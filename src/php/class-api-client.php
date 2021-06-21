@@ -23,7 +23,7 @@ class API_Client {
 	/**
 	 * Google Drive API client
 	 *
-	 * @var \Sgdg\Vendor\Google_Service_Drive $raw_client
+	 * @var \Sgdg\Vendor\Google\Service\Drive $raw_client
 	 */
 	private static $drive_client;
 
@@ -58,7 +58,7 @@ class API_Client {
 			);
 			self::$raw_client->setAccessType( 'offline' );
 			self::$raw_client->setApprovalPrompt( 'force' );
-			self::$raw_client->addScope( \Sgdg\Vendor\Google_Service_Drive::DRIVE_READONLY );
+			self::$raw_client->addScope( \Sgdg\Vendor\Google\Service\Drive::DRIVE_READONLY );
 		}
 		return self::$raw_client;
 	}
@@ -68,7 +68,7 @@ class API_Client {
 	 *
 	 * @throws \Sgdg\Exceptions\Plugin_Not_Authorized_Exception Not authorized.
 	 *
-	 * @return \Sgdg\Vendor\Google_Service_Drive
+	 * @return \Sgdg\Vendor\Google\Service\Drive
 	 */
 	public static function get_drive_client() {
 		if ( ! isset( self::$drive_client ) ) {
@@ -85,8 +85,7 @@ class API_Client {
 				$merged_access_token = array_merge( $access_token, $new_access_token );
 				update_option( 'sgdg_access_token', $merged_access_token );
 			}
-			// @phan-suppress-next-line PhanTypeMismatchArgument
-			self::$drive_client = new \Sgdg\Vendor\Google_Service_Drive( $raw_client );
+			self::$drive_client = new \Sgdg\Vendor\Google\Service\Drive( $raw_client );
 		}
 		return self::$drive_client;
 	}
@@ -222,7 +221,7 @@ class API_Client {
 	/**
 	 * Checks the API response and throws an exception if there was a problem.
 	 *
-	 * @param \ArrayAccess|\Countable|\Iterator|\Sgdg\Vendor\Google\Collection|\Sgdg\Vendor\Google\Model|\Sgdg\Vendor\Google_Service_Drive_FileList|\Traversable|iterable $response The API response.
+	 * @param \ArrayAccess|\Countable|\Iterator|\Sgdg\Vendor\Google\Collection|\Sgdg\Vendor\Google\Model|\Sgdg\Vendor\Google\Service\Drive\FileList|\Traversable|iterable $response The API response.
 	 *
 	 * @throws \Sgdg\Exceptions\API_Rate_Limit_Exception Rate limit exceeded.
 	 * @throws \Sgdg\Exceptions\Not_Found_Exception The requested resource couldn't be found.
