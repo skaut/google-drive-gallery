@@ -226,6 +226,7 @@ class API_Facade {
 				'name',
 				'mimeType',
 				'createdTime',
+				'copyRequiresWriterPermission',
 				'imageMediaMetadata' => array( 'width', 'height', 'time' ),
 				'videoMediaMetadata' => array( 'width', 'height' ),
 				'webContentLink',

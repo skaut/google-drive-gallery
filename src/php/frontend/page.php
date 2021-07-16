@@ -402,6 +402,8 @@ function videos( $parent_id, $pagination_helper, $options ) {
 				'webContentLink',
 				'thumbnailLink',
 				'videoMediaMetadata' => array( 'width', 'height' ),
+				'copyRequiresWriterPermission',
+				'permissions', // TODO: Narrow down.
 			)
 		),
 		$options->get( 'image_ordering' ),
@@ -416,7 +418,7 @@ function videos( $parent_id, $pagination_helper, $options ) {
 						'mimeType'  => $video['mimeType'],
 						'width'     => array_key_exists( 'videoMediaMetadata', $video ) ? $video['videoMediaMetadata']['width'] : '0',
 						'height'    => array_key_exists( 'videoMediaMetadata', $video ) ? $video['videoMediaMetadata']['height'] : '0',
-						'src'       => resolve_video_url( $video['webContentLink'] ),
+						'src'       => resolve_video_url( $video['webContentLink'], $video['copyRequiresWriterPermission'], $video['permissions'] ),
 					);
 				},
 				$videos
@@ -431,10 +433,36 @@ function videos( $parent_id, $pagination_helper, $options ) {
  * Finds the correct URL so that a video would load in the browser.
  *
  * @param string $web_content_url The webContentLink returned by Google Drive API.
+ * @param bool   $copy_requires_writer_permission Whether the option to download the file is disabled for readers.
+ * @param array  $permissions The file permissions.
+ *
+ * @return string The resolved video URL.
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
+function resolve_video_url( $web_content_url, $copy_requires_writer_permission, $permissions ) {
+	if ( $copy_requires_writer_permission ) {
+		return get_proxy_video_url();
+	}
+	foreach ( $permissions as $permission ) {
+		if ( 'anyone' === $permission['type'] && in_array( $permission['role'], array( 'reader', 'writer' ), true ) ) { // TODO: type: domain?, domain: ???
+			return get_direct_video_url( $web_content_url );
+		}
+	}
+	// TODO: For files not owned by me, I can't view sharing permissions. Also, check what happens in shared drives...
+	return get_proxy_video_url();
+}
+
+/**
+ * Returns the direct URL for a video.
+ *
+ * Goes through the download warning and returns the direct download URL for a video.
+ *
+ * @param string $web_content_url The webContentLink returned by Google Drive API.
  *
  * @return string The resolved video URL.
  */
-function resolve_video_url( $web_content_url ) {
+function get_direct_video_url( $web_content_url ) {
 	$http_client = new \Sgdg\Vendor\GuzzleHttp\Client();
 	$url         = $web_content_url;
 	$response    = $http_client->get( $url, array( 'allow_redirects' => false ) );
@@ -457,4 +485,15 @@ function resolve_video_url( $web_content_url ) {
 		$url      = $response->getHeader( 'Location' )[0];
 	}
 	return $url;
+}
+
+/**
+ * Returns the proxy URL for a video.
+ *
+ * Sets up a proxy in WordPress and returns the address of this proxy.
+ *
+ * @return string The resolved video URL.
+ */
+function get_proxy_video_url() {
+	return 'TODO: PROXY LINK';
 }
